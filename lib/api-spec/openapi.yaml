@@ -1,22 +1,39 @@
 openapi: 3.1.0
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: Gym Management System API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: members
+    description: Gym member operations
+  - name: staff
+    description: Staff management operations
+  - name: classes
+    description: Fitness class operations
+  - name: sessions
+    description: Personal training sessions
+  - name: memberships
+    description: Membership plans
+  - name: bookings
+    description: Class bookings
+  - name: attendance
+    description: Attendance tracking
+  - name: workouts
+    description: Workout plans
+  - name: analytics
+    description: Dashboard analytics
+
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,6 +41,771 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  # ─── MEMBERS ───────────────────────────────────────────────────────────────
+  /members:
+    get:
+      operationId: listMembers
+      tags: [members]
+      summary: List all members
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+        - name: membershipPlanId
+          in: query
+          schema:
+            type: ["integer", "null"]
+      responses:
+        "200":
+          description: List of members
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Member"
+    post:
+      operationId: createMember
+      tags: [members]
+      summary: Create a new member
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateMemberBody"
+      responses:
+        "201":
+          description: Member created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Member"
+
+  /members/{id}:
+    get:
+      operationId: getMember
+      tags: [members]
+      summary: Get a member by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Member details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Member"
+        "404":
+          description: Not found
+    patch:
+      operationId: updateMember
+      tags: [members]
+      summary: Update member
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateMemberBody"
+      responses:
+        "200":
+          description: Member updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Member"
+    delete:
+      operationId: deleteMember
+      tags: [members]
+      summary: Delete member
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  # ─── STAFF ──────────────────────────────────────────────────────────────────
+  /staff:
+    get:
+      operationId: listStaff
+      tags: [staff]
+      summary: List all staff
+      parameters:
+        - name: role
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of staff
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/StaffMember"
+    post:
+      operationId: createStaff
+      tags: [staff]
+      summary: Create a staff member
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateStaffBody"
+      responses:
+        "201":
+          description: Staff created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StaffMember"
+
+  /staff/{id}:
+    get:
+      operationId: getStaff
+      tags: [staff]
+      summary: Get staff by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Staff details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StaffMember"
+        "404":
+          description: Not found
+    patch:
+      operationId: updateStaff
+      tags: [staff]
+      summary: Update staff
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateStaffBody"
+      responses:
+        "200":
+          description: Staff updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StaffMember"
+    delete:
+      operationId: deleteStaff
+      tags: [staff]
+      summary: Delete staff
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  # ─── MEMBERSHIP PLANS ───────────────────────────────────────────────────────
+  /memberships:
+    get:
+      operationId: listMemberships
+      tags: [memberships]
+      summary: List membership plans
+      responses:
+        "200":
+          description: List of plans
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MembershipPlan"
+    post:
+      operationId: createMembership
+      tags: [memberships]
+      summary: Create membership plan
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateMembershipBody"
+      responses:
+        "201":
+          description: Plan created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MembershipPlan"
+
+  /memberships/{id}:
+    patch:
+      operationId: updateMembership
+      tags: [memberships]
+      summary: Update membership plan
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateMembershipBody"
+      responses:
+        "200":
+          description: Plan updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MembershipPlan"
+    delete:
+      operationId: deleteMembership
+      tags: [memberships]
+      summary: Delete membership plan
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  # ─── FITNESS CLASSES ────────────────────────────────────────────────────────
+  /classes:
+    get:
+      operationId: listClasses
+      tags: [classes]
+      summary: List fitness classes
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+        - name: trainerId
+          in: query
+          schema:
+            type: ["integer", "null"]
+      responses:
+        "200":
+          description: List of classes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/FitnessClass"
+    post:
+      operationId: createClass
+      tags: [classes]
+      summary: Create a fitness class
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateClassBody"
+      responses:
+        "201":
+          description: Class created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FitnessClass"
+
+  /classes/{id}:
+    get:
+      operationId: getClass
+      tags: [classes]
+      summary: Get class by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Class details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FitnessClass"
+        "404":
+          description: Not found
+    patch:
+      operationId: updateClass
+      tags: [classes]
+      summary: Update class
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateClassBody"
+      responses:
+        "200":
+          description: Class updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FitnessClass"
+    delete:
+      operationId: deleteClass
+      tags: [classes]
+      summary: Delete class
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  # ─── BOOKINGS ───────────────────────────────────────────────────────────────
+  /bookings:
+    get:
+      operationId: listBookings
+      tags: [bookings]
+      summary: List class bookings
+      parameters:
+        - name: memberId
+          in: query
+          schema:
+            type: ["integer", "null"]
+        - name: classId
+          in: query
+          schema:
+            type: ["integer", "null"]
+        - name: status
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of bookings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Booking"
+    post:
+      operationId: createBooking
+      tags: [bookings]
+      summary: Book a class
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateBookingBody"
+      responses:
+        "201":
+          description: Booking created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Booking"
+
+  /bookings/{id}:
+    patch:
+      operationId: updateBooking
+      tags: [bookings]
+      summary: Update booking (cancel, confirm, etc.)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateBookingBody"
+      responses:
+        "200":
+          description: Booking updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Booking"
+    delete:
+      operationId: deleteBooking
+      tags: [bookings]
+      summary: Cancel booking
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Cancelled
+
+  # ─── PERSONAL TRAINING SESSIONS ─────────────────────────────────────────────
+  /sessions:
+    get:
+      operationId: listSessions
+      tags: [sessions]
+      summary: List PT sessions
+      parameters:
+        - name: trainerId
+          in: query
+          schema:
+            type: ["integer", "null"]
+        - name: memberId
+          in: query
+          schema:
+            type: ["integer", "null"]
+        - name: status
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of PT sessions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PTSession"
+    post:
+      operationId: createSession
+      tags: [sessions]
+      summary: Schedule a PT session
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateSessionBody"
+      responses:
+        "201":
+          description: Session scheduled
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PTSession"
+
+  /sessions/{id}:
+    get:
+      operationId: getSession
+      tags: [sessions]
+      summary: Get session by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Session details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PTSession"
+        "404":
+          description: Not found
+    patch:
+      operationId: updateSession
+      tags: [sessions]
+      summary: Update session
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateSessionBody"
+      responses:
+        "200":
+          description: Session updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PTSession"
+    delete:
+      operationId: deleteSession
+      tags: [sessions]
+      summary: Delete session
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  # ─── WORKOUT PLANS ──────────────────────────────────────────────────────────
+  /workouts:
+    get:
+      operationId: listWorkouts
+      tags: [workouts]
+      summary: List workout plans
+      parameters:
+        - name: trainerId
+          in: query
+          schema:
+            type: ["integer", "null"]
+        - name: memberId
+          in: query
+          schema:
+            type: ["integer", "null"]
+      responses:
+        "200":
+          description: List of workout plans
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/WorkoutPlan"
+    post:
+      operationId: createWorkout
+      tags: [workouts]
+      summary: Create a workout plan
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateWorkoutBody"
+      responses:
+        "201":
+          description: Workout plan created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WorkoutPlan"
+
+  /workouts/{id}:
+    get:
+      operationId: getWorkout
+      tags: [workouts]
+      summary: Get workout plan by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Workout plan details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WorkoutPlan"
+        "404":
+          description: Not found
+    patch:
+      operationId: updateWorkout
+      tags: [workouts]
+      summary: Update workout plan
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateWorkoutBody"
+      responses:
+        "200":
+          description: Workout plan updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WorkoutPlan"
+    delete:
+      operationId: deleteWorkout
+      tags: [workouts]
+      summary: Delete workout plan
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  # ─── ATTENDANCE ─────────────────────────────────────────────────────────────
+  /attendance:
+    get:
+      operationId: listAttendance
+      tags: [attendance]
+      summary: List attendance records
+      parameters:
+        - name: memberId
+          in: query
+          schema:
+            type: ["integer", "null"]
+        - name: classId
+          in: query
+          schema:
+            type: ["integer", "null"]
+      responses:
+        "200":
+          description: List of attendance records
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AttendanceRecord"
+    post:
+      operationId: createAttendance
+      tags: [attendance]
+      summary: Record attendance
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateAttendanceBody"
+      responses:
+        "201":
+          description: Attendance recorded
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AttendanceRecord"
+
+  # ─── ANALYTICS ──────────────────────────────────────────────────────────────
+  /analytics/dashboard:
+    get:
+      operationId: getDashboardStats
+      tags: [analytics]
+      summary: Get dashboard stats for the gym owner
+      responses:
+        "200":
+          description: Dashboard statistics
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardStats"
+
+  /analytics/revenue:
+    get:
+      operationId: getRevenueStats
+      tags: [analytics]
+      summary: Get monthly revenue breakdown
+      responses:
+        "200":
+          description: Revenue statistics
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RevenueMonth"
+
+  /analytics/class-popularity:
+    get:
+      operationId: getClassPopularity
+      tags: [analytics]
+      summary: Get class popularity stats
+      responses:
+        "200":
+          description: Class popularity data
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ClassPopularity"
+
+  /analytics/trainer-performance:
+    get:
+      operationId: getTrainerPerformance
+      tags: [analytics]
+      summary: Get trainer performance metrics
+      responses:
+        "200":
+          description: Trainer performance data
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TrainerPerformance"
+
+  /analytics/member-retention:
+    get:
+      operationId: getMemberRetention
+      tags: [analytics]
+      summary: Get member retention data
+      responses:
+        "200":
+          description: Member retention stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MemberRetention"
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +816,715 @@ components:
       required:
         - status
 
+    # ─── MEMBER ─────────────────────────────────────────────────────────────
+    Member:
+      type: object
+      properties:
+        id:
+          type: integer
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        phone:
+          type: ["string", "null"]
+        dateOfBirth:
+          type: ["string", "null"]
+        membershipPlanId:
+          type: ["integer", "null"]
+        membershipPlanName:
+          type: ["string", "null"]
+        status:
+          type: string
+        joinDate:
+          type: string
+        expiryDate:
+          type: ["string", "null"]
+        emergencyContact:
+          type: ["string", "null"]
+        notes:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+      required:
+        - id
+        - firstName
+        - lastName
+        - email
+        - status
+        - joinDate
+        - createdAt
+        - updatedAt
+
+    CreateMemberBody:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        phone:
+          type: ["string", "null"]
+        dateOfBirth:
+          type: ["string", "null"]
+        membershipPlanId:
+          type: ["integer", "null"]
+        status:
+          type: string
+        joinDate:
+          type: string
+        expiryDate:
+          type: ["string", "null"]
+        emergencyContact:
+          type: ["string", "null"]
+        notes:
+          type: ["string", "null"]
+      required:
+        - firstName
+        - lastName
+        - email
+        - status
+        - joinDate
+
+    UpdateMemberBody:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        phone:
+          type: ["string", "null"]
+        dateOfBirth:
+          type: ["string", "null"]
+        membershipPlanId:
+          type: ["integer", "null"]
+        status:
+          type: string
+        expiryDate:
+          type: ["string", "null"]
+        emergencyContact:
+          type: ["string", "null"]
+        notes:
+          type: ["string", "null"]
+
+    # ─── STAFF ──────────────────────────────────────────────────────────────
+    StaffMember:
+      type: object
+      properties:
+        id:
+          type: integer
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        phone:
+          type: ["string", "null"]
+        role:
+          type: string
+        specializations:
+          type: ["string", "null"]
+        hireDate:
+          type: string
+        salary:
+          type: ["number", "null"]
+        status:
+          type: string
+        bio:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+      required:
+        - id
+        - firstName
+        - lastName
+        - email
+        - role
+        - hireDate
+        - status
+        - createdAt
+        - updatedAt
+
+    CreateStaffBody:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        phone:
+          type: ["string", "null"]
+        role:
+          type: string
+        specializations:
+          type: ["string", "null"]
+        hireDate:
+          type: string
+        salary:
+          type: ["number", "null"]
+        status:
+          type: string
+        bio:
+          type: ["string", "null"]
+      required:
+        - firstName
+        - lastName
+        - email
+        - role
+        - hireDate
+        - status
+
+    UpdateStaffBody:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        phone:
+          type: ["string", "null"]
+        role:
+          type: string
+        specializations:
+          type: ["string", "null"]
+        salary:
+          type: ["number", "null"]
+        status:
+          type: string
+        bio:
+          type: ["string", "null"]
+
+    # ─── MEMBERSHIP PLAN ────────────────────────────────────────────────────
+    MembershipPlan:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: ["string", "null"]
+        priceMonthly:
+          type: number
+        durationMonths:
+          type: integer
+        features:
+          type: ["string", "null"]
+        isActive:
+          type: boolean
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+      required:
+        - id
+        - name
+        - priceMonthly
+        - durationMonths
+        - isActive
+        - createdAt
+        - updatedAt
+
+    CreateMembershipBody:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: ["string", "null"]
+        priceMonthly:
+          type: number
+        durationMonths:
+          type: integer
+        features:
+          type: ["string", "null"]
+        isActive:
+          type: boolean
+      required:
+        - name
+        - priceMonthly
+        - durationMonths
+
+    UpdateMembershipBody:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: ["string", "null"]
+        priceMonthly:
+          type: number
+        durationMonths:
+          type: integer
+        features:
+          type: ["string", "null"]
+        isActive:
+          type: boolean
+
+    # ─── FITNESS CLASS ───────────────────────────────────────────────────────
+    FitnessClass:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: ["string", "null"]
+        trainerId:
+          type: ["integer", "null"]
+        trainerName:
+          type: ["string", "null"]
+        capacity:
+          type: integer
+        enrolledCount:
+          type: integer
+        scheduledAt:
+          type: string
+        durationMinutes:
+          type: integer
+        location:
+          type: ["string", "null"]
+        category:
+          type: string
+        status:
+          type: string
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+      required:
+        - id
+        - name
+        - capacity
+        - enrolledCount
+        - scheduledAt
+        - durationMinutes
+        - category
+        - status
+        - createdAt
+        - updatedAt
+
+    CreateClassBody:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: ["string", "null"]
+        trainerId:
+          type: ["integer", "null"]
+        capacity:
+          type: integer
+        scheduledAt:
+          type: string
+        durationMinutes:
+          type: integer
+        location:
+          type: ["string", "null"]
+        category:
+          type: string
+        status:
+          type: string
+      required:
+        - name
+        - capacity
+        - scheduledAt
+        - durationMinutes
+        - category
+        - status
+
+    UpdateClassBody:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: ["string", "null"]
+        trainerId:
+          type: ["integer", "null"]
+        capacity:
+          type: integer
+        scheduledAt:
+          type: string
+        durationMinutes:
+          type: integer
+        location:
+          type: ["string", "null"]
+        category:
+          type: string
+        status:
+          type: string
+
+    # ─── BOOKING ────────────────────────────────────────────────────────────
+    Booking:
+      type: object
+      properties:
+        id:
+          type: integer
+        memberId:
+          type: integer
+        memberName:
+          type: ["string", "null"]
+        classId:
+          type: integer
+        className:
+          type: ["string", "null"]
+        status:
+          type: string
+        bookedAt:
+          type: string
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+      required:
+        - id
+        - memberId
+        - classId
+        - status
+        - bookedAt
+        - createdAt
+        - updatedAt
+
+    CreateBookingBody:
+      type: object
+      properties:
+        memberId:
+          type: integer
+        classId:
+          type: integer
+      required:
+        - memberId
+        - classId
+
+    UpdateBookingBody:
+      type: object
+      properties:
+        status:
+          type: string
+
+    # ─── PT SESSION ─────────────────────────────────────────────────────────
+    PTSession:
+      type: object
+      properties:
+        id:
+          type: integer
+        trainerId:
+          type: integer
+        trainerName:
+          type: ["string", "null"]
+        memberId:
+          type: integer
+        memberName:
+          type: ["string", "null"]
+        scheduledAt:
+          type: string
+        durationMinutes:
+          type: integer
+        status:
+          type: string
+        notes:
+          type: ["string", "null"]
+        location:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+      required:
+        - id
+        - trainerId
+        - memberId
+        - scheduledAt
+        - durationMinutes
+        - status
+        - createdAt
+        - updatedAt
+
+    CreateSessionBody:
+      type: object
+      properties:
+        trainerId:
+          type: integer
+        memberId:
+          type: integer
+        scheduledAt:
+          type: string
+        durationMinutes:
+          type: integer
+        status:
+          type: string
+        notes:
+          type: ["string", "null"]
+        location:
+          type: ["string", "null"]
+      required:
+        - trainerId
+        - memberId
+        - scheduledAt
+        - durationMinutes
+        - status
+
+    UpdateSessionBody:
+      type: object
+      properties:
+        scheduledAt:
+          type: string
+        durationMinutes:
+          type: integer
+        status:
+          type: string
+        notes:
+          type: ["string", "null"]
+        location:
+          type: ["string", "null"]
+
+    # ─── WORKOUT PLAN ───────────────────────────────────────────────────────
+    WorkoutPlan:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: ["string", "null"]
+        trainerId:
+          type: integer
+        trainerName:
+          type: ["string", "null"]
+        memberId:
+          type: integer
+        memberName:
+          type: ["string", "null"]
+        exercises:
+          type: string
+        goal:
+          type: ["string", "null"]
+        durationWeeks:
+          type: integer
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+      required:
+        - id
+        - name
+        - trainerId
+        - memberId
+        - exercises
+        - durationWeeks
+        - createdAt
+        - updatedAt
+
+    CreateWorkoutBody:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: ["string", "null"]
+        trainerId:
+          type: integer
+        memberId:
+          type: integer
+        exercises:
+          type: string
+        goal:
+          type: ["string", "null"]
+        durationWeeks:
+          type: integer
+      required:
+        - name
+        - trainerId
+        - memberId
+        - exercises
+        - durationWeeks
+
+    UpdateWorkoutBody:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: ["string", "null"]
+        exercises:
+          type: string
+        goal:
+          type: ["string", "null"]
+        durationWeeks:
+          type: integer
+
+    # ─── ATTENDANCE ─────────────────────────────────────────────────────────
+    AttendanceRecord:
+      type: object
+      properties:
+        id:
+          type: integer
+        memberId:
+          type: integer
+        memberName:
+          type: ["string", "null"]
+        classId:
+          type: ["integer", "null"]
+        className:
+          type: ["string", "null"]
+        checkedInAt:
+          type: string
+        checkedOutAt:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+      required:
+        - id
+        - memberId
+        - checkedInAt
+        - createdAt
+
+    CreateAttendanceBody:
+      type: object
+      properties:
+        memberId:
+          type: integer
+        classId:
+          type: ["integer", "null"]
+        checkedInAt:
+          type: string
+        checkedOutAt:
+          type: ["string", "null"]
+      required:
+        - memberId
+        - checkedInAt
+
+    # ─── ANALYTICS ──────────────────────────────────────────────────────────
+    DashboardStats:
+      type: object
+      properties:
+        totalMembers:
+          type: integer
+        activeMembers:
+          type: integer
+        totalStaff:
+          type: integer
+        totalTrainers:
+          type: integer
+        classesToday:
+          type: integer
+        sessionsToday:
+          type: integer
+        monthlyRevenue:
+          type: number
+        memberGrowthPercent:
+          type: number
+        newMembersThisMonth:
+          type: integer
+        pendingBookings:
+          type: integer
+        upcomingClasses:
+          type: integer
+        expiringSoonCount:
+          type: integer
+      required:
+        - totalMembers
+        - activeMembers
+        - totalStaff
+        - totalTrainers
+        - classesToday
+        - sessionsToday
+        - monthlyRevenue
+        - memberGrowthPercent
+        - newMembersThisMonth
+        - pendingBookings
+        - upcomingClasses
+        - expiringSoonCount
+
+    RevenueMonth:
+      type: object
+      properties:
+        month:
+          type: string
+        revenue:
+          type: number
+        memberCount:
+          type: integer
+      required:
+        - month
+        - revenue
+        - memberCount
+
+    ClassPopularity:
+      type: object
+      properties:
+        className:
+          type: string
+        category:
+          type: string
+        totalBookings:
+          type: integer
+        avgAttendance:
+          type: number
+      required:
+        - className
+        - category
+        - totalBookings
+        - avgAttendance
+
+    TrainerPerformance:
+      type: object
+      properties:
+        trainerId:
+          type: integer
+        trainerName:
+          type: string
+        totalSessions:
+          type: integer
+        totalClasses:
+          type: integer
+        activeClients:
+          type: integer
+        avgRating:
+          type: number
+      required:
+        - trainerId
+        - trainerName
+        - totalSessions
+        - totalClasses
+        - activeClients
+        - avgRating
+
+    MemberRetention:
+      type: object
+      properties:
+        retentionRate:
+          type: number
+        activeCount:
+          type: integer
+        expiredCount:
+          type: integer
+        cancelledCount:
+          type: integer
+        renewalsThisMonth:
+          type: integer
+      required:
+        - retentionRate
+        - activeCount
+        - expiredCount
+        - cancelledCount
+        - renewalsThisMonth
