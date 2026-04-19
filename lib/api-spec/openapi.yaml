@@ -27,6 +27,14 @@ tags:
     description: Workout plans
   - name: analytics
     description: Dashboard analytics
+  - name: equipment
+    description: Gym equipment management
+  - name: feedback
+    description: Member feedback and reviews
+  - name: payments
+    description: Payment management
+  - name: auth
+    description: Authentication
 
 paths:
   /healthz:
@@ -806,6 +814,374 @@ paths:
               schema:
                 $ref: "#/components/schemas/MemberRetention"
 
+  # ─── AUTH ───────────────────────────────────────────────────────────────────
+  /auth/users:
+    get:
+      operationId: listUsers
+      tags: [auth]
+      summary: List all system users (for login selection)
+      responses:
+        "200":
+          description: List of users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SystemUser"
+    post:
+      operationId: createUser
+      tags: [auth]
+      summary: Create a system user account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateUserBody"
+      responses:
+        "201":
+          description: User created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SystemUser"
+
+  /auth/login:
+    post:
+      operationId: loginUser
+      tags: [auth]
+      summary: Login with username and password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginBody"
+      responses:
+        "200":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginResponse"
+        "401":
+          description: Invalid credentials
+
+  # ─── EQUIPMENT ──────────────────────────────────────────────────────────────
+  /equipment:
+    get:
+      operationId: listEquipment
+      tags: [equipment]
+      summary: List all gym equipment
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+        - name: category
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of equipment
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Equipment"
+    post:
+      operationId: createEquipment
+      tags: [equipment]
+      summary: Add new equipment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateEquipmentBody"
+      responses:
+        "201":
+          description: Equipment added
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Equipment"
+
+  /equipment/{id}:
+    get:
+      operationId: getEquipment
+      tags: [equipment]
+      summary: Get equipment by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Equipment details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Equipment"
+        "404":
+          description: Not found
+    patch:
+      operationId: updateEquipment
+      tags: [equipment]
+      summary: Update equipment
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateEquipmentBody"
+      responses:
+        "200":
+          description: Equipment updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Equipment"
+    delete:
+      operationId: deleteEquipment
+      tags: [equipment]
+      summary: Remove equipment
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  # ─── FEEDBACK ───────────────────────────────────────────────────────────────
+  /feedback:
+    get:
+      operationId: listFeedback
+      tags: [feedback]
+      summary: List all feedback
+      parameters:
+        - name: memberId
+          in: query
+          schema:
+            type: ["integer", "null"]
+        - name: serviceType
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of feedback
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Feedback"
+    post:
+      operationId: createFeedback
+      tags: [feedback]
+      summary: Submit feedback
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateFeedbackBody"
+      responses:
+        "201":
+          description: Feedback submitted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Feedback"
+
+  /feedback/{id}:
+    delete:
+      operationId: deleteFeedback
+      tags: [feedback]
+      summary: Delete feedback
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  # ─── PAYMENTS ───────────────────────────────────────────────────────────────
+  /payments:
+    get:
+      operationId: listPayments
+      tags: [payments]
+      summary: List all payments
+      parameters:
+        - name: memberId
+          in: query
+          schema:
+            type: ["integer", "null"]
+        - name: status
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of payments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Payment"
+    post:
+      operationId: createPayment
+      tags: [payments]
+      summary: Record a payment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreatePaymentBody"
+      responses:
+        "201":
+          description: Payment recorded
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Payment"
+
+  /payments/{id}:
+    patch:
+      operationId: updatePayment
+      tags: [payments]
+      summary: Update payment status
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdatePaymentBody"
+      responses:
+        "200":
+          description: Payment updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Payment"
+
+  # ─── TRAINING HISTORY ───────────────────────────────────────────────────────
+  /members/{id}/training-history:
+    get:
+      operationId: getMemberTrainingHistory
+      tags: [members]
+      summary: Get a member's full training history (sessions + bookings)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Training history
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TrainingHistory"
+
+  # ─── HIRE PT (PT REQUEST) ───────────────────────────────────────────────────
+  /pt-requests:
+    get:
+      operationId: listPTRequests
+      tags: [sessions]
+      summary: List PT hire requests
+      parameters:
+        - name: memberId
+          in: query
+          schema:
+            type: ["integer", "null"]
+        - name: trainerId
+          in: query
+          schema:
+            type: ["integer", "null"]
+        - name: status
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of PT requests
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PTRequest"
+    post:
+      operationId: createPTRequest
+      tags: [sessions]
+      summary: Request to hire a personal trainer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreatePTRequestBody"
+      responses:
+        "201":
+          description: PT request submitted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PTRequest"
+
+  /pt-requests/{id}:
+    patch:
+      operationId: updatePTRequest
+      tags: [sessions]
+      summary: Update PT request (approve/decline)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdatePTRequestBody"
+      responses:
+        "200":
+          description: PT request updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PTRequest"
+
 components:
   schemas:
     HealthStatus:
@@ -1528,3 +1904,379 @@ components:
         - expiredCount
         - cancelledCount
         - renewalsThisMonth
+
+    # ─── AUTH / USERS ────────────────────────────────────────────────────────
+    SystemUser:
+      type: object
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+        fullName:
+          type: string
+        role:
+          type: string
+        memberId:
+          type: ["integer", "null"]
+        staffId:
+          type: ["integer", "null"]
+        createdAt:
+          type: string
+      required:
+        - id
+        - username
+        - fullName
+        - role
+        - createdAt
+
+    CreateUserBody:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+        fullName:
+          type: string
+        role:
+          type: string
+        memberId:
+          type: ["integer", "null"]
+        staffId:
+          type: ["integer", "null"]
+      required:
+        - username
+        - password
+        - fullName
+        - role
+
+    LoginBody:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+      required:
+        - username
+        - password
+
+    LoginResponse:
+      type: object
+      properties:
+        user:
+          $ref: "#/components/schemas/SystemUser"
+        token:
+          type: string
+      required:
+        - user
+        - token
+
+    # ─── EQUIPMENT ──────────────────────────────────────────────────────────
+    Equipment:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        category:
+          type: string
+        brand:
+          type: ["string", "null"]
+        serialNumber:
+          type: ["string", "null"]
+        purchaseDate:
+          type: ["string", "null"]
+        condition:
+          type: string
+        status:
+          type: string
+        location:
+          type: ["string", "null"]
+        lastMaintenanceDate:
+          type: ["string", "null"]
+        nextMaintenanceDate:
+          type: ["string", "null"]
+        notes:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+      required:
+        - id
+        - name
+        - category
+        - condition
+        - status
+        - createdAt
+        - updatedAt
+
+    CreateEquipmentBody:
+      type: object
+      properties:
+        name:
+          type: string
+        category:
+          type: string
+        brand:
+          type: ["string", "null"]
+        serialNumber:
+          type: ["string", "null"]
+        purchaseDate:
+          type: ["string", "null"]
+        condition:
+          type: string
+        status:
+          type: string
+        location:
+          type: ["string", "null"]
+        lastMaintenanceDate:
+          type: ["string", "null"]
+        nextMaintenanceDate:
+          type: ["string", "null"]
+        notes:
+          type: ["string", "null"]
+      required:
+        - name
+        - category
+        - condition
+        - status
+
+    UpdateEquipmentBody:
+      type: object
+      properties:
+        name:
+          type: string
+        category:
+          type: string
+        brand:
+          type: ["string", "null"]
+        serialNumber:
+          type: ["string", "null"]
+        purchaseDate:
+          type: ["string", "null"]
+        condition:
+          type: string
+        status:
+          type: string
+        location:
+          type: ["string", "null"]
+        lastMaintenanceDate:
+          type: ["string", "null"]
+        nextMaintenanceDate:
+          type: ["string", "null"]
+        notes:
+          type: ["string", "null"]
+
+    # ─── FEEDBACK ───────────────────────────────────────────────────────────
+    Feedback:
+      type: object
+      properties:
+        id:
+          type: integer
+        memberId:
+          type: integer
+        memberName:
+          type: ["string", "null"]
+        rating:
+          type: integer
+        comment:
+          type: string
+        serviceType:
+          type: string
+        isPublic:
+          type: boolean
+        createdAt:
+          type: string
+      required:
+        - id
+        - memberId
+        - rating
+        - comment
+        - serviceType
+        - isPublic
+        - createdAt
+
+    CreateFeedbackBody:
+      type: object
+      properties:
+        memberId:
+          type: integer
+        rating:
+          type: integer
+        comment:
+          type: string
+        serviceType:
+          type: string
+        isPublic:
+          type: boolean
+      required:
+        - memberId
+        - rating
+        - comment
+        - serviceType
+
+    # ─── PAYMENTS ───────────────────────────────────────────────────────────
+    Payment:
+      type: object
+      properties:
+        id:
+          type: integer
+        memberId:
+          type: integer
+        memberName:
+          type: ["string", "null"]
+        amount:
+          type: number
+        description:
+          type: string
+        status:
+          type: string
+        paymentMethod:
+          type: ["string", "null"]
+        paymentDate:
+          type: string
+        membershipPlanId:
+          type: ["integer", "null"]
+        membershipPlanName:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+      required:
+        - id
+        - memberId
+        - amount
+        - description
+        - status
+        - paymentDate
+        - createdAt
+
+    CreatePaymentBody:
+      type: object
+      properties:
+        memberId:
+          type: integer
+        amount:
+          type: number
+        description:
+          type: string
+        status:
+          type: string
+        paymentMethod:
+          type: ["string", "null"]
+        paymentDate:
+          type: string
+        membershipPlanId:
+          type: ["integer", "null"]
+      required:
+        - memberId
+        - amount
+        - description
+        - status
+        - paymentDate
+
+    UpdatePaymentBody:
+      type: object
+      properties:
+        status:
+          type: string
+        paymentMethod:
+          type: ["string", "null"]
+
+    # ─── TRAINING HISTORY ───────────────────────────────────────────────────
+    TrainingHistoryItem:
+      type: object
+      properties:
+        id:
+          type: integer
+        type:
+          type: string
+        title:
+          type: string
+        description:
+          type: ["string", "null"]
+        scheduledAt:
+          type: string
+        status:
+          type: string
+        trainerName:
+          type: ["string", "null"]
+        durationMinutes:
+          type: ["integer", "null"]
+      required:
+        - id
+        - type
+        - title
+        - scheduledAt
+        - status
+
+    TrainingHistory:
+      type: object
+      properties:
+        memberId:
+          type: integer
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/TrainingHistoryItem"
+      required:
+        - memberId
+        - items
+
+    # ─── PT REQUEST (HIRE PT) ───────────────────────────────────────────────
+    PTRequest:
+      type: object
+      properties:
+        id:
+          type: integer
+        memberId:
+          type: integer
+        memberName:
+          type: ["string", "null"]
+        trainerId:
+          type: ["integer", "null"]
+        trainerName:
+          type: ["string", "null"]
+        message:
+          type: ["string", "null"]
+        preferredSchedule:
+          type: ["string", "null"]
+        status:
+          type: string
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+      required:
+        - id
+        - memberId
+        - status
+        - createdAt
+        - updatedAt
+
+    CreatePTRequestBody:
+      type: object
+      properties:
+        memberId:
+          type: integer
+        trainerId:
+          type: ["integer", "null"]
+        message:
+          type: ["string", "null"]
+        preferredSchedule:
+          type: ["string", "null"]
+      required:
+        - memberId
+
+    UpdatePTRequestBody:
+      type: object
+      properties:
+        trainerId:
+          type: ["integer", "null"]
+        status:
+          type: string
+        message:
+          type: ["string", "null"]

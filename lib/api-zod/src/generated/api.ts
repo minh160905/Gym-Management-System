@@ -753,3 +753,344 @@ export const GetMemberRetentionResponse = zod.object({
   cancelledCount: zod.number(),
   renewalsThisMonth: zod.number(),
 });
+
+/**
+ * @summary List all system users (for login selection)
+ */
+export const ListUsersResponseItem = zod.object({
+  id: zod.number(),
+  username: zod.string(),
+  fullName: zod.string(),
+  role: zod.string(),
+  memberId: zod.number().nullish(),
+  staffId: zod.number().nullish(),
+  createdAt: zod.string(),
+});
+export const ListUsersResponse = zod.array(ListUsersResponseItem);
+
+/**
+ * @summary Create a system user account
+ */
+export const CreateUserBody = zod.object({
+  username: zod.string(),
+  password: zod.string(),
+  fullName: zod.string(),
+  role: zod.string(),
+  memberId: zod.number().nullish(),
+  staffId: zod.number().nullish(),
+});
+
+/**
+ * @summary Login with username and password
+ */
+export const LoginUserBody = zod.object({
+  username: zod.string(),
+  password: zod.string(),
+});
+
+export const LoginUserResponse = zod.object({
+  user: zod.object({
+    id: zod.number(),
+    username: zod.string(),
+    fullName: zod.string(),
+    role: zod.string(),
+    memberId: zod.number().nullish(),
+    staffId: zod.number().nullish(),
+    createdAt: zod.string(),
+  }),
+  token: zod.string(),
+});
+
+/**
+ * @summary List all gym equipment
+ */
+export const ListEquipmentQueryParams = zod.object({
+  status: zod.coerce.string().optional(),
+  category: zod.coerce.string().optional(),
+});
+
+export const ListEquipmentResponseItem = zod.object({
+  id: zod.number(),
+  name: zod.string(),
+  category: zod.string(),
+  brand: zod.string().nullish(),
+  serialNumber: zod.string().nullish(),
+  purchaseDate: zod.string().nullish(),
+  condition: zod.string(),
+  status: zod.string(),
+  location: zod.string().nullish(),
+  lastMaintenanceDate: zod.string().nullish(),
+  nextMaintenanceDate: zod.string().nullish(),
+  notes: zod.string().nullish(),
+  createdAt: zod.string(),
+  updatedAt: zod.string(),
+});
+export const ListEquipmentResponse = zod.array(ListEquipmentResponseItem);
+
+/**
+ * @summary Add new equipment
+ */
+export const CreateEquipmentBody = zod.object({
+  name: zod.string(),
+  category: zod.string(),
+  brand: zod.string().nullish(),
+  serialNumber: zod.string().nullish(),
+  purchaseDate: zod.string().nullish(),
+  condition: zod.string(),
+  status: zod.string(),
+  location: zod.string().nullish(),
+  lastMaintenanceDate: zod.string().nullish(),
+  nextMaintenanceDate: zod.string().nullish(),
+  notes: zod.string().nullish(),
+});
+
+/**
+ * @summary Get equipment by ID
+ */
+export const GetEquipmentParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+export const GetEquipmentResponse = zod.object({
+  id: zod.number(),
+  name: zod.string(),
+  category: zod.string(),
+  brand: zod.string().nullish(),
+  serialNumber: zod.string().nullish(),
+  purchaseDate: zod.string().nullish(),
+  condition: zod.string(),
+  status: zod.string(),
+  location: zod.string().nullish(),
+  lastMaintenanceDate: zod.string().nullish(),
+  nextMaintenanceDate: zod.string().nullish(),
+  notes: zod.string().nullish(),
+  createdAt: zod.string(),
+  updatedAt: zod.string(),
+});
+
+/**
+ * @summary Update equipment
+ */
+export const UpdateEquipmentParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+export const UpdateEquipmentBody = zod.object({
+  name: zod.string().optional(),
+  category: zod.string().optional(),
+  brand: zod.string().nullish(),
+  serialNumber: zod.string().nullish(),
+  purchaseDate: zod.string().nullish(),
+  condition: zod.string().optional(),
+  status: zod.string().optional(),
+  location: zod.string().nullish(),
+  lastMaintenanceDate: zod.string().nullish(),
+  nextMaintenanceDate: zod.string().nullish(),
+  notes: zod.string().nullish(),
+});
+
+export const UpdateEquipmentResponse = zod.object({
+  id: zod.number(),
+  name: zod.string(),
+  category: zod.string(),
+  brand: zod.string().nullish(),
+  serialNumber: zod.string().nullish(),
+  purchaseDate: zod.string().nullish(),
+  condition: zod.string(),
+  status: zod.string(),
+  location: zod.string().nullish(),
+  lastMaintenanceDate: zod.string().nullish(),
+  nextMaintenanceDate: zod.string().nullish(),
+  notes: zod.string().nullish(),
+  createdAt: zod.string(),
+  updatedAt: zod.string(),
+});
+
+/**
+ * @summary Remove equipment
+ */
+export const DeleteEquipmentParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+/**
+ * @summary List all feedback
+ */
+export const ListFeedbackQueryParams = zod.object({
+  memberId: zod.coerce.number().nullish(),
+  serviceType: zod.coerce.string().optional(),
+});
+
+export const ListFeedbackResponseItem = zod.object({
+  id: zod.number(),
+  memberId: zod.number(),
+  memberName: zod.string().nullish(),
+  rating: zod.number(),
+  comment: zod.string(),
+  serviceType: zod.string(),
+  isPublic: zod.boolean(),
+  createdAt: zod.string(),
+});
+export const ListFeedbackResponse = zod.array(ListFeedbackResponseItem);
+
+/**
+ * @summary Submit feedback
+ */
+export const CreateFeedbackBody = zod.object({
+  memberId: zod.number(),
+  rating: zod.number(),
+  comment: zod.string(),
+  serviceType: zod.string(),
+  isPublic: zod.boolean().optional(),
+});
+
+/**
+ * @summary Delete feedback
+ */
+export const DeleteFeedbackParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+/**
+ * @summary List all payments
+ */
+export const ListPaymentsQueryParams = zod.object({
+  memberId: zod.coerce.number().nullish(),
+  status: zod.coerce.string().optional(),
+});
+
+export const ListPaymentsResponseItem = zod.object({
+  id: zod.number(),
+  memberId: zod.number(),
+  memberName: zod.string().nullish(),
+  amount: zod.number(),
+  description: zod.string(),
+  status: zod.string(),
+  paymentMethod: zod.string().nullish(),
+  paymentDate: zod.string(),
+  membershipPlanId: zod.number().nullish(),
+  membershipPlanName: zod.string().nullish(),
+  createdAt: zod.string(),
+});
+export const ListPaymentsResponse = zod.array(ListPaymentsResponseItem);
+
+/**
+ * @summary Record a payment
+ */
+export const CreatePaymentBody = zod.object({
+  memberId: zod.number(),
+  amount: zod.number(),
+  description: zod.string(),
+  status: zod.string(),
+  paymentMethod: zod.string().nullish(),
+  paymentDate: zod.string(),
+  membershipPlanId: zod.number().nullish(),
+});
+
+/**
+ * @summary Update payment status
+ */
+export const UpdatePaymentParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+export const UpdatePaymentBody = zod.object({
+  status: zod.string().optional(),
+  paymentMethod: zod.string().nullish(),
+});
+
+export const UpdatePaymentResponse = zod.object({
+  id: zod.number(),
+  memberId: zod.number(),
+  memberName: zod.string().nullish(),
+  amount: zod.number(),
+  description: zod.string(),
+  status: zod.string(),
+  paymentMethod: zod.string().nullish(),
+  paymentDate: zod.string(),
+  membershipPlanId: zod.number().nullish(),
+  membershipPlanName: zod.string().nullish(),
+  createdAt: zod.string(),
+});
+
+/**
+ * @summary Get a member's full training history (sessions + bookings)
+ */
+export const GetMemberTrainingHistoryParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+export const GetMemberTrainingHistoryResponse = zod.object({
+  memberId: zod.number(),
+  items: zod.array(
+    zod.object({
+      id: zod.number(),
+      type: zod.string(),
+      title: zod.string(),
+      description: zod.string().nullish(),
+      scheduledAt: zod.string(),
+      status: zod.string(),
+      trainerName: zod.string().nullish(),
+      durationMinutes: zod.number().nullish(),
+    }),
+  ),
+});
+
+/**
+ * @summary List PT hire requests
+ */
+export const ListPTRequestsQueryParams = zod.object({
+  memberId: zod.coerce.number().nullish(),
+  trainerId: zod.coerce.number().nullish(),
+  status: zod.coerce.string().optional(),
+});
+
+export const ListPTRequestsResponseItem = zod.object({
+  id: zod.number(),
+  memberId: zod.number(),
+  memberName: zod.string().nullish(),
+  trainerId: zod.number().nullish(),
+  trainerName: zod.string().nullish(),
+  message: zod.string().nullish(),
+  preferredSchedule: zod.string().nullish(),
+  status: zod.string(),
+  createdAt: zod.string(),
+  updatedAt: zod.string(),
+});
+export const ListPTRequestsResponse = zod.array(ListPTRequestsResponseItem);
+
+/**
+ * @summary Request to hire a personal trainer
+ */
+export const CreatePTRequestBody = zod.object({
+  memberId: zod.number(),
+  trainerId: zod.number().nullish(),
+  message: zod.string().nullish(),
+  preferredSchedule: zod.string().nullish(),
+});
+
+/**
+ * @summary Update PT request (approve/decline)
+ */
+export const UpdatePTRequestParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+export const UpdatePTRequestBody = zod.object({
+  trainerId: zod.number().nullish(),
+  status: zod.string().optional(),
+  message: zod.string().nullish(),
+});
+
+export const UpdatePTRequestResponse = zod.object({
+  id: zod.number(),
+  memberId: zod.number(),
+  memberName: zod.string().nullish(),
+  trainerId: zod.number().nullish(),
+  trainerName: zod.string().nullish(),
+  message: zod.string().nullish(),
+  preferredSchedule: zod.string().nullish(),
+  status: zod.string(),
+  createdAt: zod.string(),
+  updatedAt: zod.string(),
+});

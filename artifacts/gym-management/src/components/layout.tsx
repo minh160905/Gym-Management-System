@@ -13,6 +13,11 @@ import {
   LogOut,
   Building2,
   Menu,
+  Wrench,
+  MessageSquare,
+  History,
+  DollarSign,
+  UserPlus
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -28,7 +33,7 @@ import {
 } from "@/components/ui/sidebar";
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
-  const { role, logout } = useAuth();
+  const { role, fullName, logout } = useAuth();
   const [location] = useLocation();
 
   if (!role) {
@@ -48,6 +53,8 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
       { name: "Members", href: "/manager/members", icon: Users },
       { name: "Classes", href: "/manager/classes", icon: Calendar },
       { name: "Attendance", href: "/manager/attendance", icon: ClipboardCheck },
+      { name: "Equipment", href: "/manager/equipment", icon: Wrench },
+      { name: "Feedback", href: "/manager/feedback", icon: MessageSquare },
     ],
     trainer: [
       { name: "Dashboard", href: "/trainer/dashboard", icon: LayoutDashboard },
@@ -60,10 +67,14 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
       { name: "Classes", href: "/customer/classes", icon: Calendar },
       { name: "My Bookings", href: "/customer/bookings", icon: Clock },
       { name: "Membership", href: "/customer/membership", icon: CreditCard },
+      { name: "Hire PT", href: "/customer/hire-pt", icon: UserPlus },
+      { name: "Payments", href: "/customer/payments", icon: DollarSign },
+      { name: "Training History", href: "/customer/training-history", icon: History },
+      { name: "Feedback", href: "/customer/feedback", icon: MessageSquare },
     ],
   };
 
-  const items = navItems[role] || [];
+  const items = navItems[role as keyof typeof navItems] || [];
 
   return (
     <SidebarProvider>
@@ -96,7 +107,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           <SidebarFooter className="p-4 border-t border-border">
             <div className="flex flex-col gap-2">
               <div className="text-xs font-medium uppercase tracking-wider text-muted-foreground mb-2">
-                Logged in as <span className="text-foreground capitalize">{role}</span>
+                {fullName ? `Logged in as ${fullName}` : `Logged in as ${role}`}
               </div>
               <Button
                 variant="outline"
@@ -106,7 +117,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                 }}
               >
                 <LogOut className="w-4 h-4 mr-2" />
-                Switch Role
+                Sign Out
               </Button>
             </div>
           </SidebarFooter>

@@ -1,6 +1,6 @@
 import { Router, type IRouter } from "express";
 import { eq, sql } from "drizzle-orm";
-import { db, membersTable, membershipPlansTable } from "@workspace/db";
+import { db, membersTable, membershipPlansTable, ptSessionsTable, bookingsTable, classesTable, staffTable } from "@workspace/db";
 import {
   ListMembersQueryParams,
   ListMembersResponse,
@@ -163,6 +163,70 @@ router.delete("/members/:id", async (req, res): Promise<void> => {
   }
 
   res.sendStatus(204);
+});
+
+router.get("/members/:id/training-history", async (req, res): Promise<void> => {
+  const id = parseInt(req.params.id);
+  const [member] = await db.select().from(membersTable).where(eq(membersTable.id, id));
+  if (!member) { res.status(404).json({ error: "Member not found" }); return; }
+
+  const sessions = await db
+    .select({
+      id: ptSessionsTable.id,
+      scheduledAt: ptSessionsTable.scheduledAt,
+      durationMinutes: ptSessionsTable.durationMinutes,
+      status: ptSessionsTable.status,
+      notes: ptSessionsTable.notes,
+      trainerFirstName: staffTable.firstName,
+      trainerLastName: staffTable.lastName,
+    })
+    .from(ptSessionsTable)
+    .leftJoin(staffTable, eq(ptSessionsTable.trainerId, staffTable.id))
+    .where(eq(ptSessionsTable.memberId, id));
+
+  const bookings = await db
+    .select({
+      id: bookingsTable.id,
+      bookedAt: bookingsTable.bookedAt,
+      status: bookingsTable.status,
+      className: classesTable.name,
+      classDuration: classesTable.durationMinutes,
+      classScheduledAt: classesTable.scheduledAt,
+      trainerFirstName: staffTable.firstName,
+      trainerLastName: staffTable.lastName,
+    })
+    .from(bookingsTable)
+    .leftJoin(classesTable, eq(bookingsTable.classId, classesTable.id))
+    .leftJoin(staffTable, eq(classesTable.trainerId, staffTable.id))
+    .where(eq(bookingsTable.memberId, id));
+
+  const sessionItems = sessions.map((s) => ({
+    id: s.id,
+    type: "session",
+    title: "Personal Training Session",
+    description: s.notes ?? null,
+    scheduledAt: s.scheduledAt,
+    status: s.status,
+    trainerName: s.trainerFirstName ? `${s.trainerFirstName} ${s.trainerLastName}` : null,
+    durationMinutes: s.durationMinutes,
+  }));
+
+  const bookingItems = bookings.map((b) => ({
+    id: b.id,
+    type: "class",
+    title: b.className ?? "Fitness Class",
+    description: null,
+    scheduledAt: b.classScheduledAt ?? b.bookedAt,
+    status: b.status,
+    trainerName: b.trainerFirstName ? `${b.trainerFirstName} ${b.trainerLastName}` : null,
+    durationMinutes: b.classDuration ?? null,
+  }));
+
+  const items = [...sessionItems, ...bookingItems].sort((a, b) =>
+    new Date(b.scheduledAt).getTime() - new Date(a.scheduledAt).getTime()
+  );
+
+  res.json({ memberId: id, items });
 });
 
 export default router;

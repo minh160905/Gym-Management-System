@@ -387,6 +387,216 @@ export interface MemberRetention {
   renewalsThisMonth: number;
 }
 
+export interface SystemUser {
+  id: number;
+  username: string;
+  fullName: string;
+  role: string;
+  /** @nullable */
+  memberId?: number | null;
+  /** @nullable */
+  staffId?: number | null;
+  createdAt: string;
+}
+
+export interface CreateUserBody {
+  username: string;
+  password: string;
+  fullName: string;
+  role: string;
+  /** @nullable */
+  memberId?: number | null;
+  /** @nullable */
+  staffId?: number | null;
+}
+
+export interface LoginBody {
+  username: string;
+  password: string;
+}
+
+export interface LoginResponse {
+  user: SystemUser;
+  token: string;
+}
+
+export interface Equipment {
+  id: number;
+  name: string;
+  category: string;
+  /** @nullable */
+  brand?: string | null;
+  /** @nullable */
+  serialNumber?: string | null;
+  /** @nullable */
+  purchaseDate?: string | null;
+  condition: string;
+  status: string;
+  /** @nullable */
+  location?: string | null;
+  /** @nullable */
+  lastMaintenanceDate?: string | null;
+  /** @nullable */
+  nextMaintenanceDate?: string | null;
+  /** @nullable */
+  notes?: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateEquipmentBody {
+  name: string;
+  category: string;
+  /** @nullable */
+  brand?: string | null;
+  /** @nullable */
+  serialNumber?: string | null;
+  /** @nullable */
+  purchaseDate?: string | null;
+  condition: string;
+  status: string;
+  /** @nullable */
+  location?: string | null;
+  /** @nullable */
+  lastMaintenanceDate?: string | null;
+  /** @nullable */
+  nextMaintenanceDate?: string | null;
+  /** @nullable */
+  notes?: string | null;
+}
+
+export interface UpdateEquipmentBody {
+  name?: string;
+  category?: string;
+  /** @nullable */
+  brand?: string | null;
+  /** @nullable */
+  serialNumber?: string | null;
+  /** @nullable */
+  purchaseDate?: string | null;
+  condition?: string;
+  status?: string;
+  /** @nullable */
+  location?: string | null;
+  /** @nullable */
+  lastMaintenanceDate?: string | null;
+  /** @nullable */
+  nextMaintenanceDate?: string | null;
+  /** @nullable */
+  notes?: string | null;
+}
+
+export interface Feedback {
+  id: number;
+  memberId: number;
+  /** @nullable */
+  memberName?: string | null;
+  rating: number;
+  comment: string;
+  serviceType: string;
+  isPublic: boolean;
+  createdAt: string;
+}
+
+export interface CreateFeedbackBody {
+  memberId: number;
+  rating: number;
+  comment: string;
+  serviceType: string;
+  isPublic?: boolean;
+}
+
+export interface Payment {
+  id: number;
+  memberId: number;
+  /** @nullable */
+  memberName?: string | null;
+  amount: number;
+  description: string;
+  status: string;
+  /** @nullable */
+  paymentMethod?: string | null;
+  paymentDate: string;
+  /** @nullable */
+  membershipPlanId?: number | null;
+  /** @nullable */
+  membershipPlanName?: string | null;
+  createdAt: string;
+}
+
+export interface CreatePaymentBody {
+  memberId: number;
+  amount: number;
+  description: string;
+  status: string;
+  /** @nullable */
+  paymentMethod?: string | null;
+  paymentDate: string;
+  /** @nullable */
+  membershipPlanId?: number | null;
+}
+
+export interface UpdatePaymentBody {
+  status?: string;
+  /** @nullable */
+  paymentMethod?: string | null;
+}
+
+export interface TrainingHistoryItem {
+  id: number;
+  type: string;
+  title: string;
+  /** @nullable */
+  description?: string | null;
+  scheduledAt: string;
+  status: string;
+  /** @nullable */
+  trainerName?: string | null;
+  /** @nullable */
+  durationMinutes?: number | null;
+}
+
+export interface TrainingHistory {
+  memberId: number;
+  items: TrainingHistoryItem[];
+}
+
+export interface PTRequest {
+  id: number;
+  memberId: number;
+  /** @nullable */
+  memberName?: string | null;
+  /** @nullable */
+  trainerId?: number | null;
+  /** @nullable */
+  trainerName?: string | null;
+  /** @nullable */
+  message?: string | null;
+  /** @nullable */
+  preferredSchedule?: string | null;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreatePTRequestBody {
+  memberId: number;
+  /** @nullable */
+  trainerId?: number | null;
+  /** @nullable */
+  message?: string | null;
+  /** @nullable */
+  preferredSchedule?: string | null;
+}
+
+export interface UpdatePTRequestBody {
+  /** @nullable */
+  trainerId?: number | null;
+  status?: string;
+  /** @nullable */
+  message?: string | null;
+}
+
 export type ListMembersParams = {
   status?: string;
   /**
@@ -451,4 +661,37 @@ export type ListAttendanceParams = {
    * @nullable
    */
   classId?: number | null;
+};
+
+export type ListEquipmentParams = {
+  status?: string;
+  category?: string;
+};
+
+export type ListFeedbackParams = {
+  /**
+   * @nullable
+   */
+  memberId?: number | null;
+  serviceType?: string;
+};
+
+export type ListPaymentsParams = {
+  /**
+   * @nullable
+   */
+  memberId?: number | null;
+  status?: string;
+};
+
+export type ListPTRequestsParams = {
+  /**
+   * @nullable
+   */
+  memberId?: number | null;
+  /**
+   * @nullable
+   */
+  trainerId?: number | null;
+  status?: string;
 };

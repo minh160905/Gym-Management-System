@@ -5,3 +5,8 @@ export * from "./bookings";
 export * from "./sessions";
 export * from "./workouts";
 export * from "./attendance";
+export * from "./users";
+export * from "./equipment";
+export * from "./feedback";
+export * from "./payments";
+export * from "./pt_requests";

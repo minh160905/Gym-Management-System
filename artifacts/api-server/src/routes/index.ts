@@ -9,6 +9,11 @@ import sessionsRouter from "./sessions";
 import workoutsRouter from "./workouts";
 import attendanceRouter from "./attendance";
 import analyticsRouter from "./analytics";
+import authRouter from "./auth";
+import equipmentRouter from "./equipment";
+import feedbackRouter from "./feedback";
+import paymentsRouter from "./payments";
+import ptRequestsRouter from "./ptRequests";
 
 const router: IRouter = Router();
 
@@ -22,5 +27,10 @@ router.use(sessionsRouter);
 router.use(workoutsRouter);
 router.use(attendanceRouter);
 router.use(analyticsRouter);
+router.use(authRouter);
+router.use(equipmentRouter);
+router.use(feedbackRouter);
+router.use(paymentsRouter);
+router.use(ptRequestsRouter);
 
 export default router;

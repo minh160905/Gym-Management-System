@@ -21,6 +21,8 @@ import ManagerDashboard from "@/pages/manager/dashboard";
 import ManagerMembers from "@/pages/manager/members";
 import ManagerClasses from "@/pages/manager/classes";
 import ManagerAttendance from "@/pages/manager/attendance";
+import ManagerEquipment from "@/pages/manager/equipment";
+import ManagerFeedback from "@/pages/manager/feedback";
 
 // Trainer Pages
 import TrainerDashboard from "@/pages/trainer/dashboard";
@@ -33,6 +35,10 @@ import CustomerDashboard from "@/pages/customer/dashboard";
 import CustomerClasses from "@/pages/customer/classes";
 import CustomerBookings from "@/pages/customer/bookings";
 import CustomerMembership from "@/pages/customer/membership";
+import CustomerHirePT from "@/pages/customer/hire-pt";
+import CustomerPayments from "@/pages/customer/payments";
+import CustomerTrainingHistory from "@/pages/customer/training-history";
+import CustomerFeedback from "@/pages/customer/feedback";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -60,6 +66,8 @@ function Router() {
       <Route path="/manager/members" component={ManagerMembers} />
       <Route path="/manager/classes" component={ManagerClasses} />
       <Route path="/manager/attendance" component={ManagerAttendance} />
+      <Route path="/manager/equipment" component={ManagerEquipment} />
+      <Route path="/manager/feedback" component={ManagerFeedback} />
 
       {/* Trainer Routes */}
       <Route path="/trainer/dashboard" component={TrainerDashboard} />
@@ -72,6 +80,10 @@ function Router() {
       <Route path="/customer/classes" component={CustomerClasses} />
       <Route path="/customer/bookings" component={CustomerBookings} />
       <Route path="/customer/membership" component={CustomerMembership} />
+      <Route path="/customer/hire-pt" component={CustomerHirePT} />
+      <Route path="/customer/payments" component={CustomerPayments} />
+      <Route path="/customer/training-history" component={CustomerTrainingHistory} />
+      <Route path="/customer/feedback" component={CustomerFeedback} />
 
       <Route component={NotFound} />
     </Switch>
