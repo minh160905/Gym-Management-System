@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useListMembers, useListPTRequests, useUpdatePTRequest, getListPTRequestsQueryKey } from "@workspace/api-client-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -7,10 +8,12 @@ import { format } from "date-fns";
 import { useAuth } from "@/lib/auth";
 import { useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
-import { CheckCircle2, XCircle } from "lucide-react";
+import { CheckCircle2, XCircle, Eye } from "lucide-react";
+import { MemberDetailDialog } from "@/components/member-detail-dialog";
 
 export default function TrainerClients() {
   const { staffId } = useAuth();
+  const [selectedMemberId, setSelectedMemberId] = useState<number | null>(null);
   const { data: members, isLoading: membersLoading } = useListMembers();
   const { data: ptRequests, isLoading: ptLoading } = useListPTRequests({ trainerId: staffId });
   const updateReq = useUpdatePTRequest();
@@ -88,19 +91,26 @@ export default function TrainerClients() {
             </TableHeader>
             <TableBody>
               {membersLoading ? (
-                <TableRow><TableCell colSpan={4} className="text-center py-8">Loading...</TableCell></TableRow>
+                <TableRow><TableCell colSpan={5} className="text-center py-8">Loading...</TableCell></TableRow>
               ) : members?.map((client) => (
                 <TableRow key={client.id}>
                   <TableCell className="font-medium">{client.firstName} {client.lastName}</TableCell>
                   <TableCell>{client.email}</TableCell>
                   <TableCell className="text-muted-foreground">Not set</TableCell>
                   <TableCell>{format(new Date(client.joinDate), 'MMM d, yyyy')}</TableCell>
+                  <TableCell className="text-right">
+                    <Button variant="outline" size="sm" onClick={() => setSelectedMemberId(client.id)}>
+                      <Eye className="w-4 h-4 mr-1" /> View
+                    </Button>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
         </CardContent>
       </Card>
+
+      <MemberDetailDialog memberId={selectedMemberId} onClose={() => setSelectedMemberId(null)} />
     </div>
   );
 }

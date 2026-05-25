@@ -8,12 +8,14 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { Plus, Search, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { Plus, Search, MoreHorizontal, Pencil, Trash2, Eye } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { format } from "date-fns";
+import { MemberDetailDialog } from "@/components/member-detail-dialog";
 
 export default function OwnerMembers() {
   const [search, setSearch] = useState("");
+  const [selectedMemberId, setSelectedMemberId] = useState<number | null>(null);
   const { data: members, isLoading } = useListMembers();
   const queryClient = useQueryClient();
 
@@ -108,6 +110,9 @@ export default function OwnerMembers() {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
+                        <DropdownMenuItem onClick={() => setSelectedMemberId(member.id)}>
+                          <Eye className="w-4 h-4 mr-2" /> View Details
+                        </DropdownMenuItem>
                         <DropdownMenuItem><Pencil className="w-4 h-4 mr-2" /> Edit</DropdownMenuItem>
                         <DropdownMenuItem className="text-destructive"><Trash2 className="w-4 h-4 mr-2" /> Delete</DropdownMenuItem>
                       </DropdownMenuContent>
@@ -119,6 +124,8 @@ export default function OwnerMembers() {
           </Table>
         </CardContent>
       </Card>
+
+      <MemberDetailDialog memberId={selectedMemberId} onClose={() => setSelectedMemberId(null)} />
     </div>
   );
 }

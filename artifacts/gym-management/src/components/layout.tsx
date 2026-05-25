@@ -34,7 +34,7 @@ import {
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
   const { role, fullName, logout } = useAuth();
-  const [location] = useLocation();
+  const [location, navigate] = useLocation();
 
   if (!role) {
     return <>{children}</>;
@@ -114,6 +114,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                 className="w-full justify-start"
                 onClick={() => {
                   logout();
+                  navigate("/");
                 }}
               >
                 <LogOut className="w-4 h-4 mr-2" />

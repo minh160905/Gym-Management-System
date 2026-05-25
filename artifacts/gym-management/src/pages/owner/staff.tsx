@@ -1,12 +1,15 @@
 import { useListStaff } from "@workspace/api-client-react";
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Plus } from "lucide-react";
+import { Plus, Eye } from "lucide-react";
+import { TrainerDetailDialog } from "@/components/trainer-detail-dialog";
 
 export default function OwnerStaff() {
   const { data: staff, isLoading } = useListStaff();
+  const [selectedStaffId, setSelectedStaffId] = useState<number | null>(null);
 
   return (
     <div className="space-y-6">
@@ -46,8 +49,10 @@ export default function OwnerStaff() {
                     <Badge variant={member.status === 'active' ? 'default' : 'secondary'}>{member.status}</Badge>
                   </TableCell>
                   <TableCell>{member.salary ? `$${member.salary.toLocaleString()}` : '-'}</TableCell>
-                  <TableCell className="text-right">
-                    <Button variant="outline" size="sm">Edit</Button>
+                  <TableCell className="text-right space-x-2">
+                    <Button variant="outline" size="sm" onClick={() => setSelectedStaffId(member.id)}>
+                      <Eye className="w-4 h-4 mr-1" /> View
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))}
@@ -55,6 +60,8 @@ export default function OwnerStaff() {
           </Table>
         </CardContent>
       </Card>
+
+      <TrainerDetailDialog staffId={selectedStaffId} onClose={() => setSelectedStaffId(null)} />
     </div>
   );
 }
