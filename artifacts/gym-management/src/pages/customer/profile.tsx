@@ -1,12 +1,25 @@
-import { useGetMember, useListMemberships, useListPayments, useListUsers } from "@workspace/api-client-react";
+import { useState } from "react";
+import {
+  useGetMember, useListMemberships, useListPayments, useListUsers,
+  useUpdateMember, getGetMemberQueryKey
+} from "@workspace/api-client-react";
 import { useAuth } from "@/lib/auth";
+import { useQueryClient } from "@tanstack/react-query";
+import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter
+} from "@/components/ui/dialog";
 import { format } from "date-fns";
 import {
   User, Mail, Phone, Calendar, CreditCard, Lock, AtSign, Shield,
-  AlertCircle, FileText, DollarSign
+  AlertCircle, FileText, DollarSign, Pencil
 } from "lucide-react";
 
 function InfoRow({ icon: Icon, label, value }: { icon: any; label: string; value?: string | null }) {
@@ -26,25 +39,62 @@ function InfoRow({ icon: Icon, label, value }: { icon: any; label: string; value
 
 export default function CustomerProfile() {
   const { memberId, userId } = useAuth();
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+
   const { data: member, isLoading: memberLoading } = useGetMember(memberId ?? 0, { query: { enabled: !!memberId } });
   const { data: plans } = useListMemberships();
   const { data: payments } = useListPayments({ memberId: memberId ?? undefined });
   const { data: users } = useListUsers();
+  const updateMember = useUpdateMember();
+
+  const [editOpen, setEditOpen] = useState(false);
+  const [form, setForm] = useState({ phone: "", emergencyContact: "", notes: "" });
+  const [saving, setSaving] = useState(false);
 
   const plan = plans?.find((p) => p.id === member?.membershipPlanId);
   const account = users?.find((u) => u.id === userId);
 
+  function openEdit() {
+    setForm({
+      phone: member?.phone ?? "",
+      emergencyContact: member?.emergencyContact ?? "",
+      notes: member?.notes ?? "",
+    });
+    setEditOpen(true);
+  }
+
+  async function handleSave() {
+    if (!memberId) return;
+    setSaving(true);
+    try {
+      await updateMember.mutateAsync({ id: memberId, data: form });
+      await queryClient.invalidateQueries({ queryKey: getGetMemberQueryKey(memberId) });
+      setEditOpen(false);
+      toast({ title: "Profile updated", description: "Your information has been saved." });
+    } catch {
+      toast({ title: "Update failed", description: "Could not save your changes.", variant: "destructive" });
+    } finally {
+      setSaving(false);
+    }
+  }
+
   if (memberLoading) {
-    return (
-      <div className="flex items-center justify-center h-64 text-muted-foreground">Loading your profile...</div>
-    );
+    return <div className="flex items-center justify-center h-64 text-muted-foreground">Loading your profile...</div>;
   }
 
   return (
     <div className="space-y-6 max-w-3xl">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">My Profile</h1>
-        <p className="text-muted-foreground mt-2">Your personal information and account details.</p>
+      <div className="flex items-start justify-between">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">My Profile</h1>
+          <p className="text-muted-foreground mt-2">Your personal information and account details.</p>
+        </div>
+        {member && (
+          <Button onClick={openEdit} variant="outline">
+            <Pencil className="w-4 h-4 mr-2" /> Edit Profile
+          </Button>
+        )}
       </div>
 
       {/* Profile Header */}
@@ -185,6 +235,50 @@ export default function CustomerProfile() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Edit Dialog */}
+      <Dialog open={editOpen} onOpenChange={(open) => !open && setEditOpen(false)}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Pencil className="w-4 h-4 text-primary" /> Edit Profile
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-2">
+            <div className="space-y-2">
+              <Label>Phone Number</Label>
+              <Input
+                placeholder="+1 (555) 000-0000"
+                value={form.phone}
+                onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Emergency Contact</Label>
+              <Input
+                placeholder="Name and phone number"
+                value={form.emergencyContact}
+                onChange={(e) => setForm((f) => ({ ...f, emergencyContact: e.target.value }))}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Notes</Label>
+              <Textarea
+                placeholder="Any additional notes..."
+                rows={3}
+                value={form.notes}
+                onChange={(e) => setForm((f) => ({ ...f, notes: e.target.value }))}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditOpen(false)} disabled={saving}>Cancel</Button>
+            <Button onClick={handleSave} disabled={saving}>
+              {saving ? "Saving..." : "Save Changes"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
