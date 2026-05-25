@@ -415,6 +415,11 @@ export interface LoginBody {
   password: string;
 }
 
+export interface ResetPasswordBody {
+  username: string;
+  newPassword: string;
+}
+
 export interface LoginResponse {
   user: SystemUser;
   token: string;
@@ -661,6 +666,10 @@ export type ListAttendanceParams = {
    * @nullable
    */
   classId?: number | null;
+};
+
+export type ResetPassword200 = {
+  message: string;
 };
 
 export type ListEquipmentParams = {

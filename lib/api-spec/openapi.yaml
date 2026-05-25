@@ -847,6 +847,31 @@ paths:
               schema:
                 $ref: "#/components/schemas/SystemUser"
 
+  /auth/reset-password:
+    post:
+      operationId: resetPassword
+      tags: [auth]
+      summary: Reset password by username
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ResetPasswordBody"
+      responses:
+        "200":
+          description: Password updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                required: [message]
+        "404":
+          description: User not found
+
   /auth/login:
     post:
       operationId: loginUser
@@ -1961,6 +1986,17 @@ components:
       required:
         - username
         - password
+
+    ResetPasswordBody:
+      type: object
+      properties:
+        username:
+          type: string
+        newPassword:
+          type: string
+      required:
+        - username
+        - newPassword
 
     LoginResponse:
       type: object

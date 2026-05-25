@@ -46,6 +46,8 @@ export * from "./membershipPlan";
 export * from "./payment";
 export * from "./pTRequest";
 export * from "./pTSession";
+export * from "./resetPassword200";
+export * from "./resetPasswordBody";
 export * from "./revenueMonth";
 export * from "./staffMember";
 export * from "./systemUser";

@@ -781,6 +781,18 @@ export const CreateUserBody = zod.object({
 });
 
 /**
+ * @summary Reset password by username
+ */
+export const ResetPasswordBody = zod.object({
+  username: zod.string(),
+  newPassword: zod.string(),
+});
+
+export const ResetPasswordResponse = zod.object({
+  message: zod.string(),
+});
+
+/**
  * @summary Login with username and password
  */
 export const LoginUserBody = zod.object({

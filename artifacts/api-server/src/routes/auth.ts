@@ -62,6 +62,30 @@ const LoginBody = z.object({
   password: z.string().min(1),
 });
 
+const ResetPasswordBody = z.object({
+  username: z.string().min(1),
+  newPassword: z.string().min(6),
+});
+
+router.post("/auth/reset-password", async (req, res): Promise<void> => {
+  const body = ResetPasswordBody.safeParse(req.body);
+  if (!body.success) {
+    res.status(400).json({ error: body.error.message });
+    return;
+  }
+  const { username, newPassword } = body.data;
+  const [user] = await db.select().from(users).where(eq(users.username, username));
+  if (!user) {
+    res.status(404).json({ error: "No account found with that username" });
+    return;
+  }
+  await db
+    .update(users)
+    .set({ passwordHash: hashPassword(newPassword) })
+    .where(eq(users.id, user.id));
+  res.json({ message: "Password updated successfully" });
+});
+
 router.post("/auth/login", async (req, res): Promise<void> => {
   const body = LoginBody.safeParse(req.body);
   if (!body.success) {
