@@ -29,6 +29,7 @@ import TrainerDashboard from "@/pages/trainer/dashboard";
 import TrainerSessions from "@/pages/trainer/sessions";
 import TrainerWorkouts from "@/pages/trainer/workouts";
 import TrainerClients from "@/pages/trainer/clients";
+import TrainerProfile from "@/pages/trainer/profile";
 
 // Customer Pages
 import CustomerDashboard from "@/pages/customer/dashboard";
@@ -39,6 +40,7 @@ import CustomerHirePT from "@/pages/customer/hire-pt";
 import CustomerPayments from "@/pages/customer/payments";
 import CustomerTrainingHistory from "@/pages/customer/training-history";
 import CustomerFeedback from "@/pages/customer/feedback";
+import CustomerProfile from "@/pages/customer/profile";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -74,6 +76,7 @@ function Router() {
       <Route path="/trainer/sessions" component={TrainerSessions} />
       <Route path="/trainer/workouts" component={TrainerWorkouts} />
       <Route path="/trainer/clients" component={TrainerClients} />
+      <Route path="/trainer/profile" component={TrainerProfile} />
 
       {/* Customer Routes */}
       <Route path="/customer/dashboard" component={CustomerDashboard} />
@@ -84,6 +87,7 @@ function Router() {
       <Route path="/customer/payments" component={CustomerPayments} />
       <Route path="/customer/training-history" component={CustomerTrainingHistory} />
       <Route path="/customer/feedback" component={CustomerFeedback} />
+      <Route path="/customer/profile" component={CustomerProfile} />
 
       <Route component={NotFound} />
     </Switch>

@@ -17,7 +17,8 @@ import {
   MessageSquare,
   History,
   DollarSign,
-  UserPlus
+  UserPlus,
+  UserCircle
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -61,6 +62,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
       { name: "Sessions", href: "/trainer/sessions", icon: Clock },
       { name: "Workouts", href: "/trainer/workouts", icon: Dumbbell },
       { name: "Clients", href: "/trainer/clients", icon: Users },
+      { name: "My Profile", href: "/trainer/profile", icon: UserCircle },
     ],
     customer: [
       { name: "Dashboard", href: "/customer/dashboard", icon: LayoutDashboard },
@@ -71,6 +73,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
       { name: "Payments", href: "/customer/payments", icon: DollarSign },
       { name: "Training History", href: "/customer/training-history", icon: History },
       { name: "Feedback", href: "/customer/feedback", icon: MessageSquare },
+      { name: "My Profile", href: "/customer/profile", icon: UserCircle },
     ],
   };
 
