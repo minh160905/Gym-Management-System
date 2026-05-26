@@ -52,6 +52,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
     manager: [
       { name: "Dashboard", href: "/manager/dashboard", icon: LayoutDashboard },
       { name: "Members", href: "/manager/members", icon: Users },
+      { name: "Staff", href: "/manager/staff", icon: Briefcase },
       { name: "Classes", href: "/manager/classes", icon: Calendar },
       { name: "Attendance", href: "/manager/attendance", icon: ClipboardCheck },
       { name: "Equipment", href: "/manager/equipment", icon: Wrench },
