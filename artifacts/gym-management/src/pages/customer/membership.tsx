@@ -7,12 +7,25 @@ import {
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { CheckCircle2, User, Dumbbell, ChevronRight, ChevronLeft } from "lucide-react";
+import {
+  CheckCircle2, User, Dumbbell, ChevronRight, ChevronLeft,
+  CreditCard, Landmark, Wallet
+} from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { useToast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import type { MembershipPlan, StaffMember } from "@workspace/api-client-react";
+
+type PaymentMethod = "credit_card" | "bank_transfer" | "cash";
+type Step = "trainer" | "payment" | "success";
+
+const PAYMENT_METHODS: { id: PaymentMethod; label: string; icon: React.ElementType }[] = [
+  { id: "credit_card", label: "Credit / Debit Card", icon: CreditCard },
+  { id: "bank_transfer", label: "Bank Transfer", icon: Landmark },
+  { id: "cash", label: "Cash", icon: Wallet },
+];
 
 function isPTIncluded(planName: string) {
   const n = planName.toLowerCase();
@@ -29,25 +42,26 @@ export default function CustomerMembership() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  // Dialog state
   const [selectedPlan, setSelectedPlan] = useState<MembershipPlan | null>(null);
-  const [step, setStep] = useState<"confirm" | "trainer">("confirm");
+  const [step, setStep] = useState<Step>("payment");
   const [selectedTrainer, setSelectedTrainer] = useState<StaffMember | null>(null);
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("credit_card");
   const [saving, setSaving] = useState(false);
 
   function openPlan(plan: MembershipPlan) {
     setSelectedPlan(plan);
     setSelectedTrainer(null);
-    setStep(isPTIncluded(plan.name) ? "trainer" : "confirm");
+    setPaymentMethod("credit_card");
+    setStep(isPTIncluded(plan.name) ? "trainer" : "payment");
   }
 
   function closeDialog() {
     setSelectedPlan(null);
     setSelectedTrainer(null);
-    setStep("confirm");
+    setStep("payment");
   }
 
-  async function handleConfirm() {
+  async function handlePay() {
     if (!memberId || !selectedPlan) return;
     setSaving(true);
     try {
@@ -55,11 +69,11 @@ export default function CustomerMembership() {
         data: {
           memberId,
           amount: selectedPlan.priceMonthly,
-          description: `Payment for ${selectedPlan.name} Plan`,
+          description: `${selectedPlan.name} Plan — Monthly Subscription`,
           status: "paid",
           paymentDate: new Date().toISOString().split("T")[0],
           membershipPlanId: selectedPlan.id,
-          paymentMethod: "credit_card",
+          paymentMethod,
         },
       });
 
@@ -81,16 +95,9 @@ export default function CustomerMembership() {
 
       await queryClient.invalidateQueries({ queryKey: getListMembershipsQueryKey() });
       await queryClient.invalidateQueries({ queryKey: getGetMemberQueryKey(memberId) });
-
-      toast({
-        title: "Subscription successful",
-        description: selectedTrainer
-          ? `You're now on the ${selectedPlan.name} plan with ${selectedTrainer.firstName} ${selectedTrainer.lastName} as your PT.`
-          : `You're now subscribed to the ${selectedPlan.name} plan.`,
-      });
-      closeDialog();
+      setStep("success");
     } catch {
-      toast({ title: "Subscription failed", description: "Please try again.", variant: "destructive" });
+      toast({ title: "Payment failed", description: "Please try again.", variant: "destructive" });
     } finally {
       setSaving(false);
     }
@@ -117,11 +124,7 @@ export default function CustomerMembership() {
                 <CardHeader>
                   <div className="flex items-center justify-between">
                     <CardTitle className="text-2xl">{plan.name}</CardTitle>
-                    {ptIncluded && (
-                      <Badge variant="default" className="text-xs">
-                        PT Included
-                      </Badge>
-                    )}
+                    {ptIncluded && <Badge variant="default" className="text-xs">PT Included</Badge>}
                   </div>
                   {plan.description && <CardDescription>{plan.description}</CardDescription>}
                 </CardHeader>
@@ -158,12 +161,12 @@ export default function CustomerMembership() {
         </div>
       )}
 
-      {/* Subscription Dialog */}
+      {/* ── Subscription Dialog ─────────────────────────────────────── */}
       <Dialog open={!!selectedPlan} onOpenChange={(open) => !open && closeDialog()}>
         <DialogContent className="max-w-lg">
           {selectedPlan && (
             <>
-              {/* Step: trainer picker (Standard / Premium) */}
+              {/* ── Step: Trainer Picker ─────────────────────────── */}
               {step === "trainer" && (
                 <>
                   <DialogHeader>
@@ -172,15 +175,13 @@ export default function CustomerMembership() {
                       Choose Your Personal Trainer
                     </DialogTitle>
                     <p className="text-sm text-muted-foreground pt-1">
-                      Your <span className="font-medium text-foreground">{selectedPlan.name}</span> plan includes access to a personal trainer. Pick one below or skip to decide later.
+                      Your <span className="font-medium text-foreground">{selectedPlan.name}</span> plan includes a personal trainer. Pick one or skip to decide later.
                     </p>
                   </DialogHeader>
 
-                  <div className="space-y-3 py-2 max-h-72 overflow-y-auto pr-1">
+                  <div className="space-y-3 py-2 max-h-64 overflow-y-auto pr-1">
                     {trainersLoading ? (
                       <p className="text-sm text-muted-foreground text-center py-4">Loading trainers...</p>
-                    ) : trainers?.length === 0 ? (
-                      <p className="text-sm text-muted-foreground text-center py-4">No trainers available right now.</p>
                     ) : trainers?.map((trainer) => (
                       <button
                         key={trainer.id}
@@ -212,38 +213,62 @@ export default function CustomerMembership() {
                   </div>
 
                   <DialogFooter className="gap-2 flex-col sm:flex-row">
-                    <Button variant="outline" className="sm:mr-auto" onClick={() => { setSelectedTrainer(null); setStep("confirm"); }}>
+                    <Button variant="outline" className="sm:mr-auto" onClick={() => { setSelectedTrainer(null); setStep("payment"); }}>
                       Skip for now
                     </Button>
-                    <Button onClick={() => setStep("confirm")} disabled={!selectedTrainer}>
+                    <Button onClick={() => setStep("payment")} disabled={!selectedTrainer}>
                       Continue <ChevronRight className="w-4 h-4 ml-1" />
                     </Button>
                   </DialogFooter>
                 </>
               )}
 
-              {/* Step: confirm */}
-              {step === "confirm" && (
+              {/* ── Step: Payment ─────────────────────────────────── */}
+              {step === "payment" && (
                 <>
                   <DialogHeader>
-                    <DialogTitle>Confirm Subscription</DialogTitle>
+                    <DialogTitle className="flex items-center gap-2">
+                      <CreditCard className="w-5 h-5 text-primary" />
+                      Payment
+                    </DialogTitle>
+                    <p className="text-sm text-muted-foreground pt-1">
+                      Review your order and choose a payment method.
+                    </p>
                   </DialogHeader>
 
                   <div className="space-y-4 py-2">
-                    {/* Plan summary */}
-                    <div className="rounded-lg border border-border p-4 space-y-1">
+                    {/* Order summary */}
+                    <div className="rounded-lg border border-border p-4 space-y-3">
+                      <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Order Summary</p>
                       <div className="flex items-center justify-between">
-                        <p className="font-semibold">{selectedPlan.name} Plan</p>
-                        <p className="font-bold text-primary text-lg">${selectedPlan.priceMonthly}<span className="text-sm font-normal text-muted-foreground">/mo</span></p>
+                        <div>
+                          <p className="font-semibold">{selectedPlan.name} Plan</p>
+                          <p className="text-xs text-muted-foreground">{selectedPlan.description}</p>
+                        </div>
+                        <p className="font-bold text-primary text-lg">
+                          ${selectedPlan.priceMonthly}
+                          <span className="text-xs font-normal text-muted-foreground">/mo</span>
+                        </p>
                       </div>
-                      <p className="text-sm text-muted-foreground">{selectedPlan.description}</p>
-                    </div>
 
-                    {/* Selected trainer */}
-                    {isPTIncluded(selectedPlan.name) && (
-                      <div className="rounded-lg border border-border p-3">
-                        <div className="flex items-center justify-between">
-                          <p className="text-sm font-medium text-muted-foreground uppercase tracking-wide">Personal Trainer</p>
+                      {/* Selected trainer row */}
+                      {isPTIncluded(selectedPlan.name) && (
+                        <div className="border-t border-border pt-3 flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            {selectedTrainer ? (
+                              <>
+                                <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xs shrink-0">
+                                  {selectedTrainer.firstName[0]}{selectedTrainer.lastName[0]}
+                                </div>
+                                <p className="text-sm">{selectedTrainer.firstName} {selectedTrainer.lastName}</p>
+                              </>
+                            ) : (
+                              <>
+                                <User className="w-4 h-4 text-muted-foreground" />
+                                <p className="text-sm text-muted-foreground">No trainer selected</p>
+                              </>
+                            )}
+                          </div>
                           <button
                             type="button"
                             onClick={() => setStep("trainer")}
@@ -252,27 +277,41 @@ export default function CustomerMembership() {
                             Change
                           </button>
                         </div>
-                        {selectedTrainer ? (
-                          <div className="flex items-center gap-3 mt-2">
-                            <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xs shrink-0">
-                              {selectedTrainer.firstName[0]}{selectedTrainer.lastName[0]}
-                            </div>
-                            <div>
-                              <p className="font-medium text-sm">{selectedTrainer.firstName} {selectedTrainer.lastName}</p>
-                              <p className="text-xs text-muted-foreground">{selectedTrainer.specialization || "General Fitness"}</p>
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="flex items-center gap-2 mt-2 text-sm text-muted-foreground">
-                            <User className="w-4 h-4" />
-                            No trainer selected — you can choose one later from Hire PT.
-                          </div>
-                        )}
+                      )}
+
+                      <div className="border-t border-border pt-3 flex items-center justify-between font-semibold">
+                        <p>Total due today</p>
+                        <p className="text-primary">${selectedPlan.priceMonthly}.00</p>
                       </div>
-                    )}
+                    </div>
+
+                    {/* Payment method */}
+                    <div className="space-y-2">
+                      <Label className="text-sm font-medium">Payment Method</Label>
+                      <div className="space-y-2">
+                        {PAYMENT_METHODS.map(({ id, label, icon: Icon }) => (
+                          <button
+                            key={id}
+                            type="button"
+                            onClick={() => setPaymentMethod(id)}
+                            className={`w-full flex items-center gap-3 rounded-lg border p-3 text-left transition-colors ${
+                              paymentMethod === id
+                                ? "border-primary bg-primary/10"
+                                : "border-border hover:border-primary/50"
+                            }`}
+                          >
+                            <Icon className={`w-4 h-4 ${paymentMethod === id ? "text-primary" : "text-muted-foreground"}`} />
+                            <span className="text-sm font-medium">{label}</span>
+                            {paymentMethod === id && (
+                              <CheckCircle2 className="w-4 h-4 text-primary ml-auto" />
+                            )}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
 
                     <p className="text-xs text-muted-foreground">
-                      By subscribing you agree to be charged ${selectedPlan.priceMonthly}/month. You can manage your plan at any time.
+                      You will be charged ${selectedPlan.priceMonthly}/month. Cancel anytime from your profile.
                     </p>
                   </div>
 
@@ -283,9 +322,42 @@ export default function CustomerMembership() {
                       </Button>
                     )}
                     <Button variant="outline" onClick={closeDialog} disabled={saving}>Cancel</Button>
-                    <Button onClick={handleConfirm} disabled={saving}>
-                      {saving ? "Subscribing..." : "Confirm & Subscribe"}
+                    <Button onClick={handlePay} disabled={saving}>
+                      {saving ? "Processing..." : `Pay $${selectedPlan.priceMonthly}.00`}
                     </Button>
+                  </DialogFooter>
+                </>
+              )}
+
+              {/* ── Step: Success ──────────────────────────────────── */}
+              {step === "success" && (
+                <>
+                  <DialogHeader>
+                    <DialogTitle>Subscription Active</DialogTitle>
+                  </DialogHeader>
+                  <div className="flex flex-col items-center gap-4 py-6 text-center">
+                    <div className="p-4 rounded-full bg-primary/10 ring-1 ring-primary/20">
+                      <CheckCircle2 className="w-10 h-10 text-primary" />
+                    </div>
+                    <div className="space-y-1">
+                      <p className="font-semibold text-lg">Payment successful</p>
+                      <p className="text-muted-foreground text-sm">
+                        You're now subscribed to the{" "}
+                        <span className="font-medium text-foreground">{selectedPlan.name}</span> plan.
+                      </p>
+                      {selectedTrainer && (
+                        <p className="text-muted-foreground text-sm mt-1">
+                          A request has been sent to{" "}
+                          <span className="font-medium text-foreground">
+                            {selectedTrainer.firstName} {selectedTrainer.lastName}
+                          </span>{" "}
+                          as your personal trainer.
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <Button className="w-full" onClick={closeDialog}>Done</Button>
                   </DialogFooter>
                 </>
               )}
