@@ -7,25 +7,17 @@ import {
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import {
-  CheckCircle2, User, Dumbbell, ChevronRight, ChevronLeft,
-  CreditCard, Landmark, Wallet
-} from "lucide-react";
+import { CheckCircle2, User, Dumbbell, ChevronRight, ChevronLeft, CreditCard } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { useToast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import type { MembershipPlan, StaffMember } from "@workspace/api-client-react";
+import PaymentSection, { type PaymentMethod, type CardData } from "@/components/payment-section";
 
-type PaymentMethod = "credit_card" | "bank_transfer" | "cash";
 type Step = "trainer" | "payment" | "success";
 
-const PAYMENT_METHODS: { id: PaymentMethod; label: string; icon: React.ElementType }[] = [
-  { id: "credit_card", label: "Credit / Debit Card", icon: CreditCard },
-  { id: "bank_transfer", label: "Bank Transfer", icon: Landmark },
-  { id: "cash", label: "Cash", icon: Wallet },
-];
+const DEFAULT_CARD: CardData = { cardType: "visa", cardNumber: "", expiry: "", cvv: "" };
 
 function isPTIncluded(planName: string) {
   const n = planName.toLowerCase();
@@ -46,12 +38,14 @@ export default function CustomerMembership() {
   const [step, setStep] = useState<Step>("payment");
   const [selectedTrainer, setSelectedTrainer] = useState<StaffMember | null>(null);
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("credit_card");
+  const [cardData, setCardData] = useState<CardData>(DEFAULT_CARD);
   const [saving, setSaving] = useState(false);
 
   function openPlan(plan: MembershipPlan) {
     setSelectedPlan(plan);
     setSelectedTrainer(null);
     setPaymentMethod("credit_card");
+    setCardData(DEFAULT_CARD);
     setStep(isPTIncluded(plan.name) ? "trainer" : "payment");
   }
 
@@ -161,12 +155,12 @@ export default function CustomerMembership() {
         </div>
       )}
 
-      {/* ── Subscription Dialog ─────────────────────────────────────── */}
+      {/* ── Subscription Dialog ─────────────────────────────────── */}
       <Dialog open={!!selectedPlan} onOpenChange={(open) => !open && closeDialog()}>
         <DialogContent className="max-w-lg">
           {selectedPlan && (
             <>
-              {/* ── Step: Trainer Picker ─────────────────────────── */}
+              {/* ── Step: Trainer Picker ──────────────────────── */}
               {step === "trainer" && (
                 <>
                   <DialogHeader>
@@ -223,7 +217,7 @@ export default function CustomerMembership() {
                 </>
               )}
 
-              {/* ── Step: Payment ─────────────────────────────────── */}
+              {/* ── Step: Payment ────────────────────────────── */}
               {step === "payment" && (
                 <>
                   <DialogHeader>
@@ -232,7 +226,7 @@ export default function CustomerMembership() {
                       Payment
                     </DialogTitle>
                     <p className="text-sm text-muted-foreground pt-1">
-                      Review your order and choose a payment method.
+                      Review your order and complete payment.
                     </p>
                   </DialogHeader>
 
@@ -251,7 +245,6 @@ export default function CustomerMembership() {
                         </p>
                       </div>
 
-                      {/* Selected trainer row */}
                       {isPTIncluded(selectedPlan.name) && (
                         <div className="border-t border-border pt-3 flex items-center justify-between">
                           <div className="flex items-center gap-2">
@@ -285,30 +278,14 @@ export default function CustomerMembership() {
                       </div>
                     </div>
 
-                    {/* Payment method */}
-                    <div className="space-y-2">
-                      <Label className="text-sm font-medium">Payment Method</Label>
-                      <div className="space-y-2">
-                        {PAYMENT_METHODS.map(({ id, label, icon: Icon }) => (
-                          <button
-                            key={id}
-                            type="button"
-                            onClick={() => setPaymentMethod(id)}
-                            className={`w-full flex items-center gap-3 rounded-lg border p-3 text-left transition-colors ${
-                              paymentMethod === id
-                                ? "border-primary bg-primary/10"
-                                : "border-border hover:border-primary/50"
-                            }`}
-                          >
-                            <Icon className={`w-4 h-4 ${paymentMethod === id ? "text-primary" : "text-muted-foreground"}`} />
-                            <span className="text-sm font-medium">{label}</span>
-                            {paymentMethod === id && (
-                              <CheckCircle2 className="w-4 h-4 text-primary ml-auto" />
-                            )}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
+                    <PaymentSection
+                      paymentMethod={paymentMethod}
+                      onPaymentMethodChange={setPaymentMethod}
+                      cardData={cardData}
+                      onCardDataChange={setCardData}
+                      amount={selectedPlan.priceMonthly}
+                      reference={`MEMBER-${memberId}-PLAN-${selectedPlan.id}`}
+                    />
 
                     <p className="text-xs text-muted-foreground">
                       You will be charged ${selectedPlan.priceMonthly}/month. Cancel anytime from your profile.
@@ -329,7 +306,7 @@ export default function CustomerMembership() {
                 </>
               )}
 
-              {/* ── Step: Success ──────────────────────────────────── */}
+              {/* ── Step: Success ─────────────────────────────── */}
               {step === "success" && (
                 <>
                   <DialogHeader>

@@ -10,7 +10,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -19,11 +18,9 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { format } from "date-fns";
-import {
-  CreditCard, Landmark, Wallet, ChevronRight, ChevronLeft,
-  CheckCircle2, Dumbbell, User
-} from "lucide-react";
+import { CreditCard, ChevronRight, ChevronLeft, CheckCircle2, Dumbbell } from "lucide-react";
 import type { StaffMember } from "@workspace/api-client-react";
+import PaymentSection, { type PaymentMethod, type CardData } from "@/components/payment-section";
 
 const PT_SESSION_FEE = 50;
 
@@ -32,13 +29,7 @@ const detailsSchema = z.object({
   message: z.string().min(1, "Please describe your goals"),
 });
 
-type PaymentMethod = "credit_card" | "bank_transfer" | "cash";
-
-const PAYMENT_METHODS: { id: PaymentMethod; label: string; icon: React.ElementType }[] = [
-  { id: "credit_card", label: "Credit / Debit Card", icon: CreditCard },
-  { id: "bank_transfer", label: "Bank Transfer", icon: Landmark },
-  { id: "cash", label: "Cash", icon: Wallet },
-];
+const DEFAULT_CARD: CardData = { cardType: "visa", cardNumber: "", expiry: "", cvv: "" };
 
 type Step = "details" | "payment" | "success";
 
@@ -54,6 +45,7 @@ export default function CustomerHirePT() {
   const [selectedTrainer, setSelectedTrainer] = useState<StaffMember | null>(null);
   const [step, setStep] = useState<Step>("details");
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("credit_card");
+  const [cardData, setCardData] = useState<CardData>(DEFAULT_CARD);
   const [saving, setSaving] = useState(false);
 
   const form = useForm<z.infer<typeof detailsSchema>>({
@@ -65,6 +57,7 @@ export default function CustomerHirePT() {
     setSelectedTrainer(trainer);
     setStep("details");
     setPaymentMethod("credit_card");
+    setCardData(DEFAULT_CARD);
     form.reset();
   }
 
@@ -110,10 +103,10 @@ export default function CustomerHirePT() {
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case "pending":   return <Badge variant="outline" className="bg-yellow-500/20 text-yellow-600">Pending</Badge>;
-      case "approved":  return <Badge variant="outline" className="bg-primary/20 text-primary">Approved</Badge>;
-      case "rejected":  return <Badge variant="outline" className="bg-destructive/20 text-destructive">Rejected</Badge>;
-      default:          return <Badge variant="outline">{status}</Badge>;
+      case "pending":  return <Badge variant="outline" className="bg-yellow-500/20 text-yellow-600">Pending</Badge>;
+      case "approved": return <Badge variant="outline" className="bg-primary/20 text-primary">Approved</Badge>;
+      case "rejected": return <Badge variant="outline" className="bg-destructive/20 text-destructive">Rejected</Badge>;
+      default:         return <Badge variant="outline">{status}</Badge>;
     }
   };
 
@@ -164,7 +157,7 @@ export default function CustomerHirePT() {
         <DialogContent className="max-w-md">
           {selectedTrainer && (
             <>
-              {/* ── Step 1: Details ───────────────────────────────── */}
+              {/* ── Step 1: Details ──────────────────────────── */}
               {step === "details" && (
                 <>
                   <DialogHeader>
@@ -217,7 +210,7 @@ export default function CustomerHirePT() {
                 </>
               )}
 
-              {/* ── Step 2: Payment ───────────────────────────────── */}
+              {/* ── Step 2: Payment ──────────────────────────── */}
               {step === "payment" && (
                 <>
                   <DialogHeader>
@@ -248,30 +241,14 @@ export default function CustomerHirePT() {
                       </div>
                     </div>
 
-                    {/* Payment method */}
-                    <div className="space-y-2">
-                      <Label className="text-sm font-medium">Payment Method</Label>
-                      <div className="space-y-2">
-                        {PAYMENT_METHODS.map(({ id, label, icon: Icon }) => (
-                          <button
-                            key={id}
-                            type="button"
-                            onClick={() => setPaymentMethod(id)}
-                            className={`w-full flex items-center gap-3 rounded-lg border p-3 text-left transition-colors ${
-                              paymentMethod === id
-                                ? "border-primary bg-primary/10"
-                                : "border-border hover:border-primary/50"
-                            }`}
-                          >
-                            <Icon className={`w-4 h-4 ${paymentMethod === id ? "text-primary" : "text-muted-foreground"}`} />
-                            <span className="text-sm font-medium">{label}</span>
-                            {paymentMethod === id && (
-                              <CheckCircle2 className="w-4 h-4 text-primary ml-auto" />
-                            )}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
+                    <PaymentSection
+                      paymentMethod={paymentMethod}
+                      onPaymentMethodChange={setPaymentMethod}
+                      cardData={cardData}
+                      onCardDataChange={setCardData}
+                      amount={PT_SESSION_FEE}
+                      reference={`MEMBER-${memberId}-TRAINER-${selectedTrainer.id}`}
+                    />
                   </div>
 
                   <DialogFooter className="gap-2">
@@ -286,7 +263,7 @@ export default function CustomerHirePT() {
                 </>
               )}
 
-              {/* ── Step 3: Success ───────────────────────────────── */}
+              {/* ── Step 3: Success ──────────────────────────── */}
               {step === "success" && (
                 <>
                   <DialogHeader>
