@@ -56,7 +56,9 @@ function InfoRow({ icon: Icon, label, value }: { icon: any; label: string; value
 export function TrainerDetailDialog({ staffId, onClose }: TrainerDetailDialogProps) {
   const [mode, setMode] = useState<"view" | "edit">("view");
 
-  const { data: trainer, isLoading } = useGetStaff(staffId ?? 0, { query: { enabled: !!staffId } });
+  const { data: trainer, isLoading } = useGetStaff(staffId ?? 0, {
+    query: { queryKey: getGetStaffQueryKey(staffId ?? 0), enabled: !!staffId },
+  });
   const { data: sessions } = useListSessions({ trainerId: staffId ?? undefined });
   const { data: ptRequests } = useListPTRequests({ trainerId: staffId ?? undefined });
   const updateStaff = useUpdateStaff();

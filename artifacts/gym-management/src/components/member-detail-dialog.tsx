@@ -2,7 +2,8 @@ import { useState } from "react";
 import {
   useGetMember, useListMemberships, useGetMemberTrainingHistory,
   useListPayments, useListFeedback, useUpdateMember,
-  getGetMemberQueryKey, getListMembersQueryKey
+  getGetMemberQueryKey, getListMembersQueryKey,
+  getGetMemberTrainingHistoryQueryKey,
 } from "@workspace/api-client-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
@@ -59,9 +60,13 @@ function InfoRow({ icon: Icon, label, value }: { icon: any; label: string; value
 export function MemberDetailDialog({ memberId, onClose }: MemberDetailDialogProps) {
   const [mode, setMode] = useState<"view" | "edit">("view");
 
-  const { data: member, isLoading } = useGetMember(memberId ?? 0, { query: { enabled: !!memberId } });
+  const { data: member, isLoading } = useGetMember(memberId ?? 0, {
+    query: { queryKey: getGetMemberQueryKey(memberId ?? 0), enabled: !!memberId },
+  });
   const { data: plans } = useListMemberships();
-  const { data: history } = useGetMemberTrainingHistory(memberId ?? 0, { query: { enabled: !!memberId } });
+  const { data: history } = useGetMemberTrainingHistory(memberId ?? 0, {
+    query: { queryKey: getGetMemberTrainingHistoryQueryKey(memberId ?? 0), enabled: !!memberId },
+  });
   const { data: payments } = useListPayments({ memberId: memberId ?? undefined });
   const { data: feedback } = useListFeedback({ memberId: memberId ?? undefined });
   const updateMember = useUpdateMember();
