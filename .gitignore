@@ -47,3 +47,14 @@ Thumbs.db
 # Replit
 .cache/
 .local/
+
+# Environment variables (contains sensitive credentials)
+.env
+.env.*
+!.env.example
+
+# Seed/temp scripts
+seed.ps1
+seed_db.ts
+seed_native.js
+lib/db/seed.cjs
