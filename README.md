@@ -21,8 +21,8 @@ Trước khi bắt đầu, hãy đảm bảo máy bạn đã cài đặt:
 ### Bước 1 — Clone repo
 
 ```bash
-git clone https://github.com/minh160905/Gym-Harmony-System.git
-cd Gym-Harmony-System
+git clone https://github.com/minh160905/Gym-Management-System.git
+cd Gym-Management-System
 ```
 
 ### Bước 2 — Tạo file `.env`
@@ -39,16 +39,12 @@ cp .env.example .env     # macOS/Linux
 Sau đó mở file `.env` và điền thông tin kết nối database:
 
 ```env
-DATABASE_URL=postgresql://<USER>:<PASSWORD>@<HOST>/<DATABASE>?sslmode=require
-```
-
-**Ví dụ với Neon (cloud PostgreSQL miễn phí):**
-1. Đăng ký tại [neon.tech](https://neon.tech)
-2. Tạo project mới → Copy chuỗi kết nối
-3. Dán vào `DATABASE_URL` trong file `.env`
-
-```env
-DATABASE_URL=postgresql://neondb_owner:your_password@ep-xxx.us-east-1.aws.neon.tech/neondb?sslmode=require
+DATABASE_URL=postgresql://neondb_owner:npg_AybSP4JgNG8o@ep-rough-unit-aqdr0a6f.c-8.us-east-1.aws.neon.tech/neondb?sslmode=require
+PGDATABASE=neondb
+PGHOST=ep-rough-unit-aqdr0a6f.c-8.us-east-1.aws.neon.tech
+PGPORT=5432
+PGUSER=neondb_owner
+PGPASSWORD=npg_AybSP4JgNG8o
 ```
 
 ### Bước 3 — Cài đặt dependencies
