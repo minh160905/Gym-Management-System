@@ -179,6 +179,8 @@ export interface FitnessClass {
   location?: string | null;
   category: string;
   status: string;
+  /** @nullable */
+  endDate?: string | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -196,6 +198,8 @@ export interface CreateClassBody {
   location?: string | null;
   category: string;
   status: string;
+  /** @nullable */
+  endDate?: string | null;
 }
 
 export interface UpdateClassBody {
@@ -211,6 +215,8 @@ export interface UpdateClassBody {
   location?: string | null;
   category?: string;
   status?: string;
+  /** @nullable */
+  endDate?: string | null;
 }
 
 export interface Booking {
@@ -580,6 +586,10 @@ export interface PTRequest {
   /** @nullable */
   preferredSchedule?: string | null;
   status: string;
+  /** @nullable */
+  sessionsCount?: number | null;
+  /** @nullable */
+  desiredDuration?: string | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -592,6 +602,10 @@ export interface CreatePTRequestBody {
   message?: string | null;
   /** @nullable */
   preferredSchedule?: string | null;
+  /** @nullable */
+  sessionsCount?: number | null;
+  /** @nullable */
+  desiredDuration?: string | null;
 }
 
 export interface UpdatePTRequestBody {
@@ -600,6 +614,10 @@ export interface UpdatePTRequestBody {
   status?: string;
   /** @nullable */
   message?: string | null;
+  /** @nullable */
+  sessionsCount?: number | null;
+  /** @nullable */
+  desiredDuration?: string | null;
 }
 
 export type ListMembersParams = {

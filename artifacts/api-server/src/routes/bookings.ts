@@ -52,6 +52,17 @@ router.post("/bookings", async (req, res): Promise<void> => {
     return;
   }
 
+  const [cls] = await db.select().from(classesTable).where(eq(classesTable.id, parsed.data.classId));
+  if (!cls) {
+    res.status(404).json({ error: "Class not found" });
+    return;
+  }
+
+  if (cls.enrolledCount >= cls.capacity) {
+    res.status(400).json({ error: "Lớp học đã đầy." });
+    return;
+  }
+
   const now = new Date().toISOString();
   const [booking] = await db.insert(bookingsTable).values({
     ...parsed.data,
@@ -60,17 +71,16 @@ router.post("/bookings", async (req, res): Promise<void> => {
   }).returning();
 
   const [member] = await db.select().from(membersTable).where(eq(membersTable.id, booking.memberId));
-  const [cls] = await db.select().from(classesTable).where(eq(classesTable.id, booking.classId));
 
   // Update enrolled count
   await db.update(classesTable)
-    .set({ enrolledCount: (cls?.enrolledCount ?? 0) + 1 })
+    .set({ enrolledCount: (cls.enrolledCount ?? 0) + 1 })
     .where(eq(classesTable.id, booking.classId));
 
   res.status(201).json({
     ...booking,
     memberName: member ? `${member.firstName} ${member.lastName}` : null,
-    className: cls?.name ?? null,
+    className: cls.name ?? null,
     createdAt: booking.createdAt.toISOString(),
     updatedAt: booking.updatedAt.toISOString(),
   });

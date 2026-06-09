@@ -9,8 +9,8 @@ export default function ManagerDashboard() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Manager Dashboard</h1>
-        <p className="text-muted-foreground mt-2">Today's operational overview.</p>
+        <h1 className="text-3xl font-bold tracking-tight">Bảng điều khiển</h1>
+        <p className="text-muted-foreground mt-2">Tổng quan hoạt động trong ngày.</p>
       </div>
 
       {isLoading ? (
@@ -19,29 +19,29 @@ export default function ManagerDashboard() {
         </div>
       ) : stats ? (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          <StatCard title="Classes Today" value={stats.classesToday} icon={Calendar} />
-          <StatCard title="Pending Bookings" value={stats.pendingBookings} icon={Clock} />
-          <StatCard title="Active Members" value={stats.activeMembers} icon={Users} />
-          <StatCard title="Sessions Today" value={stats.sessionsToday} icon={ClipboardCheck} />
+          <StatCard title="Lớp học hôm nay" value={stats.classesToday} icon={Calendar} />
+          <StatCard title="Đặt chỗ chờ" value={stats.pendingBookings} icon={Clock} />
+          <StatCard title="Hội viên đang hoạt động" value={stats.activeMembers} icon={Users} />
+          <StatCard title="Buổi tập hôm nay" value={stats.sessionsToday} icon={ClipboardCheck} />
         </div>
       ) : null}
 
       <div className="grid gap-6 md:grid-cols-2">
         <Card>
           <CardHeader>
-            <CardTitle>Today's Schedule</CardTitle>
+            <CardTitle>Lịch hôm nay</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-muted-foreground">Class schedule list will go here.</p>
+            <p className="text-muted-foreground">Danh sách lớp học sẽ hiển thị ở đây.</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader>
-            <CardTitle>Recent Activity</CardTitle>
+            <CardTitle>Hoạt động gần đây</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-muted-foreground">Recent check-ins and bookings will go here.</p>
+            <p className="text-muted-foreground">Lịch check-in và đặt chỗ sẽ hiển thị ở đây.</p>
           </CardContent>
         </Card>
       </div>

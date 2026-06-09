@@ -14,4 +14,8 @@ export interface CreatePTRequestBody {
   message?: string | null;
   /** @nullable */
   preferredSchedule?: string | null;
+  /** @nullable */
+  sessionsCount?: number | null;
+  /** @nullable */
+  desiredDuration?: string | null;
 }

@@ -9,6 +9,8 @@ export const ptRequests = pgTable("pt_requests", {
   message: text("message"),
   preferredSchedule: varchar("preferred_schedule", { length: 255 }),
   status: varchar("status", { length: 20 }).notNull().default("pending"),
+  sessionsCount: integer("sessions_count"),
+  desiredDuration: text("desired_duration"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });

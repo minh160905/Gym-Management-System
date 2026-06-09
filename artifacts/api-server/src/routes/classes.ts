@@ -36,6 +36,7 @@ router.get("/classes", async (req, res): Promise<void> => {
       location: classesTable.location,
       category: classesTable.category,
       status: classesTable.status,
+      endDate: classesTable.endDate,
       createdAt: sql<string>`${classesTable.createdAt}::text`,
       updatedAt: sql<string>`${classesTable.updatedAt}::text`,
     })
@@ -93,6 +94,7 @@ router.get("/classes/:id", async (req, res): Promise<void> => {
       location: classesTable.location,
       category: classesTable.category,
       status: classesTable.status,
+      endDate: classesTable.endDate,
       createdAt: sql<string>`${classesTable.createdAt}::text`,
       updatedAt: sql<string>`${classesTable.updatedAt}::text`,
     })

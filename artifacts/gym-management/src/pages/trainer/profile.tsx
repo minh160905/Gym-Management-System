@@ -79,19 +79,19 @@ export default function TrainerProfile() {
   }
 
   if (trainerLoading) {
-    return <div className="flex items-center justify-center h-64 text-muted-foreground">Loading your profile...</div>;
+    return <div className="flex items-center justify-center h-64 text-muted-foreground">Đang tải hồ sơ...</div>;
   }
 
   return (
     <div className="space-y-6 max-w-3xl">
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">My Profile</h1>
-          <p className="text-muted-foreground mt-2">Your personal information and account details.</p>
+          <h1 className="text-3xl font-bold tracking-tight">Hồ sơ của tôi</h1>
+          <p className="text-muted-foreground mt-2">Thông tin cá nhân và chi tiết tài khoản.</p>
         </div>
         {trainer && (
           <Button onClick={openEdit} variant="outline">
-            <Pencil className="w-4 h-4 mr-2" /> Edit Profile
+            <Pencil className="w-4 h-4 mr-2" /> Chỉnh sửa hồ sơ
           </Button>
         )}
       </div>
@@ -124,7 +124,7 @@ export default function TrainerProfile() {
           <CardHeader className="pb-3">
             <CardTitle className="text-base flex items-center gap-2">
               <User className="w-4 h-4 text-primary" />
-              Personal Information
+              Thông tin cá nhân
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-1">
@@ -132,14 +132,14 @@ export default function TrainerProfile() {
               <>
                 <InfoRow icon={Mail} label="Email" value={trainer.email} />
                 <InfoRow icon={Phone} label="Phone" value={trainer.phone} />
-                <InfoRow icon={Calendar} label="Hire Date" value={trainer.hireDate ? format(new Date(trainer.hireDate), "MMMM d, yyyy") : null} />
-                <InfoRow icon={Briefcase} label="Role" value={trainer.role?.replace("_", " ")} />
-                <InfoRow icon={DollarSign} label="Salary" value={trainer.salary ? `$${Number(trainer.salary).toLocaleString()}/yr` : null} />
-                <InfoRow icon={User} label="Specialization" value={trainer.specialization} />
-                {trainer.bio && <InfoRow icon={Briefcase} label="Bio" value={trainer.bio} />}
+                <InfoRow icon={Calendar} label="Ngày nhận việc" value={trainer.hireDate ? format(new Date(trainer.hireDate), "dd/MM/yyyy") : null} />
+                <InfoRow icon={Briefcase} label="Chức vụ" value={trainer.role?.replace("_", " ")} />
+                <InfoRow icon={DollarSign} label="Lương" value={trainer.salary ? `$${Number(trainer.salary).toLocaleString()}/năm` : null} />
+                <InfoRow icon={User} label="Chuyên môn" value={trainer.specialization} />
+                {trainer.bio && <InfoRow icon={Briefcase} label="Giới thiệu" value={trainer.bio} />}
               </>
             ) : (
-              <p className="text-sm text-muted-foreground py-4">No personal information found.</p>
+              <p className="text-sm text-muted-foreground py-4">Không tìm thấy thông tin cá nhân.</p>
             )}
           </CardContent>
         </Card>
@@ -149,7 +149,7 @@ export default function TrainerProfile() {
           <CardHeader className="pb-3">
             <CardTitle className="text-base flex items-center gap-2">
               <Shield className="w-4 h-4 text-primary" />
-              Account Information
+              Thông tin tài khoản
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-1">
@@ -157,12 +157,12 @@ export default function TrainerProfile() {
               <>
                 <InfoRow icon={AtSign} label="Username" value={account.username} />
                 <InfoRow icon={User} label="Full Name" value={account.fullName} />
-                <InfoRow icon={Shield} label="Role" value="Personal Trainer" />
-                <InfoRow icon={Lock} label="Password" value="••••••••" />
-                <InfoRow icon={Calendar} label="Account Created" value={format(new Date(account.createdAt), "MMMM d, yyyy")} />
+                <InfoRow icon={Shield} label="Vai trò" value="HLV Cá nhân" />
+                <InfoRow icon={Lock} label="Mật khẩu" value="••••••••" />
+                <InfoRow icon={Calendar} label="Ngày tạo tài khoản" value={format(new Date(account.createdAt), "dd/MM/yyyy")} />
               </>
             ) : (
-              <p className="text-sm text-muted-foreground py-4">Loading account info...</p>
+              <p className="text-sm text-muted-foreground py-4">Đang tải thông tin tài khoản...</p>
             )}
           </CardContent>
         </Card>
@@ -172,28 +172,28 @@ export default function TrainerProfile() {
           <CardHeader className="pb-3">
             <CardTitle className="text-base flex items-center gap-2">
               <Clock className="w-4 h-4 text-primary" />
-              Session Overview
+              Tổng quan buổi tập
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-3 gap-4 mb-4">
               <div className="text-center p-4 rounded-lg bg-muted/50">
                 <p className="text-2xl font-bold text-primary">{sessions?.length ?? 0}</p>
-                <p className="text-xs text-muted-foreground mt-1 uppercase tracking-wide">Total Sessions</p>
+                <p className="text-xs text-muted-foreground mt-1 uppercase tracking-wide">Tổng buổi tập</p>
               </div>
               <div className="text-center p-4 rounded-lg bg-muted/50">
                 <p className="text-2xl font-bold text-primary">{completedSessions.length}</p>
-                <p className="text-xs text-muted-foreground mt-1 uppercase tracking-wide">Completed</p>
+                <p className="text-xs text-muted-foreground mt-1 uppercase tracking-wide">Hoàn thành</p>
               </div>
               <div className="text-center p-4 rounded-lg bg-muted/50">
                 <p className="text-2xl font-bold text-primary">{scheduledSessions.length}</p>
-                <p className="text-xs text-muted-foreground mt-1 uppercase tracking-wide">Upcoming</p>
+                <p className="text-xs text-muted-foreground mt-1 uppercase tracking-wide">Sắp tới</p>
               </div>
             </div>
 
             {scheduledSessions.length > 0 && (
               <>
-                <h4 className="text-sm font-medium text-muted-foreground uppercase tracking-wide mb-3">Upcoming Sessions</h4>
+                <h4 className="text-sm font-medium text-muted-foreground uppercase tracking-wide mb-3">Buổi tập sắp tới</h4>
                 <div className="space-y-2">
                   {scheduledSessions.slice(0, 5).map((s) => (
                     <div key={s.id} className="flex items-center justify-between py-2 border-b border-border last:border-0">
@@ -202,12 +202,12 @@ export default function TrainerProfile() {
                         <div>
                           <p className="text-sm font-medium">{s.notes ?? `Session #${s.id}`}</p>
                           <p className="text-xs text-muted-foreground">
-                            {s.scheduledAt ? format(new Date(s.scheduledAt), "MMM d, yyyy · h:mm a") : "TBD"}
-                            {s.durationMinutes ? ` · ${s.durationMinutes} min` : ""}
+                            {s.scheduledAt ? format(new Date(s.scheduledAt), "dd/MM/yyyy · HH:mm") : "Chưa xác định"}
+                            {s.durationMinutes ? ` · ${s.durationMinutes} phút` : ""}
                           </p>
                         </div>
                       </div>
-                      <Badge variant="secondary">Scheduled</Badge>
+                       <Badge variant="secondary">Đã đặt lịch</Badge>
                     </div>
                   ))}
                 </div>
@@ -215,13 +215,13 @@ export default function TrainerProfile() {
             )}
 
             {sessions?.length === 0 && (
-              <p className="text-sm text-muted-foreground">No sessions recorded yet.</p>
+              <p className="text-sm text-muted-foreground">Chưa có buổi tập nào.</p>
             )}
 
             {completedSessions.length > 0 && scheduledSessions.length === 0 && (
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <CheckCircle2 className="w-4 h-4 text-primary" />
-                {completedSessions.length} session(s) completed. No upcoming sessions.
+                {completedSessions.length} buổi tập đã hoàn thành. Không có buổi tập sắp tới.
               </div>
             )}
           </CardContent>
@@ -233,12 +233,12 @@ export default function TrainerProfile() {
         <DialogContent className="max-w-md">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <Pencil className="w-4 h-4 text-primary" /> Edit Profile
+              <Pencil className="w-4 h-4 text-primary" /> Chỉnh sửa hồ sơ
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-2">
             <div className="space-y-2">
-              <Label>Phone Number</Label>
+              <Label>Số điện thoại</Label>
               <Input
                 placeholder="+1 (555) 000-0000"
                 value={form.phone}
@@ -246,17 +246,17 @@ export default function TrainerProfile() {
               />
             </div>
             <div className="space-y-2">
-              <Label>Specialization</Label>
+              <Label>Chuyên môn</Label>
               <Input
-                placeholder="e.g. Strength Training, Yoga, HIIT"
+                placeholder="VD: Tập tạ, Yoga, HIIT"
                 value={form.specializations}
                 onChange={(e) => setForm((f) => ({ ...f, specializations: e.target.value }))}
               />
             </div>
             <div className="space-y-2">
-              <Label>Bio</Label>
+              <Label>Giới thiệu bản thân</Label>
               <Textarea
-                placeholder="Tell members about yourself..."
+                placeholder="Giới thiệu bản thân với hội viên..."
                 rows={4}
                 value={form.bio}
                 onChange={(e) => setForm((f) => ({ ...f, bio: e.target.value }))}
@@ -264,9 +264,9 @@ export default function TrainerProfile() {
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setEditOpen(false)} disabled={saving}>Cancel</Button>
+            <Button variant="outline" onClick={() => setEditOpen(false)} disabled={saving}>Hủy</Button>
             <Button onClick={handleSave} disabled={saving}>
-              {saving ? "Saving..." : "Save Changes"}
+              {saving ? "Đang lưu..." : "Lưu thay đổi"}
             </Button>
           </DialogFooter>
         </DialogContent>

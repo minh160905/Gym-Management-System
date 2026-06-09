@@ -20,6 +20,10 @@ export interface PTRequest {
   /** @nullable */
   preferredSchedule?: string | null;
   status: string;
+  /** @nullable */
+  sessionsCount?: number | null;
+  /** @nullable */
+  desiredDuration?: string | null;
   createdAt: string;
   updatedAt: string;
 }

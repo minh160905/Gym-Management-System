@@ -24,9 +24,7 @@ router.get("/attendance", async (req, res): Promise<void> => {
     .select({
       id: attendanceTable.id,
       memberId: attendanceTable.memberId,
-      memberName: null as string | null,
       classId: attendanceTable.classId,
-      className: null as string | null,
       checkedInAt: attendanceTable.checkedInAt,
       checkedOutAt: attendanceTable.checkedOutAt,
       createdAt: attendanceTable.createdAt,
@@ -56,14 +54,23 @@ router.post("/attendance", async (req, res): Promise<void> => {
     return;
   }
 
-  const [record] = await db.insert(attendanceTable).values(parsed.data).returning();
+  const [member] = await db.select().from(membersTable).where(eq(membersTable.id, parsed.data.memberId));
+  if (!member) {
+    res.status(404).json({ error: "Hội viên không tồn tại." });
+    return;
+  }
 
-  const [member] = await db.select().from(membersTable).where(eq(membersTable.id, record.memberId));
+  if (member.status === "expired") {
+    res.status(400).json({ error: "Gói hội viên đã hết hạn. Không thể thực hiện check-in." });
+    return;
+  }
+
+  const [record] = await db.insert(attendanceTable).values(parsed.data).returning();
   const [cls] = record.classId ? await db.select().from(classesTable).where(eq(classesTable.id, record.classId)) : [];
 
   res.status(201).json({
     ...record,
-    memberName: member ? `${member.firstName} ${member.lastName}` : null,
+    memberName: `${member.firstName} ${member.lastName}`,
     className: cls?.name ?? null,
     createdAt: record.createdAt.toISOString(),
   });

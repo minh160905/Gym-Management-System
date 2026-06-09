@@ -23,6 +23,8 @@ export interface FitnessClass {
   location?: string | null;
   category: string;
   status: string;
+  /** @nullable */
+  endDate?: string | null;
   createdAt: string;
   updatedAt: string;
 }

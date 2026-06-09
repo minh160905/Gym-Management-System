@@ -15,8 +15,8 @@ export default function ManagerMembers() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Members</h1>
-        <p className="text-muted-foreground mt-2">View and manage member accounts.</p>
+        <h1 className="text-3xl font-bold tracking-tight">Hội viên</h1>
+        <p className="text-muted-foreground mt-2">Xem và quản lý tài khoản hội viên.</p>
       </div>
 
       <Card>
@@ -24,22 +24,22 @@ export default function ManagerMembers() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Name</TableHead>
+                <TableHead>Họ tên</TableHead>
                 <TableHead>Email</TableHead>
-                <TableHead>Plan</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Joined</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+                <TableHead>Gói</TableHead>
+                <TableHead>Trạng thái</TableHead>
+                <TableHead>Ngày tham gia</TableHead>
+                <TableHead className="text-right">Thao tác</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {isLoading ? (
-                <TableRow><TableCell colSpan={6} className="text-center py-8">Loading...</TableCell></TableRow>
+                <TableRow><TableCell colSpan={6} className="text-center py-8">Đang tải...</TableCell></TableRow>
               ) : members?.map((member) => (
                 <TableRow key={member.id}>
                   <TableCell className="font-medium">{member.firstName} {member.lastName}</TableCell>
                   <TableCell>{member.email}</TableCell>
-                  <TableCell>{member.membershipPlanName || 'None'}</TableCell>
+                  <TableCell>{member.status === 'expired' ? '—' : (member.membershipPlanName || 'Chưa có gói')}</TableCell>
                   <TableCell>
                     <Badge variant={member.status === 'active' ? 'default' : 'secondary'}>
                       {member.status}
@@ -48,7 +48,7 @@ export default function ManagerMembers() {
                   <TableCell>{format(new Date(member.joinDate), 'MMM d, yyyy')}</TableCell>
                   <TableCell className="text-right">
                     <Button variant="outline" size="sm" onClick={() => setSelectedMemberId(member.id)}>
-                      <Eye className="w-4 h-4 mr-1" /> View Details
+                      <Eye className="w-4 h-4 mr-1" /> Xem chi tiết
                     </Button>
                   </TableCell>
                 </TableRow>

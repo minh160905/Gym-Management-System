@@ -19,4 +19,6 @@ export interface UpdateClassBody {
   location?: string | null;
   category?: string;
   status?: string;
+  /** @nullable */
+  endDate?: string | null;
 }

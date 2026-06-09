@@ -15,6 +15,7 @@ import OwnerMembers from "@/pages/owner/members";
 import OwnerStaff from "@/pages/owner/staff";
 import OwnerMemberships from "@/pages/owner/memberships";
 import OwnerAnalytics from "@/pages/owner/analytics";
+import OwnerEquipment from "@/pages/owner/equipment";
 
 // Manager Pages
 import ManagerDashboard from "@/pages/manager/dashboard";
@@ -31,6 +32,7 @@ import TrainerSessions from "@/pages/trainer/sessions";
 import TrainerWorkouts from "@/pages/trainer/workouts";
 import TrainerClients from "@/pages/trainer/clients";
 import TrainerProfile from "@/pages/trainer/profile";
+import TrainerIncome from "@/pages/trainer/income";
 
 // Customer Pages
 import CustomerDashboard from "@/pages/customer/dashboard";
@@ -42,6 +44,7 @@ import CustomerPayments from "@/pages/customer/payments";
 import CustomerTrainingHistory from "@/pages/customer/training-history";
 import CustomerFeedback from "@/pages/customer/feedback";
 import CustomerProfile from "@/pages/customer/profile";
+import CustomerSchedule from "@/pages/customer/schedule";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -63,6 +66,7 @@ function Router() {
       <Route path="/owner/staff" component={OwnerStaff} />
       <Route path="/owner/memberships" component={OwnerMemberships} />
       <Route path="/owner/analytics" component={OwnerAnalytics} />
+      <Route path="/owner/equipment" component={OwnerEquipment} />
 
       {/* Manager Routes */}
       <Route path="/manager/dashboard" component={ManagerDashboard} />
@@ -79,6 +83,7 @@ function Router() {
       <Route path="/trainer/workouts" component={TrainerWorkouts} />
       <Route path="/trainer/clients" component={TrainerClients} />
       <Route path="/trainer/profile" component={TrainerProfile} />
+      <Route path="/trainer/income" component={TrainerIncome} />
 
       {/* Customer Routes */}
       <Route path="/customer/dashboard" component={CustomerDashboard} />
@@ -88,6 +93,7 @@ function Router() {
       <Route path="/customer/hire-pt" component={CustomerHirePT} />
       <Route path="/customer/payments" component={CustomerPayments} />
       <Route path="/customer/training-history" component={CustomerTrainingHistory} />
+      <Route path="/customer/schedule" component={CustomerSchedule} />
       <Route path="/customer/feedback" component={CustomerFeedback} />
       <Route path="/customer/profile" component={CustomerProfile} />
 

@@ -22,8 +22,8 @@ export default function OwnerDashboard() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Owner Dashboard</h1>
-        <p className="text-muted-foreground mt-2">Overview of gym performance and metrics.</p>
+        <h1 className="text-3xl font-bold tracking-tight">Bảng điều khiển</h1>
+        <p className="text-muted-foreground mt-2">Tổng quan hiệu suất và số liệu của phòng tập.</p>
       </div>
 
       {statsLoading ? (
@@ -35,24 +35,24 @@ export default function OwnerDashboard() {
       ) : stats ? (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <StatCard
-            title="Total Revenue"
+            title="Doanh thu tháng"
             value={`$${stats.monthlyRevenue.toLocaleString()}`}
             icon={CreditCard}
-            trend="+12% from last month"
+            trend="+12% so với tháng trước"
           />
           <StatCard
-            title="Active Members"
+            title="Hội viên đang hoạt động"
             value={stats.activeMembers}
             icon={Users}
-            trend={`${stats.memberGrowthPercent}% growth`}
+            trend={`${stats.memberGrowthPercent}% tăng trưởng`}
           />
           <StatCard
-            title="Classes Today"
+            title="Lớp học hôm nay"
             value={stats.classesToday}
             icon={Calendar}
           />
           <StatCard
-            title="Expiring Memberships"
+            title="Gói sắp hết hạn"
             value={stats.expiringSoonCount}
             icon={AlertTriangle}
             alert
@@ -63,25 +63,25 @@ export default function OwnerDashboard() {
       <div className="grid gap-4 md:grid-cols-2">
         <Card className="col-span-1">
           <CardHeader>
-            <CardTitle>Equipment Status</CardTitle>
+            <CardTitle>Tình trạng thiết bị</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium flex items-center gap-2">
-                  <Badge variant="outline" className="bg-primary/20 text-primary border-primary/30">Operational</Badge>
+                   <Badge variant="outline" className="bg-primary/20 text-primary border-primary/30">Hoạt động</Badge>
                 </span>
                 <span className="font-bold">{eqOperational}</span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium flex items-center gap-2">
-                  <Badge variant="outline" className="bg-yellow-500/20 text-yellow-600 border-yellow-500/30">Maintenance</Badge>
+                   <Badge variant="outline" className="bg-yellow-500/20 text-yellow-600 border-yellow-500/30">Bảo trì</Badge>
                 </span>
                 <span className="font-bold">{eqMaintenance}</span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium flex items-center gap-2">
-                  <Badge variant="outline" className="bg-destructive/20 text-destructive border-destructive/30">Retired</Badge>
+                   <Badge variant="outline" className="bg-destructive/20 text-destructive border-destructive/30">Hết dùng</Badge>
                 </span>
                 <span className="font-bold">{eqRetired}</span>
               </div>
@@ -92,7 +92,7 @@ export default function OwnerDashboard() {
         <Card className="col-span-1">
           <CardHeader>
             <CardTitle className="flex justify-between items-center">
-              <span>Member Feedback</span>
+              <span>Phản hồi hội viên</span>
               <Badge variant="secondary" className="text-lg px-3 py-1">
                 {avgRating} / 5.0
               </Badge>
@@ -103,14 +103,14 @@ export default function OwnerDashboard() {
               {feedback?.slice(0, 5).map((f) => (
                 <div key={f.id} className="border-b border-border pb-3 last:border-0 last:pb-0">
                   <div className="flex justify-between items-center mb-1">
-                    <span className="font-medium text-sm">{f.memberName || 'Anonymous'}</span>
+                    <span className="font-medium text-sm">{f.memberName || 'Ẩn danh'}</span>
                     <span className="text-yellow-500 text-xs">{"★".repeat(f.rating)}{"☆".repeat(5 - f.rating)}</span>
                   </div>
                   <p className="text-sm text-muted-foreground line-clamp-2">{f.comment}</p>
                 </div>
               ))}
               {(!feedback || feedback.length === 0) && (
-                <p className="text-sm text-muted-foreground">No feedback received yet.</p>
+                <p className="text-sm text-muted-foreground">Chưa có phản hồi nào.</p>
               )}
             </div>
           </CardContent>
@@ -120,7 +120,7 @@ export default function OwnerDashboard() {
       <div className="grid gap-4 md:grid-cols-2">
         <Card className="col-span-1">
           <CardHeader>
-            <CardTitle>Revenue Overview</CardTitle>
+            <CardTitle>Doanh thu</CardTitle>
           </CardHeader>
           <CardContent className="h-[300px]">
             {revenueLoading ? (
@@ -144,7 +144,7 @@ export default function OwnerDashboard() {
 
         <Card className="col-span-1">
           <CardHeader>
-            <CardTitle>Member Growth</CardTitle>
+            <CardTitle>Tăng trưởng hội viên</CardTitle>
           </CardHeader>
           <CardContent className="h-[300px]">
             {revenueLoading ? (

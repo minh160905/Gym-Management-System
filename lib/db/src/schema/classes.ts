@@ -15,6 +15,7 @@ export const classesTable = pgTable("classes", {
   location: text("location"),
   category: text("category").notNull().default("general"),
   status: text("status").notNull().default("scheduled"),
+  endDate: text("end_date"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow().$onUpdate(() => new Date()),
 });

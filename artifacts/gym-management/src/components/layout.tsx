@@ -48,6 +48,8 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
       { name: "Staff", href: "/owner/staff", icon: Briefcase },
       { name: "Memberships", href: "/owner/memberships", icon: CreditCard },
       { name: "Analytics", href: "/owner/analytics", icon: BarChart3 },
+      { name: "Equipment", href: "/owner/equipment", icon: Wrench },
+
     ],
     manager: [
       { name: "Dashboard", href: "/manager/dashboard", icon: LayoutDashboard },
@@ -55,7 +57,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
       { name: "Staff", href: "/manager/staff", icon: Briefcase },
       { name: "Classes", href: "/manager/classes", icon: Calendar },
       { name: "Attendance", href: "/manager/attendance", icon: ClipboardCheck },
-      { name: "Equipment", href: "/manager/equipment", icon: Wrench },
+      { name: "Thiết bị", href: "/manager/equipment", icon: Wrench },
       { name: "Feedback", href: "/manager/feedback", icon: MessageSquare },
     ],
     trainer: [
@@ -63,12 +65,14 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
       { name: "Sessions", href: "/trainer/sessions", icon: Clock },
       { name: "Workouts", href: "/trainer/workouts", icon: Dumbbell },
       { name: "Clients", href: "/trainer/clients", icon: Users },
+      { name: "Chi tiết thu nhập", href: "/trainer/income", icon: DollarSign },
       { name: "My Profile", href: "/trainer/profile", icon: UserCircle },
     ],
     customer: [
       { name: "Dashboard", href: "/customer/dashboard", icon: LayoutDashboard },
       { name: "Classes", href: "/customer/classes", icon: Calendar },
       { name: "My Bookings", href: "/customer/bookings", icon: Clock },
+      { name: "Lịch tập luyện", href: "/customer/schedule", icon: Calendar },
       { name: "Membership", href: "/customer/membership", icon: CreditCard },
       { name: "Hire PT", href: "/customer/hire-pt", icon: UserPlus },
       { name: "Payments", href: "/customer/payments", icon: DollarSign },

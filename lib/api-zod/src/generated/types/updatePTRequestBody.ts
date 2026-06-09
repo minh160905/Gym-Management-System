@@ -12,4 +12,8 @@ export interface UpdatePTRequestBody {
   status?: string;
   /** @nullable */
   message?: string | null;
+  /** @nullable */
+  sessionsCount?: number | null;
+  /** @nullable */
+  desiredDuration?: string | null;
 }

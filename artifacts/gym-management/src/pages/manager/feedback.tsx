@@ -10,8 +10,8 @@ export default function ManagerFeedback() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Feedback</h1>
-        <p className="text-muted-foreground mt-2">View all member feedback and ratings.</p>
+        <h1 className="text-3xl font-bold tracking-tight">Phản hồi</h1>
+        <p className="text-muted-foreground mt-2">Xem toàn bộ đánh giá và phản hồi từ hội viên.</p>
       </div>
 
       <Card>
@@ -19,20 +19,20 @@ export default function ManagerFeedback() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Date</TableHead>
-                <TableHead>Member</TableHead>
-                <TableHead>Service</TableHead>
-                <TableHead>Rating</TableHead>
-                <TableHead>Comment</TableHead>
+                <TableHead>Ngày</TableHead>
+                <TableHead>Hội viên</TableHead>
+                <TableHead>Dịch vụ</TableHead>
+                <TableHead>Đánh giá</TableHead>
+                <TableHead>Nội dung</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {isLoading ? (
-                <TableRow><TableCell colSpan={5} className="text-center py-8">Loading...</TableCell></TableRow>
+                <TableRow><TableCell colSpan={5} className="text-center py-8">Đang tải...</TableCell></TableRow>
               ) : feedback?.map((item) => (
                 <TableRow key={item.id}>
                   <TableCell className="whitespace-nowrap">{format(new Date(item.createdAt), "MMM d, yyyy")}</TableCell>
-                  <TableCell className="font-medium">{item.memberName || "Anonymous"}</TableCell>
+                  <TableCell className="font-medium">{item.memberName || "Ẩn danh"}</TableCell>
                   <TableCell><Badge variant="secondary">{item.serviceType}</Badge></TableCell>
                   <TableCell>
                     <div className="flex text-yellow-500">
@@ -43,7 +43,7 @@ export default function ManagerFeedback() {
                 </TableRow>
               ))}
               {feedback?.length === 0 && (
-                <TableRow><TableCell colSpan={5} className="text-center py-8 text-muted-foreground">No feedback yet.</TableCell></TableRow>
+                <TableRow><TableCell colSpan={5} className="text-center py-8 text-muted-foreground">Chưa có phản hồi nào.</TableCell></TableRow>
               )}
             </TableBody>
           </Table>

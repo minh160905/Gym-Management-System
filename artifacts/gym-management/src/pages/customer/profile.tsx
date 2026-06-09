@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import {
   useGetMember, useListMemberships, useListPayments, useListUsers,
   useUpdateMember, getGetMemberQueryKey
@@ -19,8 +19,9 @@ import {
 import { format } from "date-fns";
 import {
   User, Mail, Phone, Calendar, CreditCard, Lock, AtSign, Shield,
-  AlertCircle, FileText, DollarSign, Pencil
+  AlertCircle, FileText, DollarSign, Pencil, QrCode, Download, Info
 } from "lucide-react";
+import { QRCodeCanvas } from "qrcode.react";
 
 function InfoRow({ icon: Icon, label, value }: { icon: any; label: string; value?: string | null }) {
   if (!value) return null;
@@ -51,8 +52,20 @@ export default function CustomerProfile() {
   const [editOpen, setEditOpen] = useState(false);
   const [form, setForm] = useState({ phone: "", emergencyContact: "", notes: "" });
   const [saving, setSaving] = useState(false);
+  const qrRef = useRef<HTMLCanvasElement>(null);
 
-  const plan = plans?.find((p) => p.id === member?.membershipPlanId);
+  const qrValue = memberId ? `GYM-MEMBER-${memberId}` : "";
+
+  function downloadQR() {
+    const canvas = qrRef.current;
+    if (!canvas) return;
+    const link = document.createElement("a");
+    link.download = `gym-qr-member-${memberId}.png`;
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+  }
+
+  const plan = member?.status === "expired" ? undefined : plans?.find((p) => p.id === member?.membershipPlanId);
   const account = users?.find((u) => u.id === userId);
 
   function openEdit() {
@@ -113,6 +126,64 @@ export default function CustomerProfile() {
                   </Badge>
                   <span className="text-muted-foreground text-sm">Member</span>
                 </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* QR Code Check-in */}
+      {member && memberId && (
+        <Card className="border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-primary/10">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base flex items-center gap-2">
+              <QrCode className="w-4 h-4 text-primary" />
+              Mã QR Check-in
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-col sm:flex-row items-center gap-6">
+              {/* QR Code */}
+              <div className="flex-shrink-0 p-4 bg-white rounded-2xl shadow-md ring-1 ring-primary/20">
+                <QRCodeCanvas
+                  ref={qrRef}
+                  value={qrValue}
+                  size={160}
+                  level="H"
+                  marginSize={2}
+                />
+              </div>
+
+              {/* Info */}
+              <div className="flex-1 space-y-3 text-center sm:text-left">
+                <div>
+                  <p className="text-xs text-muted-foreground uppercase tracking-wide font-medium mb-1">Thành viên</p>
+                  <p className="font-bold text-lg">{member.firstName} {member.lastName}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground uppercase tracking-wide font-medium mb-1">Member ID</p>
+                  <p className="font-mono text-sm bg-muted px-2 py-1 rounded inline-block">#{memberId}</p>
+                </div>
+                {member.status === "expired" ? (
+                  <div className="flex items-start gap-2 text-xs text-red-600 bg-red-500/10 border border-red-500/20 rounded-lg p-3">
+                    <AlertCircle className="w-3.5 h-3.5 mt-0.5 shrink-0 text-red-500" />
+                    <span className="font-medium">Gói hội viên đã hết hạn. Bạn không thể check-in cho đến khi gia hạn gói mới.</span>
+                  </div>
+                ) : (
+                  <div className="flex items-start gap-2 text-xs text-muted-foreground bg-muted/60 rounded-lg p-3">
+                    <Info className="w-3.5 h-3.5 mt-0.5 shrink-0 text-primary" />
+                    <span>Xuất trình mã QR này tại lễ tân để check-in khi tới phòng tập.</span>
+                  </div>
+                )}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="gap-2 w-full sm:w-auto"
+                  onClick={downloadQR}
+                >
+                  <Download className="w-4 h-4" />
+                  Tải QR Code
+                </Button>
               </div>
             </div>
           </CardContent>

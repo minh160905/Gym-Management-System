@@ -24,6 +24,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/lib/auth";
 
 const editSchema = z.object({
   firstName:        z.string().min(1, "Required"),
@@ -58,6 +59,7 @@ function InfoRow({ icon: Icon, label, value }: { icon: any; label: string; value
 }
 
 export function MemberDetailDialog({ memberId, onClose }: MemberDetailDialogProps) {
+  const { role } = useAuth();
   const [mode, setMode] = useState<"view" | "edit">("view");
 
   const { data: member, isLoading } = useGetMember(memberId ?? 0, {
@@ -73,7 +75,7 @@ export function MemberDetailDialog({ memberId, onClose }: MemberDetailDialogProp
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
-  const plan = plans?.find((p) => p.id === member?.membershipPlanId);
+  const plan = member?.status === "expired" ? undefined : plans?.find((p) => p.id === member?.membershipPlanId);
 
   const form = useForm<EditForm>({
     resolver: zodResolver(editSchema),
@@ -133,7 +135,7 @@ export function MemberDetailDialog({ memberId, onClose }: MemberDetailDialogProp
               <User className="w-5 h-5 text-primary" />
               {mode === "edit" ? "Edit Member" : "Member Profile"}
             </DialogTitle>
-            {!isLoading && member && (
+            {!isLoading && member && role !== "trainer" && (
               <Button
                 variant="ghost"
                 size="sm"

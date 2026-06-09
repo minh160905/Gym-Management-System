@@ -95,7 +95,7 @@ export default function OwnerMembers() {
                     <div className="font-medium">{member.firstName} {member.lastName}</div>
                     <div className="text-sm text-muted-foreground">{member.email}</div>
                   </TableCell>
-                  <TableCell>{member.membershipPlanName || 'No Plan'}</TableCell>
+                  <TableCell>{member.status === 'expired' ? '—' : (member.membershipPlanName || 'No Plan')}</TableCell>
                   <TableCell>
                     <Badge variant={member.status === 'active' ? 'default' : 'secondary'}>
                       {member.status}

@@ -1506,6 +1506,8 @@ components:
           type: string
         status:
           type: string
+        endDate:
+          type: ["string", "null"]
         createdAt:
           type: string
         updatedAt:
@@ -1543,6 +1545,8 @@ components:
           type: string
         status:
           type: string
+        endDate:
+          type: ["string", "null"]
       required:
         - name
         - capacity
@@ -1572,6 +1576,8 @@ components:
           type: string
         status:
           type: string
+        endDate:
+          type: ["string", "null"]
 
     # ─── BOOKING ────────────────────────────────────────────────────────────
     Booking:
@@ -2282,6 +2288,10 @@ components:
           type: ["string", "null"]
         status:
           type: string
+        sessionsCount:
+          type: ["integer", "null"]
+        desiredDuration:
+          type: ["string", "null"]
         createdAt:
           type: string
         updatedAt:
@@ -2304,6 +2314,10 @@ components:
           type: ["string", "null"]
         preferredSchedule:
           type: ["string", "null"]
+        sessionsCount:
+          type: ["integer", "null"]
+        desiredDuration:
+          type: ["string", "null"]
       required:
         - memberId
 
@@ -2315,4 +2329,8 @@ components:
         status:
           type: string
         message:
+          type: ["string", "null"]
+        sessionsCount:
+          type: ["integer", "null"]
+        desiredDuration:
           type: ["string", "null"]

@@ -21,6 +21,8 @@ async function formatPTRequest(p: typeof ptRequests.$inferSelect) {
     message: p.message,
     preferredSchedule: p.preferredSchedule,
     status: p.status,
+    sessionsCount: p.sessionsCount,
+    desiredDuration: p.desiredDuration,
     createdAt: p.createdAt?.toISOString() ?? new Date().toISOString(),
     updatedAt: p.updatedAt?.toISOString() ?? new Date().toISOString(),
   };
@@ -36,23 +38,37 @@ router.get("/pt-requests", async (req, res): Promise<void> => {
 });
 
 const CreatePTRequestBody = z.object({
-  memberId: z.number(),
-  trainerId: z.number().nullable().optional(),
+  memberId: z.coerce.number(),
+  trainerId: z.coerce.number().nullable().optional(),
   message: z.string().nullable().optional(),
   preferredSchedule: z.string().nullable().optional(),
+  sessionsCount: z.coerce.number().nullable().optional(),
+  desiredDuration: z.string().nullable().optional(),
 });
 
 router.post("/pt-requests", async (req, res): Promise<void> => {
+  console.log("POST /pt-requests body:", req.body);
   const body = CreatePTRequestBody.safeParse(req.body);
-  if (!body.success) { res.status(400).json({ error: body.error.message }); return; }
-  const [row] = await db.insert(ptRequests).values({ ...body.data, status: "pending" } as any).returning();
-  res.status(201).json(await formatPTRequest(row));
+  if (!body.success) {
+    console.error("Zod validation error:", body.error.format());
+    res.status(400).json({ error: body.error.message });
+    return;
+  }
+  try {
+    const [row] = await db.insert(ptRequests).values({ ...body.data, status: "pending" } as any).returning();
+    res.status(201).json(await formatPTRequest(row));
+  } catch (dbErr: any) {
+    console.error("Database insert error:", dbErr);
+    res.status(500).json({ error: dbErr.message });
+  }
 });
 
 const UpdatePTRequestBody = z.object({
-  trainerId: z.number().nullable().optional(),
+  trainerId: z.coerce.number().nullable().optional(),
   status: z.string().optional(),
   message: z.string().nullable().optional(),
+  sessionsCount: z.coerce.number().nullable().optional(),
+  desiredDuration: z.string().nullable().optional(),
 });
 
 router.patch("/pt-requests/:id", async (req, res): Promise<void> => {

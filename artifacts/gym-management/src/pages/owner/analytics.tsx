@@ -12,8 +12,8 @@ export default function OwnerAnalytics() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Analytics</h1>
-        <p className="text-muted-foreground mt-2">Deep dive into business performance metrics.</p>
+        <h1 className="text-3xl font-bold tracking-tight">Phân tích</h1>
+        <p className="text-muted-foreground mt-2">Chỉ số hiệu quả hoạt động kinh doanh chi tiết.</p>
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
@@ -21,10 +21,10 @@ export default function OwnerAnalytics() {
           [...Array(4)].map((_, i) => <Skeleton key={i} className="h-32" />)
         ) : retention ? (
           <>
-            <MetricCard title="Retention Rate" value={`${retention.retentionRate}%`} />
-            <MetricCard title="Active Members" value={retention.activeCount} />
-            <MetricCard title="Cancellations" value={retention.cancelledCount} />
-            <MetricCard title="Renewals" value={retention.renewalsThisMonth} />
+            <MetricCard title="Tỷ lệ giữ chân" value={`${retention.retentionRate}%`} />
+            <MetricCard title="Hội viên đang hoạt động" value={retention.activeCount} />
+            <MetricCard title="Hủy đăng ký" value={retention.cancelledCount} />
+            <MetricCard title="Gia hạn tháng này" value={retention.renewalsThisMonth} />
           </>
         ) : null}
       </div>
@@ -32,7 +32,7 @@ export default function OwnerAnalytics() {
       <div className="grid gap-6 md:grid-cols-2">
         <Card>
           <CardHeader>
-            <CardTitle>Revenue History</CardTitle>
+            <CardTitle>Lịch sử doanh thu</CardTitle>
           </CardHeader>
           <CardContent className="h-[300px]">
             {revenueLoading ? <Skeleton className="w-full h-full" /> : (
@@ -57,7 +57,7 @@ export default function OwnerAnalytics() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Class Popularity</CardTitle>
+            <CardTitle>Độ phổ biến lớp học</CardTitle>
           </CardHeader>
           <CardContent className="h-[300px]">
             {classesLoading ? <Skeleton className="w-full h-full" /> : (
@@ -77,7 +77,7 @@ export default function OwnerAnalytics() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Trainer Performance</CardTitle>
+          <CardTitle>Hiệu suất HLV</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
@@ -85,16 +85,16 @@ export default function OwnerAnalytics() {
               <div key={trainer.trainerId} className="flex items-center justify-between p-4 border rounded-lg bg-card hover:bg-muted/50 transition-colors">
                 <div>
                   <div className="font-medium">{trainer.trainerName}</div>
-                  <div className="text-sm text-muted-foreground">{trainer.avgRating} / 5.0 Rating</div>
+                  <div className="text-sm text-muted-foreground">{trainer.avgRating} / 5.0 Điểm</div>
                 </div>
                 <div className="flex gap-8 text-right">
                   <div>
                     <div className="text-2xl font-bold">{trainer.totalSessions}</div>
-                    <div className="text-xs text-muted-foreground uppercase tracking-wider">Sessions</div>
+                    <div className="text-xs text-muted-foreground uppercase tracking-wider">Buổi tập</div>
                   </div>
                   <div>
                     <div className="text-2xl font-bold">{trainer.activeClients}</div>
-                    <div className="text-xs text-muted-foreground uppercase tracking-wider">Clients</div>
+                    <div className="text-xs text-muted-foreground uppercase tracking-wider">Khách hàng</div>
                   </div>
                 </div>
               </div>

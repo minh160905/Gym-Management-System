@@ -1,6 +1,7 @@
 import { useState } from "react";
 import {
   useListEquipment,
+  useCreateEquipment,
   useUpdateEquipment,
   useDeleteEquipment,
   getListEquipmentQueryKey,
@@ -109,11 +110,12 @@ function safeDate(d?: string | null) {
   try { return format(new Date(d), "dd/MM/yyyy"); } catch { return d; }
 }
 
-export default function ManagerEquipment() {
+export default function OwnerEquipment() {
   const { data: equipmentList = [], isLoading } = useListEquipment();
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
+  const createEq = useCreateEquipment();
   const updateEq = useUpdateEquipment();
   const deleteEq = useDeleteEquipment();
 
@@ -149,6 +151,11 @@ export default function ManagerEquipment() {
     return matchSearch && matchStatus && matchCat;
   });
 
+  function openAdd() {
+    setEditingItem(null);
+    setForm(EMPTY_FORM);
+    setDialogOpen(true);
+  }
 
   function openEdit(item: EquipmentItem) {
     setEditingItem(item);
@@ -174,7 +181,7 @@ export default function ManagerEquipment() {
 
   async function handleSave() {
     if (!form.name.trim() || !form.category.trim()) {
-      toast({ title: "Lỗi xác thực", description: "Tên thiết bị và Danh mục là bắt buộc.", variant: "destructive" });
+      toast({ title: "Validation error", description: "Name and Category are required.", variant: "destructive" });
       return;
     }
     setSaving(true);
@@ -194,12 +201,15 @@ export default function ManagerEquipment() {
     try {
       if (editingItem) {
         await updateEq.mutateAsync({ id: editingItem.id, data: payload });
-        toast({ title: "Đã cập nhật", description: `"${payload.name}" đã được lưu.` });
+        toast({ title: "Equipment updated", description: `"${payload.name}" has been saved.` });
+      } else {
+        await createEq.mutateAsync({ data: payload });
+        toast({ title: "Equipment added", description: `"${payload.name}" has been added.` });
       }
       queryClient.invalidateQueries({ queryKey: getListEquipmentQueryKey() });
       setDialogOpen(false);
     } catch {
-      toast({ title: "Lỗi", description: "Không thể lưu thiết bị.", variant: "destructive" });
+      toast({ title: "Error", description: "Could not save equipment.", variant: "destructive" });
     } finally {
       setSaving(false);
     }
@@ -210,9 +220,9 @@ export default function ManagerEquipment() {
     try {
       await deleteEq.mutateAsync({ id: deleteTarget.id });
       queryClient.invalidateQueries({ queryKey: getListEquipmentQueryKey() });
-      toast({ title: "Đã xóa", description: `"${deleteTarget.name}" đã được xóa khỏi danh sách.` });
+      toast({ title: "Deleted", description: `"${deleteTarget.name}" has been removed.` });
     } catch {
-      toast({ title: "Lỗi", description: "Không thể xóa thiết bị.", variant: "destructive" });
+      toast({ title: "Error", description: "Could not delete equipment.", variant: "destructive" });
     } finally {
       setDeleteTarget(null);
     }
@@ -223,10 +233,12 @@ export default function ManagerEquipment() {
       {/* Header */}
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Thiết bị</h1>
+          <h1 className="text-3xl font-bold tracking-tight">Equipment</h1>
           <p className="text-muted-foreground mt-2">Quản lý thiết bị và lịch bảo trì trong phòng tập.</p>
         </div>
-
+        <Button onClick={openAdd} className="gap-2">
+          <Plus className="w-4 h-4" /> Thêm thiết bị
+        </Button>
       </div>
 
       {/* Stats */}
@@ -281,7 +293,7 @@ export default function ManagerEquipment() {
         </div>
       )}
 
-      {/* Filters + Table */}
+      {/* Filters */}
       <Card>
         <CardHeader className="py-3 px-4">
           <div className="flex flex-col sm:flex-row gap-3">
@@ -296,7 +308,7 @@ export default function ManagerEquipment() {
             </div>
             <div className="flex gap-2">
               <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="w-[160px] gap-1">
+                <SelectTrigger className="w-[150px] gap-1">
                   <Filter className="w-3.5 h-3.5 text-muted-foreground" />
                   <SelectValue />
                 </SelectTrigger>
@@ -413,7 +425,7 @@ export default function ManagerEquipment() {
       <Dialog open={dialogOpen} onOpenChange={(open) => !saving && setDialogOpen(open)}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Chỉnh sửa thiết bị</DialogTitle>
+            <DialogTitle>{editingItem ? "Chỉnh sửa thiết bị" : "Thêm thiết bị mới"}</DialogTitle>
           </DialogHeader>
 
           <div className="grid gap-4 py-2">
@@ -429,7 +441,7 @@ export default function ManagerEquipment() {
               <div className="space-y-2">
                 <Label>Danh mục <span className="text-destructive">*</span></Label>
                 <Input
-                  placeholder="Ví dụ: Cardio, Tạ tự do..."
+                  placeholder="Ví dụ: Cardio, Weights..."
                   value={form.category}
                   onChange={(e) => setForm((f) => ({ ...f, category: e.target.value }))}
                 />
@@ -532,7 +544,7 @@ export default function ManagerEquipment() {
               Hủy
             </Button>
             <Button onClick={handleSave} disabled={saving}>
-              {saving ? "Đang lưu..." : "Lưu thay đổi"}
+              {saving ? "Đang lưu..." : editingItem ? "Lưu thay đổi" : "Thêm thiết bị"}
             </Button>
           </DialogFooter>
         </DialogContent>

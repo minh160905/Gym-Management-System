@@ -317,6 +317,7 @@ export const ListClassesResponseItem = zod.object({
   location: zod.string().nullish(),
   category: zod.string(),
   status: zod.string(),
+  endDate: zod.string().nullish(),
   createdAt: zod.string(),
   updatedAt: zod.string(),
 });
@@ -335,6 +336,7 @@ export const CreateClassBody = zod.object({
   location: zod.string().nullish(),
   category: zod.string(),
   status: zod.string(),
+  endDate: zod.string().nullish(),
 });
 
 /**
@@ -357,6 +359,7 @@ export const GetClassResponse = zod.object({
   location: zod.string().nullish(),
   category: zod.string(),
   status: zod.string(),
+  endDate: zod.string().nullish(),
   createdAt: zod.string(),
   updatedAt: zod.string(),
 });
@@ -378,6 +381,7 @@ export const UpdateClassBody = zod.object({
   location: zod.string().nullish(),
   category: zod.string().optional(),
   status: zod.string().optional(),
+  endDate: zod.string().nullish(),
 });
 
 export const UpdateClassResponse = zod.object({
@@ -393,6 +397,7 @@ export const UpdateClassResponse = zod.object({
   location: zod.string().nullish(),
   category: zod.string(),
   status: zod.string(),
+  endDate: zod.string().nullish(),
   createdAt: zod.string(),
   updatedAt: zod.string(),
 });
@@ -1066,6 +1071,8 @@ export const ListPTRequestsResponseItem = zod.object({
   message: zod.string().nullish(),
   preferredSchedule: zod.string().nullish(),
   status: zod.string(),
+  sessionsCount: zod.number().nullish(),
+  desiredDuration: zod.string().nullish(),
   createdAt: zod.string(),
   updatedAt: zod.string(),
 });
@@ -1079,6 +1086,8 @@ export const CreatePTRequestBody = zod.object({
   trainerId: zod.number().nullish(),
   message: zod.string().nullish(),
   preferredSchedule: zod.string().nullish(),
+  sessionsCount: zod.number().nullish(),
+  desiredDuration: zod.string().nullish(),
 });
 
 /**
@@ -1092,6 +1101,8 @@ export const UpdatePTRequestBody = zod.object({
   trainerId: zod.number().nullish(),
   status: zod.string().optional(),
   message: zod.string().nullish(),
+  sessionsCount: zod.number().nullish(),
+  desiredDuration: zod.string().nullish(),
 });
 
 export const UpdatePTRequestResponse = zod.object({
@@ -1103,6 +1114,8 @@ export const UpdatePTRequestResponse = zod.object({
   message: zod.string().nullish(),
   preferredSchedule: zod.string().nullish(),
   status: zod.string(),
+  sessionsCount: zod.number().nullish(),
+  desiredDuration: zod.string().nullish(),
   createdAt: zod.string(),
   updatedAt: zod.string(),
 });

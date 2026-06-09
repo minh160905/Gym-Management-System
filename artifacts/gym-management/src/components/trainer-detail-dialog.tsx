@@ -297,7 +297,7 @@ export function TrainerDetailDialog({ staffId, onClose }: TrainerDetailDialogPro
                   </div>
                   <div className="bg-muted/30 rounded-lg p-3 text-center">
                     <p className="text-2xl font-bold text-primary">
-                      {ptRequests?.filter((r) => r.status === "approved").length ?? 0}
+                      {ptRequests?.filter((r) => r.status === "approved" || r.status === "confirm").length ?? 0}
                     </p>
                     <p className="text-xs text-muted-foreground">Active Clients</p>
                   </div>
@@ -340,10 +340,16 @@ export function TrainerDetailDialog({ staffId, onClose }: TrainerDetailDialogPro
                           <div className="flex items-center justify-between mb-1">
                             <p className="font-medium text-sm">{r.memberName}</p>
                             <Badge
-                              variant={r.status === "approved" ? "default" : r.status === "rejected" ? "destructive" : "secondary"}
+                              variant={
+                                r.status === "approved" || r.status === "confirm"
+                                  ? "default"
+                                  : r.status === "rejected" || r.status === "Reject"
+                                  ? "destructive"
+                                  : "secondary"
+                              }
                               className="text-xs"
                             >
-                              {r.status}
+                              {r.status === "confirm" ? "Confirm" : r.status === "Reject" ? "Reject" : r.status}
                             </Badge>
                           </div>
                           {r.preferredSchedule && <p className="text-xs text-muted-foreground">Schedule: {r.preferredSchedule}</p>}
