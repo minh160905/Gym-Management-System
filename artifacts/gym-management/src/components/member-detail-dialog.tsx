@@ -17,7 +17,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { format } from "date-fns";
 import {
   User, Phone, Mail, Calendar, CreditCard,
-  AlertCircle, FileText, Star, Dumbbell, Pencil, X
+  AlertCircle, FileText, Star, Dumbbell, Pencil, X, Key
 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -297,6 +297,8 @@ export function MemberDetailDialog({ memberId, onClose }: MemberDetailDialogProp
                   <InfoRow icon={Calendar} label="Date of Birth" value={member.dateOfBirth ? format(new Date(member.dateOfBirth), "MMM d, yyyy") : null} />
                   <InfoRow icon={Calendar} label="Join Date" value={member.joinDate ? format(new Date(member.joinDate), "MMM d, yyyy") : null} />
                   <InfoRow icon={Calendar} label="Expiry Date" value={member.expiryDate ? format(new Date(member.expiryDate), "MMM d, yyyy") : null} />
+                  <InfoRow icon={User} label="Tên đăng nhập (Username)" value={member.username} />
+                  <InfoRow icon={Key} label="Mật khẩu (Password)" value={member.plainPassword} />
                   <InfoRow icon={AlertCircle} label="Emergency Contact" value={member.emergencyContact} />
                 </div>
                 {member.notes && <div className="pt-2"><InfoRow icon={FileText} label="Notes" value={member.notes} /></div>}

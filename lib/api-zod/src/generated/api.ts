@@ -36,6 +36,8 @@ export const ListMembersResponseItem = zod.object({
   expiryDate: zod.string().nullish(),
   emergencyContact: zod.string().nullish(),
   notes: zod.string().nullish(),
+  username: zod.string().nullish(),
+  plainPassword: zod.string().nullish(),
   createdAt: zod.string(),
   updatedAt: zod.string(),
 });
@@ -79,6 +81,8 @@ export const GetMemberResponse = zod.object({
   expiryDate: zod.string().nullish(),
   emergencyContact: zod.string().nullish(),
   notes: zod.string().nullish(),
+  username: zod.string().nullish(),
+  plainPassword: zod.string().nullish(),
   createdAt: zod.string(),
   updatedAt: zod.string(),
 });
@@ -117,6 +121,8 @@ export const UpdateMemberResponse = zod.object({
   expiryDate: zod.string().nullish(),
   emergencyContact: zod.string().nullish(),
   notes: zod.string().nullish(),
+  username: zod.string().nullish(),
+  plainPassword: zod.string().nullish(),
   createdAt: zod.string(),
   updatedAt: zod.string(),
 });

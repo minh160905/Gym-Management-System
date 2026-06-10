@@ -1247,6 +1247,10 @@ components:
           type: ["string", "null"]
         notes:
           type: ["string", "null"]
+        username:
+          type: ["string", "null"]
+        plainPassword:
+          type: ["string", "null"]
         createdAt:
           type: string
         updatedAt:

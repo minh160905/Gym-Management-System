@@ -30,6 +30,10 @@ export interface Member {
   emergencyContact?: string | null;
   /** @nullable */
   notes?: string | null;
+  /** @nullable */
+  username?: string | null;
+  /** @nullable */
+  plainPassword?: string | null;
   createdAt: string;
   updatedAt: string;
 }
