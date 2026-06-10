@@ -43,13 +43,20 @@ router.post("/auth/users", async (req, res): Promise<void> => {
     return;
   }
   const { username, password, fullName, role, memberId, staffId } = body.data;
+  
+  // Enforce customer role for public registration (memberId is present, or staffId is null/undefined)
+  let finalRole = role;
+  if (memberId || !staffId) {
+    finalRole = "customer";
+  }
+
   const [row] = await db
     .insert(users)
     .values({
       username,
       passwordHash: hashPassword(password),
       fullName,
-      role,
+      role: finalRole,
       memberId: memberId ?? null,
       staffId: staffId ?? null,
     })
