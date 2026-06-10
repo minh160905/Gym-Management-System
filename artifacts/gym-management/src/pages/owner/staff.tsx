@@ -36,7 +36,7 @@ export default function OwnerStaff() {
 
   const activeCount  = staff?.filter((s) => s.status === "active").length ?? 0;
   const trainerCount = staff?.filter((s) => s.role === "trainer").length ?? 0;
-  const totalSalary  = staff?.reduce((sum, s) => sum + (s.salary ? Number(s.salary) : 0), 0) ?? 0;
+  const totalSalary  = staff?.filter((s) => s.status !== "inactive").reduce((sum, s) => sum + (s.salary ? Number(s.salary) : 0), 0) ?? 0;
 
   return (
     <div className="space-y-6">
