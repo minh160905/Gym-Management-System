@@ -181,7 +181,7 @@ export default function OwnerEquipment() {
 
   async function handleSave() {
     if (!form.name.trim() || !form.category.trim()) {
-      toast({ title: "Validation error", description: "Name and Category are required.", variant: "destructive" });
+      toast({ title: "Lỗi xác thực", description: "Tên thiết bị và Danh mục là bắt buộc.", variant: "destructive" });
       return;
     }
     setSaving(true);
@@ -201,15 +201,15 @@ export default function OwnerEquipment() {
     try {
       if (editingItem) {
         await updateEq.mutateAsync({ id: editingItem.id, data: payload });
-        toast({ title: "Equipment updated", description: `"${payload.name}" has been saved.` });
+        toast({ title: "Đã cập nhật thiết bị", description: `"${payload.name}" đã được lưu.` });
       } else {
         await createEq.mutateAsync({ data: payload });
-        toast({ title: "Equipment added", description: `"${payload.name}" has been added.` });
+        toast({ title: "Đã thêm thiết bị", description: `"${payload.name}" đã được thêm.` });
       }
       queryClient.invalidateQueries({ queryKey: getListEquipmentQueryKey() });
       setDialogOpen(false);
     } catch {
-      toast({ title: "Error", description: "Could not save equipment.", variant: "destructive" });
+      toast({ title: "Lỗi", description: "Không thể lưu thiết bị.", variant: "destructive" });
     } finally {
       setSaving(false);
     }
@@ -220,9 +220,9 @@ export default function OwnerEquipment() {
     try {
       await deleteEq.mutateAsync({ id: deleteTarget.id });
       queryClient.invalidateQueries({ queryKey: getListEquipmentQueryKey() });
-      toast({ title: "Deleted", description: `"${deleteTarget.name}" has been removed.` });
+      toast({ title: "Đã xóa", description: `"${deleteTarget.name}" đã được xóa khỏi danh sách.` });
     } catch {
-      toast({ title: "Error", description: "Could not delete equipment.", variant: "destructive" });
+      toast({ title: "Lỗi", description: "Không thể xóa thiết bị.", variant: "destructive" });
     } finally {
       setDeleteTarget(null);
     }
@@ -233,7 +233,7 @@ export default function OwnerEquipment() {
       {/* Header */}
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Equipment</h1>
+          <h1 className="text-3xl font-bold tracking-tight">Thiết bị</h1>
           <p className="text-muted-foreground mt-2">Quản lý thiết bị và lịch bảo trì trong phòng tập.</p>
         </div>
         <Button onClick={openAdd} className="gap-2">

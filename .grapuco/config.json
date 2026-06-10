@@ -1,0 +1,24 @@
+{
+  "repoId": "72f4e0c6-98c1-4c5a-a9aa-fddb6293fcfc",
+  "repoName": "Gym-Management-System",
+  "server": "https://api.grapuco.com",
+  "language": "typescript",
+  "features": {
+    "embeddings": true,
+    "dataFlowAnalysis": true
+  },
+  "ignore": [
+    "node_modules",
+    "dist",
+    ".next",
+    ".git",
+    ".grapuco",
+    "__pycache__",
+    "vendor",
+    "target",
+    "build"
+  ],
+  "workspaceId": "5ec3a724-d86b-4020-9194-a500798f3260",
+  "workspaceName": "Gym",
+  "lastPush": "2026-06-09T17:08:46.616Z"
+}

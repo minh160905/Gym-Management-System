@@ -14,7 +14,7 @@ export default function CustomerClasses() {
   const { data: classes, isLoading: classesLoading } = useListClasses();
   const { data: bookings = [], isLoading: bookingsLoading } = useListBookings(
     { memberId: memberId ?? undefined },
-    { query: { enabled: !!memberId } }
+    { query: { enabled: !!memberId } as any }
   );
   const createBookingMutation = useCreateBooking();
   const queryClient = useQueryClient();

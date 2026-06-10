@@ -160,7 +160,7 @@ export default function CustomerHirePT() {
                 </div>
                 <div>
                   <CardTitle className="text-base text-black">{trainer.firstName} {trainer.lastName}</CardTitle>
-                  <CardDescription className="text-xs">{trainer.specialization || "Thể hình tự do"}</CardDescription>
+                  <CardDescription className="text-xs">{trainer.specializations || "Thể hình tự do"}</CardDescription>
                 </div>
               </div>
             </CardHeader>
@@ -284,7 +284,7 @@ export default function CustomerHirePT() {
                         </div>
                         <div>
                           <p className="font-medium text-sm text-black">{selectedTrainer.firstName} {selectedTrainer.lastName}</p>
-                          <p className="text-xs text-muted-foreground">{selectedTrainer.specialization || "Thể hình tự do"}</p>
+                          <p className="text-xs text-muted-foreground">{selectedTrainer.specializations || "Thể hình tự do"}</p>
                         </div>
                       </div>
                       <div className="flex items-center justify-between border-t border-border pt-3">

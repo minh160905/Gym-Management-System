@@ -244,7 +244,7 @@ export default function ManagerClasses() {
                         {cls.enrolledCount} / {cls.capacity}
                       </TableCell>
                       <TableCell>
-                        <Badge variant="outline">{cls.status}</Badge>
+                        <Badge variant="outline">{cls.status === "scheduled" ? "Đã lên lịch" : (cls.status === "cancelled" ? "Đã hủy" : cls.status)}</Badge>
                       </TableCell>
                       <TableCell className="text-right">
                         <div className="flex items-center justify-end gap-2">

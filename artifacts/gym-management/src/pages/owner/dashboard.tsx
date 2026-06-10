@@ -6,10 +6,10 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 
 export default function OwnerDashboard() {
-  const { data: stats, isLoading: statsLoading } = useGetDashboardStats({ query: { refetchInterval: 3000 } });
-  const { data: revenue, isLoading: revenueLoading } = useGetRevenueStats({ query: { refetchInterval: 3000 } });
-  const { data: equipment } = useListEquipment(undefined, { query: { refetchInterval: 3000 } });
-  const { data: feedback } = useListFeedback(undefined, { query: { refetchInterval: 3000 } });
+  const { data: stats, isLoading: statsLoading } = useGetDashboardStats({ query: { refetchInterval: 3000 } as any });
+  const { data: revenue, isLoading: revenueLoading } = useGetRevenueStats({ query: { refetchInterval: 3000 } as any });
+  const { data: equipment } = useListEquipment(undefined, { query: { refetchInterval: 3000 } as any });
+  const { data: feedback } = useListFeedback(undefined, { query: { refetchInterval: 3000 } as any });
 
   const eqOperational = equipment?.filter(e => e.status === "operational").length || 0;
   const eqMaintenance = equipment?.filter(e => e.status === "maintenance").length || 0;

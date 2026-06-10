@@ -43,7 +43,7 @@ export default function CustomerProfile() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
-  const { data: member, isLoading: memberLoading } = useGetMember(memberId ?? 0, { query: { enabled: !!memberId } });
+  const { data: member, isLoading: memberLoading } = useGetMember(memberId ?? 0, { query: { enabled: !!memberId } as any });
   const { data: plans } = useListMemberships();
   const { data: payments } = useListPayments({ memberId: memberId ?? undefined });
   const { data: users } = useListUsers();
@@ -84,28 +84,28 @@ export default function CustomerProfile() {
       await updateMember.mutateAsync({ id: memberId, data: form });
       await queryClient.invalidateQueries({ queryKey: getGetMemberQueryKey(memberId) });
       setEditOpen(false);
-      toast({ title: "Profile updated", description: "Your information has been saved." });
+      toast({ title: "Đã cập nhật hồ sơ", description: "Thông tin của bạn đã được lưu." });
     } catch {
-      toast({ title: "Update failed", description: "Could not save your changes.", variant: "destructive" });
+      toast({ title: "Cập nhật thất bại", description: "Không thể lưu các thay đổi của bạn.", variant: "destructive" });
     } finally {
       setSaving(false);
     }
   }
 
   if (memberLoading) {
-    return <div className="flex items-center justify-center h-64 text-muted-foreground">Loading your profile...</div>;
+    return <div className="flex items-center justify-center h-64 text-muted-foreground">Đang tải hồ sơ của bạn...</div>;
   }
 
   return (
     <div className="space-y-6 max-w-3xl">
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">My Profile</h1>
-          <p className="text-muted-foreground mt-2">Your personal information and account details.</p>
+          <h1 className="text-3xl font-bold tracking-tight">Hồ sơ của tôi</h1>
+          <p className="text-muted-foreground mt-2">Thông tin cá nhân và chi tiết tài khoản của bạn.</p>
         </div>
         {member && (
           <Button onClick={openEdit} variant="outline">
-            <Pencil className="w-4 h-4 mr-2" /> Edit Profile
+            <Pencil className="w-4 h-4 mr-2" /> Chỉnh sửa hồ sơ
           </Button>
         )}
       </div>
@@ -122,9 +122,9 @@ export default function CustomerProfile() {
                 <h2 className="text-2xl font-bold">{member.firstName} {member.lastName}</h2>
                 <div className="flex items-center gap-2 mt-1">
                   <Badge variant={member.status === "active" ? "default" : "secondary"}>
-                    {member.status}
+                    {member.status === "active" ? "Đang hoạt động" : (member.status === "expired" ? "Đã hết hạn" : member.status)}
                   </Badge>
-                  <span className="text-muted-foreground text-sm">Member</span>
+                  <span className="text-muted-foreground text-sm">Hội viên</span>
                 </div>
               </div>
             </div>
@@ -196,22 +196,22 @@ export default function CustomerProfile() {
           <CardHeader className="pb-3">
             <CardTitle className="text-base flex items-center gap-2">
               <User className="w-4 h-4 text-primary" />
-              Personal Information
+              Thông tin cá nhân
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-1">
             {member ? (
               <>
                 <InfoRow icon={Mail} label="Email" value={member.email} />
-                <InfoRow icon={Phone} label="Phone" value={member.phone} />
-                <InfoRow icon={Calendar} label="Date of Birth" value={member.dateOfBirth ? format(new Date(member.dateOfBirth), "MMMM d, yyyy") : null} />
-                <InfoRow icon={Calendar} label="Join Date" value={member.joinDate ? format(new Date(member.joinDate), "MMMM d, yyyy") : null} />
-                <InfoRow icon={Calendar} label="Membership Expiry" value={member.expiryDate ? format(new Date(member.expiryDate), "MMMM d, yyyy") : null} />
-                <InfoRow icon={AlertCircle} label="Emergency Contact" value={member.emergencyContact} />
-                {member.notes && <InfoRow icon={FileText} label="Notes" value={member.notes} />}
+                <InfoRow icon={Phone} label="Số điện thoại" value={member.phone} />
+                <InfoRow icon={Calendar} label="Ngày sinh" value={member.dateOfBirth ? format(new Date(member.dateOfBirth), "dd/MM/yyyy") : null} />
+                <InfoRow icon={Calendar} label="Ngày tham gia" value={member.joinDate ? format(new Date(member.joinDate), "dd/MM/yyyy") : null} />
+                <InfoRow icon={Calendar} label="Ngày hết hạn gói" value={member.expiryDate ? format(new Date(member.expiryDate), "dd/MM/yyyy") : null} />
+                <InfoRow icon={AlertCircle} label="Liên hệ khẩn cấp" value={member.emergencyContact} />
+                {member.notes && <InfoRow icon={FileText} label="Ghi chú" value={member.notes} />}
               </>
             ) : (
-              <p className="text-sm text-muted-foreground py-4">No personal information found.</p>
+              <p className="text-sm text-muted-foreground py-4">Không tìm thấy thông tin cá nhân.</p>
             )}
           </CardContent>
         </Card>
@@ -221,20 +221,20 @@ export default function CustomerProfile() {
           <CardHeader className="pb-3">
             <CardTitle className="text-base flex items-center gap-2">
               <Shield className="w-4 h-4 text-primary" />
-              Account Information
+              Thông tin tài khoản
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-1">
             {account ? (
               <>
-                <InfoRow icon={AtSign} label="Username" value={account.username} />
-                <InfoRow icon={User} label="Full Name" value={account.fullName} />
-                <InfoRow icon={Shield} label="Role" value="Customer" />
-                <InfoRow icon={Lock} label="Password" value="••••••••" />
-                <InfoRow icon={Calendar} label="Account Created" value={format(new Date(account.createdAt), "MMMM d, yyyy")} />
+                <InfoRow icon={AtSign} label="Tên đăng nhập" value={account.username} />
+                <InfoRow icon={User} label="Họ và tên" value={account.fullName} />
+                <InfoRow icon={Shield} label="Vai trò" value="Hội viên" />
+                <InfoRow icon={Lock} label="Mật khẩu" value="••••••••" />
+                <InfoRow icon={Calendar} label="Ngày tạo tài khoản" value={format(new Date(account.createdAt), "dd/MM/yyyy")} />
               </>
             ) : (
-              <p className="text-sm text-muted-foreground py-4">Loading account info...</p>
+              <p className="text-sm text-muted-foreground py-4">Đang tải thông tin tài khoản...</p>
             )}
           </CardContent>
         </Card>
@@ -244,7 +244,7 @@ export default function CustomerProfile() {
           <CardHeader className="pb-3">
             <CardTitle className="text-base flex items-center gap-2">
               <CreditCard className="w-4 h-4 text-primary" />
-              Current Membership
+              Gói hội viên hiện tại
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -256,8 +256,8 @@ export default function CustomerProfile() {
                     <p className="text-muted-foreground text-sm mt-0.5">{plan.description}</p>
                   </div>
                   <div className="text-right">
-                    <p className="text-2xl font-bold text-primary">${plan.priceMonthly}<span className="text-sm font-normal text-muted-foreground">/mo</span></p>
-                    <p className="text-xs text-muted-foreground mt-0.5">{plan.durationMonths} month(s)</p>
+                    <p className="text-2xl font-bold text-primary">${plan.priceMonthly}<span className="text-sm font-normal text-muted-foreground">/tháng</span></p>
+                    <p className="text-xs text-muted-foreground mt-0.5">{plan.durationMonths} tháng</p>
                   </div>
                 </div>
                 {member?.expiryDate && (
@@ -265,13 +265,13 @@ export default function CustomerProfile() {
                     <Separator />
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
                       <Calendar className="w-4 h-4" />
-                      Expires {format(new Date(member.expiryDate), "MMMM d, yyyy")}
+                      Hết hạn ngày {format(new Date(member.expiryDate), "dd/MM/yyyy")}
                     </div>
                   </>
                 )}
               </div>
             ) : (
-              <p className="text-sm text-muted-foreground py-4">No active membership plan. Visit the Membership page to enroll.</p>
+              <p className="text-sm text-muted-foreground py-4">Không có gói hội viên nào đang hoạt động. Vui lòng truy cập trang Gói hội viên để đăng ký.</p>
             )}
           </CardContent>
         </Card>
@@ -281,7 +281,7 @@ export default function CustomerProfile() {
           <CardHeader className="pb-3">
             <CardTitle className="text-base flex items-center gap-2">
               <DollarSign className="w-4 h-4 text-primary" />
-              Payment History
+              Lịch sử thanh toán
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -291,17 +291,19 @@ export default function CustomerProfile() {
                   <div key={p.id} className="flex items-center justify-between py-2 border-b border-border last:border-0">
                     <div>
                       <p className="text-sm font-medium">{p.description}</p>
-                      <p className="text-xs text-muted-foreground">{p.paymentDate} · {p.paymentMethod ?? "N/A"}</p>
+                      <p className="text-xs text-muted-foreground">{p.paymentDate} · {p.paymentMethod === "credit_card" ? "Thẻ tín dụng" : (p.paymentMethod === "bank_transfer" ? "Chuyển khoản" : (p.paymentMethod ?? "N/A"))}</p>
                     </div>
                     <div className="text-right">
                       <p className="font-semibold">${Number(p.amount).toFixed(2)}</p>
-                      <Badge variant={p.status === "paid" ? "default" : "secondary"} className="text-xs">{p.status}</Badge>
+                      <Badge variant={p.status === "paid" ? "default" : "secondary"} className="text-xs">
+                        {p.status === "paid" ? "Đã thanh toán" : (p.status === "pending" ? "Chờ xử lý" : (p.status === "failed" ? "Thất bại" : p.status))}
+                      </Badge>
                     </div>
                   </div>
                 ))}
               </div>
             ) : (
-              <p className="text-sm text-muted-foreground py-4">No payment records found.</p>
+              <p className="text-sm text-muted-foreground py-4">Không tìm thấy lịch sử thanh toán.</p>
             )}
           </CardContent>
         </Card>
@@ -312,30 +314,30 @@ export default function CustomerProfile() {
         <DialogContent className="max-w-md">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <Pencil className="w-4 h-4 text-primary" /> Edit Profile
+              <Pencil className="w-4 h-4 text-primary" /> Chỉnh sửa hồ sơ
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-2">
             <div className="space-y-2">
-              <Label>Phone Number</Label>
+              <Label>Số điện thoại</Label>
               <Input
-                placeholder="+1 (555) 000-0000"
+                placeholder="+84 (555) 000-000"
                 value={form.phone}
                 onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
               />
             </div>
             <div className="space-y-2">
-              <Label>Emergency Contact</Label>
+              <Label>Liên hệ khẩn cấp</Label>
               <Input
-                placeholder="Name and phone number"
+                placeholder="Tên và số điện thoại"
                 value={form.emergencyContact}
                 onChange={(e) => setForm((f) => ({ ...f, emergencyContact: e.target.value }))}
               />
             </div>
             <div className="space-y-2">
-              <Label>Notes</Label>
+              <Label>Ghi chú</Label>
               <Textarea
-                placeholder="Any additional notes..."
+                placeholder="Bất kỳ ghi chú bổ sung nào..."
                 rows={3}
                 value={form.notes}
                 onChange={(e) => setForm((f) => ({ ...f, notes: e.target.value }))}
@@ -343,9 +345,9 @@ export default function CustomerProfile() {
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setEditOpen(false)} disabled={saving}>Cancel</Button>
+            <Button variant="outline" onClick={() => setEditOpen(false)} disabled={saving}>Hủy</Button>
             <Button onClick={handleSave} disabled={saving}>
-              {saving ? "Saving..." : "Save Changes"}
+              {saving ? "Đang lưu..." : "Lưu thay đổi"}
             </Button>
           </DialogFooter>
         </DialogContent>

@@ -100,12 +100,12 @@ export default function CustomerMembership() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Membership</h1>
-        <p className="text-muted-foreground mt-2">Choose a plan that fits your goals.</p>
+        <h1 className="text-3xl font-bold tracking-tight">Đăng ký gói tập</h1>
+        <p className="text-muted-foreground mt-2">Chọn gói hội viên phù hợp với mục tiêu tập luyện của bạn.</p>
       </div>
 
       {isLoading ? (
-        <div className="text-muted-foreground">Loading plans...</div>
+        <div className="text-muted-foreground">Đang tải các gói tập...</div>
       ) : (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {plans?.map((plan) => {
@@ -118,14 +118,14 @@ export default function CustomerMembership() {
                 <CardHeader>
                   <div className="flex items-center justify-between">
                     <CardTitle className="text-2xl">{plan.name}</CardTitle>
-                    {ptIncluded && <Badge variant="default" className="text-xs">PT Included</Badge>}
+                    {ptIncluded && <Badge variant="default" className="text-xs">Bao gồm PT</Badge>}
                   </div>
                   {plan.description && <CardDescription>{plan.description}</CardDescription>}
                 </CardHeader>
                 <CardContent className="flex-1">
                   <div className="mb-4">
                     <span className="text-4xl font-bold">${plan.priceMonthly}</span>
-                    <span className="text-muted-foreground">/mo</span>
+                    <span className="text-muted-foreground">/tháng</span>
                   </div>
                   {plan.features && (
                     <ul className="space-y-2 text-sm text-muted-foreground">
@@ -140,13 +140,13 @@ export default function CustomerMembership() {
                   {ptIncluded && (
                     <div className="mt-4 flex items-center gap-2 text-sm text-primary font-medium">
                       <Dumbbell className="w-4 h-4" />
-                      Choose your personal trainer
+                      Lựa chọn huấn luyện viên cá nhân
                     </div>
                   )}
                 </CardContent>
                 <CardFooter>
                   <Button className="w-full" onClick={() => openPlan(plan)}>
-                    Subscribe
+                    Đăng ký gói tập
                   </Button>
                 </CardFooter>
               </Card>
@@ -166,16 +166,16 @@ export default function CustomerMembership() {
                   <DialogHeader>
                     <DialogTitle className="flex items-center gap-2">
                       <Dumbbell className="w-5 h-5 text-primary" />
-                      Choose Your Personal Trainer
+                      Chọn Huấn luyện viên cá nhân
                     </DialogTitle>
                     <p className="text-sm text-muted-foreground pt-1">
-                      Your <span className="font-medium text-foreground">{selectedPlan.name}</span> plan includes a personal trainer. Pick one or skip to decide later.
+                      Gói tập <span className="font-medium text-foreground">{selectedPlan.name}</span> của bạn đã bao gồm huấn luyện viên cá nhân. Hãy chọn một người hoặc bỏ qua để chọn sau.
                     </p>
                   </DialogHeader>
 
                   <div className="space-y-3 py-2 max-h-64 overflow-y-auto pr-1">
                     {trainersLoading ? (
-                      <p className="text-sm text-muted-foreground text-center py-4">Loading trainers...</p>
+                      <p className="text-sm text-muted-foreground text-center py-4">Đang tải danh sách huấn luyện viên...</p>
                     ) : trainers?.map((trainer) => (
                       <button
                         key={trainer.id}
@@ -193,7 +193,7 @@ export default function CustomerMembership() {
                           </div>
                           <div className="flex-1 min-w-0">
                             <p className="font-medium text-sm">{trainer.firstName} {trainer.lastName}</p>
-                            <p className="text-xs text-muted-foreground truncate">{trainer.specialization || "General Fitness"}</p>
+                            <p className="text-xs text-muted-foreground truncate">{trainer.specializations || "Thể hình tự do"}</p>
                           </div>
                           {selectedTrainer?.id === trainer.id && (
                             <CheckCircle2 className="w-4 h-4 text-primary shrink-0" />
@@ -208,10 +208,10 @@ export default function CustomerMembership() {
 
                   <DialogFooter className="gap-2 flex-col sm:flex-row">
                     <Button variant="outline" className="sm:mr-auto" onClick={() => { setSelectedTrainer(null); setStep("payment"); }}>
-                      Skip for now
+                      Bỏ qua lúc này
                     </Button>
                     <Button onClick={() => setStep("payment")} disabled={!selectedTrainer}>
-                      Continue <ChevronRight className="w-4 h-4 ml-1" />
+                      Tiếp tục <ChevronRight className="w-4 h-4 ml-1" />
                     </Button>
                   </DialogFooter>
                 </>
@@ -223,25 +223,25 @@ export default function CustomerMembership() {
                   <DialogHeader>
                     <DialogTitle className="flex items-center gap-2">
                       <CreditCard className="w-5 h-5 text-primary" />
-                      Payment
+                      Thanh toán
                     </DialogTitle>
                     <p className="text-sm text-muted-foreground pt-1">
-                      Review your order and complete payment.
+                      Kiểm tra lại đơn hàng và hoàn tất thanh toán.
                     </p>
                   </DialogHeader>
 
                   <div className="space-y-4 py-2">
                     {/* Order summary */}
                     <div className="rounded-lg border border-border p-4 space-y-3">
-                      <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Order Summary</p>
+                      <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Tóm tắt đơn hàng</p>
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="font-semibold">{selectedPlan.name} Plan</p>
+                          <p className="font-semibold">Gói {selectedPlan.name}</p>
                           <p className="text-xs text-muted-foreground">{selectedPlan.description}</p>
                         </div>
                         <p className="font-bold text-primary text-lg">
                           ${selectedPlan.priceMonthly}
-                          <span className="text-xs font-normal text-muted-foreground">/mo</span>
+                          <span className="text-xs font-normal text-muted-foreground">/tháng</span>
                         </p>
                       </div>
 
@@ -258,7 +258,7 @@ export default function CustomerMembership() {
                             ) : (
                               <>
                                 <User className="w-4 h-4 text-muted-foreground" />
-                                <p className="text-sm text-muted-foreground">No trainer selected</p>
+                                <p className="text-sm text-muted-foreground">Chưa chọn huấn luyện viên</p>
                               </>
                             )}
                           </div>
@@ -267,13 +267,13 @@ export default function CustomerMembership() {
                             onClick={() => setStep("trainer")}
                             className="text-xs text-primary hover:underline"
                           >
-                            Change
+                            Thay đổi
                           </button>
                         </div>
                       )}
 
                       <div className="border-t border-border pt-3 flex items-center justify-between font-semibold">
-                        <p>Total due today</p>
+                        <p>Tổng tiền thanh toán hôm nay</p>
                         <p className="text-primary">${selectedPlan.priceMonthly}.00</p>
                       </div>
                     </div>
@@ -288,19 +288,19 @@ export default function CustomerMembership() {
                     />
 
                     <p className="text-xs text-muted-foreground">
-                      You will be charged ${selectedPlan.priceMonthly}/month. Cancel anytime from your profile.
+                      Bạn sẽ được tính phí ${selectedPlan.priceMonthly}/tháng. Có thể hủy gói bất kỳ lúc nào từ trang cá nhân của bạn.
                     </p>
                   </div>
 
                   <DialogFooter className="gap-2">
                     {isPTIncluded(selectedPlan.name) && (
                       <Button variant="ghost" size="sm" onClick={() => setStep("trainer")} className="mr-auto">
-                        <ChevronLeft className="w-4 h-4 mr-1" /> Back
+                        <ChevronLeft className="w-4 h-4 mr-1" /> Quay lại
                       </Button>
                     )}
-                    <Button variant="outline" onClick={closeDialog} disabled={saving}>Cancel</Button>
+                    <Button variant="outline" onClick={closeDialog} disabled={saving}>Hủy</Button>
                     <Button onClick={handlePay} disabled={saving}>
-                      {saving ? "Processing..." : `Pay $${selectedPlan.priceMonthly}.00`}
+                      {saving ? "Đang xử lý..." : `Thanh toán $${selectedPlan.priceMonthly}.00`}
                     </Button>
                   </DialogFooter>
                 </>
@@ -310,31 +310,30 @@ export default function CustomerMembership() {
               {step === "success" && (
                 <>
                   <DialogHeader>
-                    <DialogTitle>Subscription Active</DialogTitle>
+                    <DialogTitle>Kích hoạt gói tập thành công</DialogTitle>
                   </DialogHeader>
                   <div className="flex flex-col items-center gap-4 py-6 text-center">
                     <div className="p-4 rounded-full bg-primary/10 ring-1 ring-primary/20">
                       <CheckCircle2 className="w-10 h-10 text-primary" />
                     </div>
                     <div className="space-y-1">
-                      <p className="font-semibold text-lg">Payment successful</p>
+                      <p className="font-semibold text-lg">Giao dịch thành công</p>
                       <p className="text-muted-foreground text-sm">
-                        You're now subscribed to the{" "}
-                        <span className="font-medium text-foreground">{selectedPlan.name}</span> plan.
+                        Bạn đã đăng ký thành công gói tập{" "}
+                        <span className="font-medium text-foreground">{selectedPlan.name}</span>.
                       </p>
                       {selectedTrainer && (
                         <p className="text-muted-foreground text-sm mt-1">
-                          A request has been sent to{" "}
+                          Một yêu cầu đã được gửi đến huấn luyện viên cá nhân{" "}
                           <span className="font-medium text-foreground">
                             {selectedTrainer.firstName} {selectedTrainer.lastName}
-                          </span>{" "}
-                          as your personal trainer.
+                          </span>.
                         </p>
                       )}
                     </div>
                   </div>
                   <DialogFooter>
-                    <Button className="w-full" onClick={closeDialog}>Done</Button>
+                    <Button className="w-full" onClick={closeDialog}>Hoàn tất</Button>
                   </DialogFooter>
                 </>
               )}

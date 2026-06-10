@@ -34,13 +34,13 @@ const ROLE_TO_USER_ROLE: Record<string, string> = {
 };
 
 const schema = z.object({
-  firstName:       z.string().min(1, "Required"),
-  lastName:        z.string().min(1, "Required"),
-  email:           z.string().email("Invalid email"),
+  firstName:       z.string().min(1, "Vui lòng nhập tên"),
+  lastName:        z.string().min(1, "Vui lòng nhập họ"),
+  email:           z.string().email("Email không hợp lệ"),
   phone:           z.string().optional(),
-  role:            z.string().min(1, "Required"),
-  hireDate:        z.string().min(1, "Required"),
-  status:          z.string().min(1, "Required"),
+  role:            z.string().min(1, "Vui lòng chọn vai trò"),
+  hireDate:        z.string().min(1, "Vui lòng chọn ngày thuê"),
+  status:          z.string().min(1, "Vui lòng chọn trạng thái"),
   salary:          z.coerce.number().optional(),
   specializations: z.string().optional(),
   bio:             z.string().optional(),
@@ -53,16 +53,16 @@ const schema = z.object({
 }).superRefine((val, ctx) => {
   if (val.createAccount) {
     if (!val.fullName || val.fullName.trim().length === 0) {
-      ctx.addIssue({ code: "custom", path: ["fullName"], message: "Required" });
+      ctx.addIssue({ code: "custom", path: ["fullName"], message: "Vui lòng nhập họ tên" });
     }
     if (!val.username || val.username.trim().length < 3) {
-      ctx.addIssue({ code: "custom", path: ["username"], message: "At least 3 characters" });
+      ctx.addIssue({ code: "custom", path: ["username"], message: "Tên đăng nhập phải có ít nhất 3 ký tự" });
     }
     if (!val.password || val.password.length < 6) {
-      ctx.addIssue({ code: "custom", path: ["password"], message: "At least 6 characters" });
+      ctx.addIssue({ code: "custom", path: ["password"], message: "Mật khẩu phải có ít nhất 6 ký tự" });
     }
     if (val.password !== val.confirmPassword) {
-      ctx.addIssue({ code: "custom", path: ["confirmPassword"], message: "Passwords do not match" });
+      ctx.addIssue({ code: "custom", path: ["confirmPassword"], message: "Mật khẩu xác nhận không khớp" });
     }
   }
 });
@@ -148,15 +148,15 @@ export function CreateStaffDialog({ open, onClose }: Props) {
 
       await queryClient.invalidateQueries({ queryKey: getListStaffQueryKey() });
       toast({
-        title: "Staff member added",
+        title: "Đã thêm nhân sự thành công",
         description: values.createAccount
-          ? `${values.firstName} ${values.lastName} added with login account.`
-          : `${values.firstName} ${values.lastName} added to staff directory.`,
+          ? `${values.firstName} ${values.lastName} đã được thêm cùng với tài khoản đăng nhập.`
+          : `${values.firstName} ${values.lastName} đã được thêm vào danh bạ nhân sự.`,
       });
       handleClose();
     } catch (err: any) {
-      const msg = err?.response?.data?.error ?? err?.message ?? "Please try again.";
-      toast({ title: "Failed to add staff member", description: msg, variant: "destructive" });
+      const msg = err?.response?.data?.error ?? err?.message ?? "Vui lòng thử lại.";
+      toast({ title: "Thêm nhân sự thất bại", description: msg, variant: "destructive" });
     }
   }
 
@@ -174,10 +174,10 @@ export function CreateStaffDialog({ open, onClose }: Props) {
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <UserPlus className="w-5 h-5 text-primary" />
-            Add Staff Member
+            Thêm nhân sự mới
           </DialogTitle>
           <DialogDescription>
-            Fill in the employee details. Trainers and managers also get a system login account.
+            Điền các thông tin chi tiết của nhân viên. Huấn luyện viên và quản lý cũng sẽ được cấp tài khoản đăng nhập hệ thống.
           </DialogDescription>
         </DialogHeader>
 
@@ -186,20 +186,20 @@ export function CreateStaffDialog({ open, onClose }: Props) {
 
             {/* ── Personal Information ─────────────────────────── */}
             <div className="space-y-4">
-              <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Personal Information</h3>
+              <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Thông tin cá nhân</h3>
 
               <div className="grid grid-cols-2 gap-4">
                 <FormField control={form.control} name="firstName" render={({ field }) => (
                   <FormItem>
-                    <FormLabel>First Name <span className="text-destructive">*</span></FormLabel>
-                    <FormControl><Input placeholder="Jane" {...field} /></FormControl>
+                    <FormLabel>Tên <span className="text-destructive">*</span></FormLabel>
+                    <FormControl><Input placeholder="Tên" {...field} /></FormControl>
                     <FormMessage />
                   </FormItem>
                 )} />
                 <FormField control={form.control} name="lastName" render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Last Name <span className="text-destructive">*</span></FormLabel>
-                    <FormControl><Input placeholder="Smith" {...field} /></FormControl>
+                    <FormLabel>Họ <span className="text-destructive">*</span></FormLabel>
+                    <FormControl><Input placeholder="Họ và tên đệm" {...field} /></FormControl>
                     <FormMessage />
                   </FormItem>
                 )} />
@@ -209,14 +209,14 @@ export function CreateStaffDialog({ open, onClose }: Props) {
                 <FormField control={form.control} name="email" render={({ field }) => (
                   <FormItem>
                     <FormLabel>Email <span className="text-destructive">*</span></FormLabel>
-                    <FormControl><Input type="email" placeholder="jane@ironforge.gym" {...field} /></FormControl>
+                    <FormControl><Input type="email" placeholder="example@ironforge.gym" {...field} /></FormControl>
                     <FormMessage />
                   </FormItem>
                 )} />
                 <FormField control={form.control} name="phone" render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Phone</FormLabel>
-                    <FormControl><Input placeholder="555-0100" {...field} /></FormControl>
+                    <FormLabel>Số điện thoại</FormLabel>
+                    <FormControl><Input placeholder="0901234567" {...field} /></FormControl>
                     <FormMessage />
                   </FormItem>
                 )} />
@@ -225,18 +225,18 @@ export function CreateStaffDialog({ open, onClose }: Props) {
               <div className="grid grid-cols-2 gap-4">
                 <FormField control={form.control} name="role" render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Role <span className="text-destructive">*</span></FormLabel>
+                    <FormLabel>Vai trò <span className="text-destructive">*</span></FormLabel>
                     <Select value={field.value} onValueChange={field.onChange}>
                       <FormControl>
-                        <SelectTrigger><SelectValue placeholder="Select role" /></SelectTrigger>
+                        <SelectTrigger><SelectValue placeholder="Chọn vai trò" /></SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="manager">Manager</SelectItem>
-                        <SelectItem value="trainer">Personal Trainer</SelectItem>
-                        <SelectItem value="receptionist">Receptionist</SelectItem>
-                        <SelectItem value="cleaning_staff">Cleaning Staff</SelectItem>
-                        <SelectItem value="maintenance">Maintenance</SelectItem>
-                        <SelectItem value="other">Other</SelectItem>
+                        <SelectItem value="manager">Quản lý (Manager)</SelectItem>
+                        <SelectItem value="trainer">Huấn luyện viên cá nhân (PT)</SelectItem>
+                        <SelectItem value="receptionist">Nhân viên tiếp tân</SelectItem>
+                        <SelectItem value="cleaning_staff">Nhân viên dọn dẹp</SelectItem>
+                        <SelectItem value="maintenance">Nhân viên bảo trì</SelectItem>
+                        <SelectItem value="other">Khác</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -244,15 +244,15 @@ export function CreateStaffDialog({ open, onClose }: Props) {
                 )} />
                 <FormField control={form.control} name="status" render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Status <span className="text-destructive">*</span></FormLabel>
+                    <FormLabel>Trạng thái hoạt động <span className="text-destructive">*</span></FormLabel>
                     <Select value={field.value} onValueChange={field.onChange}>
                       <FormControl>
                         <SelectTrigger><SelectValue /></SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="active">Active</SelectItem>
-                        <SelectItem value="inactive">Inactive</SelectItem>
-                        <SelectItem value="on_leave">On Leave</SelectItem>
+                        <SelectItem value="active">Đang hoạt động</SelectItem>
+                        <SelectItem value="inactive">Ngưng hoạt động</SelectItem>
+                        <SelectItem value="on_leave">Nghỉ phép</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -263,14 +263,14 @@ export function CreateStaffDialog({ open, onClose }: Props) {
               <div className="grid grid-cols-2 gap-4">
                 <FormField control={form.control} name="hireDate" render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Hire Date <span className="text-destructive">*</span></FormLabel>
+                    <FormLabel>Ngày thuê <span className="text-destructive">*</span></FormLabel>
                     <FormControl><Input type="date" {...field} /></FormControl>
                     <FormMessage />
                   </FormItem>
                 )} />
                 <FormField control={form.control} name="salary" render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Annual Salary ($)</FormLabel>
+                    <FormLabel>Lương hàng năm ($)</FormLabel>
                     <FormControl>
                       <Input
                         type="number" min={0} step={500}
@@ -288,8 +288,8 @@ export function CreateStaffDialog({ open, onClose }: Props) {
               {role === "trainer" && (
                 <FormField control={form.control} name="specializations" render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Specializations</FormLabel>
-                    <FormControl><Input placeholder="e.g. Strength & Conditioning, HIIT, Yoga" {...field} /></FormControl>
+                    <FormLabel>Chuyên môn</FormLabel>
+                    <FormControl><Input placeholder="Ví dụ: Tăng cơ giảm mỡ, HIIT, Yoga, Giãn cơ" {...field} /></FormControl>
                     <FormMessage />
                   </FormItem>
                 )} />
@@ -297,9 +297,9 @@ export function CreateStaffDialog({ open, onClose }: Props) {
 
               <FormField control={form.control} name="bio" render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Bio / Notes</FormLabel>
+                  <FormLabel>Tiểu sử / Ghi chú</FormLabel>
                   <FormControl>
-                    <Textarea rows={2} placeholder="Brief professional background or notes..." {...field} />
+                    <Textarea rows={2} placeholder="Kinh nghiệm làm việc ngắn gọn hoặc ghi chú..." {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -313,16 +313,16 @@ export function CreateStaffDialog({ open, onClose }: Props) {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <KeyRound className="w-4 h-4 text-primary" />
-                  <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Login Account</h3>
+                  <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Tài khoản đăng nhập</h3>
                   {needsAccount && (
-                    <Badge variant="outline" className="text-xs bg-primary/10 text-primary border-primary/30">Required</Badge>
+                    <Badge variant="outline" className="text-xs bg-primary/10 text-primary border-primary/30">Bắt buộc</Badge>
                   )}
                 </div>
                 {!needsAccount && (
                   <FormField control={form.control} name="createAccount" render={({ field }) => (
                     <FormItem className="flex items-center gap-2 space-y-0">
                       <FormLabel className="text-sm text-muted-foreground font-normal cursor-pointer">
-                        Create login account
+                        Tạo tài khoản đăng nhập
                       </FormLabel>
                       <FormControl>
                         <Switch checked={field.value} onCheckedChange={field.onChange} />
@@ -334,7 +334,7 @@ export function CreateStaffDialog({ open, onClose }: Props) {
 
               {needsAccount && (
                 <p className="text-xs text-muted-foreground -mt-2">
-                  {role === "trainer" ? "Personal trainers" : "Managers"} require a system login to access their portal.
+                  {role === "trainer" ? "Huấn luyện viên cá nhân" : "Quản lý"} yêu cầu tài khoản để truy cập vào cổng thông tin nội bộ của họ.
                 </p>
               )}
 
@@ -342,8 +342,8 @@ export function CreateStaffDialog({ open, onClose }: Props) {
                 <div className="space-y-4 rounded-lg border border-border bg-muted/20 p-4">
                   <FormField control={form.control} name="fullName" render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Full Name (display) <span className="text-destructive">*</span></FormLabel>
-                      <FormControl><Input placeholder="Jane Smith" {...field} /></FormControl>
+                      <FormLabel>Họ và tên (hiển thị) <span className="text-destructive">*</span></FormLabel>
+                      <FormControl><Input placeholder="Họ và tên" {...field} /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )} />
@@ -351,8 +351,8 @@ export function CreateStaffDialog({ open, onClose }: Props) {
                   <div className="grid grid-cols-2 gap-4">
                     <FormField control={form.control} name="username" render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Username <span className="text-destructive">*</span></FormLabel>
-                        <FormControl><Input placeholder="jsmith" autoComplete="off" {...field} /></FormControl>
+                        <FormLabel>Tên đăng nhập <span className="text-destructive">*</span></FormLabel>
+                        <FormControl><Input placeholder="username" autoComplete="off" {...field} /></FormControl>
                         <FormMessage />
                       </FormItem>
                     )} />
@@ -362,12 +362,12 @@ export function CreateStaffDialog({ open, onClose }: Props) {
                   <div className="grid grid-cols-2 gap-4">
                     <FormField control={form.control} name="password" render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Password <span className="text-destructive">*</span></FormLabel>
+                        <FormLabel>Mật khẩu <span className="text-destructive">*</span></FormLabel>
                         <FormControl>
                           <div className="relative">
                             <Input
                               type={showPassword ? "text" : "password"}
-                              placeholder="Min 6 characters"
+                              placeholder="Ít nhất 6 ký tự"
                               autoComplete="new-password"
                               className="pr-10"
                               {...field}
@@ -386,11 +386,11 @@ export function CreateStaffDialog({ open, onClose }: Props) {
                     )} />
                     <FormField control={form.control} name="confirmPassword" render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Confirm Password <span className="text-destructive">*</span></FormLabel>
+                        <FormLabel>Xác nhận mật khẩu <span className="text-destructive">*</span></FormLabel>
                         <FormControl>
                           <Input
                             type={showPassword ? "text" : "password"}
-                            placeholder="Repeat password"
+                            placeholder="Nhập lại mật khẩu"
                             autoComplete="new-password"
                             {...field}
                           />
@@ -406,10 +406,10 @@ export function CreateStaffDialog({ open, onClose }: Props) {
             {/* ── Actions ──────────────────────────────────────── */}
             <div className="flex justify-end gap-3 pt-2">
               <Button type="button" variant="outline" onClick={handleClose} disabled={isPending}>
-                Cancel
+                Hủy
               </Button>
               <Button type="submit" disabled={isPending}>
-                {isPending ? "Saving..." : "Add Staff Member"}
+                {isPending ? "Đang lưu..." : "Thêm nhân sự"}
               </Button>
             </div>
           </form>
