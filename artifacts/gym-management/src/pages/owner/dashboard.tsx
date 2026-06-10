@@ -6,10 +6,10 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 
 export default function OwnerDashboard() {
-  const { data: stats, isLoading: statsLoading } = useGetDashboardStats({ query: { refetchInterval: 3000 } });
-  const { data: revenue, isLoading: revenueLoading } = useGetRevenueStats({ query: { refetchInterval: 3000 } });
-  const { data: equipment } = useListEquipment(undefined, { query: { refetchInterval: 3000 } });
-  const { data: feedback } = useListFeedback(undefined, { query: { refetchInterval: 3000 } });
+  const { data: stats, isLoading: statsLoading } = useGetDashboardStats({ query: { refetchInterval: 3000 } as any });
+  const { data: revenue, isLoading: revenueLoading } = useGetRevenueStats({ query: { refetchInterval: 3000 } as any });
+  const { data: equipment } = useListEquipment(undefined, { query: { refetchInterval: 3000 } as any });
+  const { data: feedback } = useListFeedback(undefined, { query: { refetchInterval: 3000 } as any });
 
   const eqOperational = equipment?.filter(e => e.status === "operational").length || 0;
   const eqMaintenance = equipment?.filter(e => e.status === "maintenance").length || 0;
@@ -27,13 +27,13 @@ export default function OwnerDashboard() {
       </div>
 
       {statsLoading ? (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          {[...Array(4)].map((_, i) => (
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {[...Array(3)].map((_, i) => (
             <Skeleton key={i} className="h-32 rounded-xl" />
           ))}
         </div>
       ) : stats ? (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           <StatCard
             title="Doanh thu tháng"
             value={`$${stats.monthlyRevenue.toLocaleString()}`}
@@ -50,12 +50,6 @@ export default function OwnerDashboard() {
             title="Lớp học hôm nay"
             value={stats.classesToday}
             icon={Calendar}
-          />
-          <StatCard
-            title="Gói sắp hết hạn"
-            value={stats.expiringSoonCount}
-            icon={AlertTriangle}
-            alert
           />
         </div>
       ) : null}
