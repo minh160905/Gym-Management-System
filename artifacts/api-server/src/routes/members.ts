@@ -32,7 +32,7 @@ router.get("/members", async (req, res): Promise<void> => {
       dateOfBirth: membersTable.dateOfBirth,
       membershipPlanId: membersTable.membershipPlanId,
       membershipPlanName: membershipPlansTable.name,
-      status: membersTable.status,
+      status: sql<string>`CASE WHEN ${membersTable.membershipPlanId} IS NULL THEN 'inactive' ELSE ${membersTable.status} END`,
       joinDate: membersTable.joinDate,
       expiryDate: membersTable.expiryDate,
       emergencyContact: membersTable.emergencyContact,
@@ -45,7 +45,13 @@ router.get("/members", async (req, res): Promise<void> => {
     .$dynamic();
 
   if (query.data.status) {
-    baseQuery = baseQuery.where(eq(membersTable.status, query.data.status));
+    if (query.data.status === "active") {
+      baseQuery = baseQuery.where(sql`${membersTable.status} = 'active' AND ${membersTable.membershipPlanId} IS NOT NULL`);
+    } else if (query.data.status === "inactive") {
+      baseQuery = baseQuery.where(sql`${membersTable.status} = 'inactive' OR ${membersTable.membershipPlanId} IS NULL`);
+    } else {
+      baseQuery = baseQuery.where(eq(membersTable.status, query.data.status));
+    }
   }
 
   const members = await baseQuery;
@@ -59,7 +65,25 @@ router.post("/members", async (req, res): Promise<void> => {
     return;
   }
 
-  const [member] = await db.insert(membersTable).values(parsed.data).returning();
+  const insertData = { ...parsed.data };
+  if (!insertData.membershipPlanId) {
+    insertData.status = "inactive";
+    insertData.expiryDate = null;
+  } else {
+    if (!insertData.status || insertData.status === "inactive") {
+      insertData.status = "active";
+    }
+    if (!insertData.expiryDate) {
+      const [plan] = await db.select().from(membershipPlansTable).where(eq(membershipPlansTable.id, insertData.membershipPlanId));
+      if (plan) {
+        const joinDateObj = new Date(insertData.joinDate);
+        joinDateObj.setMonth(joinDateObj.getMonth() + plan.durationMonths);
+        insertData.expiryDate = joinDateObj.toISOString().split("T")[0];
+      }
+    }
+  }
+
+  const [member] = await db.insert(membersTable).values(insertData).returning();
   const plan = member.membershipPlanId
     ? await db.select().from(membershipPlansTable).where(eq(membershipPlansTable.id, member.membershipPlanId))
     : [];
@@ -89,7 +113,7 @@ router.get("/members/:id", async (req, res): Promise<void> => {
       dateOfBirth: membersTable.dateOfBirth,
       membershipPlanId: membersTable.membershipPlanId,
       membershipPlanName: membershipPlansTable.name,
-      status: membersTable.status,
+      status: sql<string>`CASE WHEN ${membersTable.membershipPlanId} IS NULL THEN 'inactive' ELSE ${membersTable.status} END`,
       joinDate: membersTable.joinDate,
       expiryDate: membersTable.expiryDate,
       emergencyContact: membersTable.emergencyContact,
@@ -122,9 +146,31 @@ router.patch("/members/:id", async (req, res): Promise<void> => {
     return;
   }
 
+  const updateData = { ...parsed.data };
+  if (updateData.membershipPlanId !== undefined) {
+    if (updateData.membershipPlanId === null) {
+      updateData.status = "inactive";
+      updateData.expiryDate = null;
+    } else {
+      updateData.status = "active";
+      const [plan] = await db.select().from(membershipPlansTable).where(eq(membershipPlansTable.id, updateData.membershipPlanId));
+      if (plan) {
+        const todayObj = new Date();
+        todayObj.setMonth(todayObj.getMonth() + plan.durationMonths);
+        updateData.expiryDate = todayObj.toISOString().split("T")[0];
+      }
+    }
+  } else {
+    const [existing] = await db.select().from(membersTable).where(eq(membersTable.id, params.data.id));
+    if (existing && !existing.membershipPlanId) {
+      updateData.status = "inactive";
+      updateData.expiryDate = null;
+    }
+  }
+
   const [member] = await db
     .update(membersTable)
-    .set(parsed.data)
+    .set(updateData)
     .where(eq(membersTable.id, params.data.id))
     .returning();
 

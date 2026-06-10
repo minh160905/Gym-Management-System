@@ -195,7 +195,7 @@ function RegisterView({ onSwitch }: { onSwitch: (v: View) => void }) {
           lastName: values.lastName,
           email: values.email,
           phone: values.phone || null,
-          status: "active",
+          status: "inactive",
           joinDate: new Date().toISOString().split("T")[0],
         },
       });
