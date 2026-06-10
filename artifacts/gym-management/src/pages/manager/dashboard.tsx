@@ -4,7 +4,7 @@ import { Users, Calendar, ClipboardCheck, Clock } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function ManagerDashboard() {
-  const { data: stats, isLoading } = useGetDashboardStats();
+  const { data: stats, isLoading } = useGetDashboardStats({ query: { refetchInterval: 3000 } });
 
   return (
     <div className="space-y-6">

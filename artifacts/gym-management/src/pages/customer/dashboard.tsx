@@ -11,9 +11,9 @@ import { CalendarCheck2, Activity, Dumbbell } from "lucide-react";
 
 export default function CustomerDashboard() {
   const { memberId } = useAuth();
-  const { data: bookings = [], isLoading: bookingsLoading } = useListBookings({ memberId: memberId ?? undefined });
-  const { data: attendance = [], isLoading: attendanceLoading } = useListAttendance({ memberId: memberId ?? undefined });
-  const { data: sessions = [], isLoading: sessionsLoading } = useListSessions({ memberId: memberId ?? undefined });
+  const { data: bookings = [], isLoading: bookingsLoading } = useListBookings({ memberId: memberId ?? undefined }, { query: { refetchInterval: 3000 } });
+  const { data: attendance = [], isLoading: attendanceLoading } = useListAttendance({ memberId: memberId ?? undefined }, { query: { refetchInterval: 3000 } });
+  const { data: sessions = [], isLoading: sessionsLoading } = useListSessions({ memberId: memberId ?? undefined }, { query: { refetchInterval: 3000 } });
 
   const [selectedClassId, setSelectedClassId] = useState<number | null>(null);
 

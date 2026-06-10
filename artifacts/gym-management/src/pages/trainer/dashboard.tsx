@@ -15,12 +15,12 @@ export default function TrainerDashboard() {
   // Fetch personal training sessions for this trainer
   const { data: sessions = [], isLoading: sessionsLoading } = useListSessions({ 
     trainerId: staffId ?? undefined 
-  });
+  }, { query: { refetchInterval: 3000 } });
   
   // Fetch classes in charge
   const { data: classes = [], isLoading: classesLoading } = useListClasses({ 
     trainerId: staffId ?? undefined 
-  });
+  }, { query: { refetchInterval: 3000 } });
 
   // Fetch trainer profile to get base salary
   const { data: trainerInfo } = useGetStaff(staffId ?? 0, { 
