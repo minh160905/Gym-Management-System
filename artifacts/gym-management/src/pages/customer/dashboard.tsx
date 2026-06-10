@@ -11,22 +11,21 @@ import { CalendarCheck2, Activity, Dumbbell } from "lucide-react";
 
 export default function CustomerDashboard() {
   const { memberId } = useAuth();
-  const { data: bookings = [], isLoading: bookingsLoading } = useListBookings({ memberId: memberId ?? undefined }, { query: { refetchInterval: 3000 } });
-  const { data: attendance = [], isLoading: attendanceLoading } = useListAttendance({ memberId: memberId ?? undefined }, { query: { refetchInterval: 3000 } });
-  const { data: sessions = [], isLoading: sessionsLoading } = useListSessions({ memberId: memberId ?? undefined }, { query: { refetchInterval: 3000 } });
+  const { data: bookings = [], isLoading: bookingsLoading } = useListBookings({ memberId: memberId ?? undefined }, { query: { refetchInterval: 3000 } as any });
+  const { data: attendance = [], isLoading: attendanceLoading } = useListAttendance({ memberId: memberId ?? undefined }, { query: { refetchInterval: 3000 } as any });
+  const { data: sessions = [], isLoading: sessionsLoading } = useListSessions({ memberId: memberId ?? undefined }, { query: { refetchInterval: 3000 } as any });
 
   const [selectedClassId, setSelectedClassId] = useState<number | null>(null);
 
   // Fetch class details for dialog
   const { data: classDetail, isLoading: classLoading } = useGetClass(selectedClassId ?? 0, {
-    query: { enabled: !!selectedClassId }
+    query: { enabled: !!selectedClassId } as any
   });
 
-  // Thống kê điều chỉnh cho tài khoản demo Customer theo yêu cầu:
-  // Ngày checkin: 201, Lớp học tham gia: 56, Buổi tập riêng cùng PT: 25
-  const checkInDaysCount = 201;
-  const classesJoinedCount = 56;
-  const completedSessionsCount = 25;
+  // Thống kê điều chỉnh cho tài khoản demo Customer theo yêu cầu và cập nhật real time:
+  const checkInDaysCount = 201 + attendance.length;
+  const classesJoinedCount = 56 + bookings.filter(b => b.status === "confirmed").length;
+  const completedSessionsCount = 25 + sessions.filter(s => s.status === "completed").length;
 
   const isLoading = bookingsLoading || attendanceLoading || sessionsLoading;
 
