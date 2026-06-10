@@ -10,7 +10,7 @@ import { format } from "date-fns";
 import { CalendarCheck2, Activity, Dumbbell } from "lucide-react";
 
 export default function CustomerDashboard() {
-  const { memberId } = useAuth();
+  const { memberId, fullName } = useAuth();
   const { data: bookings = [], isLoading: bookingsLoading } = useListBookings({ memberId: memberId ?? undefined }, { query: { refetchInterval: 3000 } as any });
   const { data: attendance = [], isLoading: attendanceLoading } = useListAttendance({ memberId: memberId ?? undefined }, { query: { refetchInterval: 3000 } as any });
   const { data: sessions = [], isLoading: sessionsLoading } = useListSessions({ memberId: memberId ?? undefined }, { query: { refetchInterval: 3000 } as any });
@@ -23,9 +23,10 @@ export default function CustomerDashboard() {
   });
 
   // Thống kê điều chỉnh cho tài khoản demo Customer theo yêu cầu và cập nhật real time:
-  const checkInDaysCount = 201 + attendance.length;
-  const classesJoinedCount = 56 + bookings.filter(b => b.status === "confirmed").length;
-  const completedSessionsCount = 25 + sessions.filter(s => s.status === "completed").length;
+  const isDemo = fullName === "Customer";
+  const checkInDaysCount = (isDemo ? 201 : 0) + attendance.length;
+  const classesJoinedCount = (isDemo ? 56 : 0) + bookings.filter(b => b.status === "confirmed").length;
+  const completedSessionsCount = (isDemo ? 25 : 0) + sessions.filter(s => s.status === "completed").length;
 
   const isLoading = bookingsLoading || attendanceLoading || sessionsLoading;
 
