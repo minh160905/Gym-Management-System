@@ -16,6 +16,7 @@ import OwnerStaff from "@/pages/owner/staff";
 import OwnerMemberships from "@/pages/owner/memberships";
 import OwnerAnalytics from "@/pages/owner/analytics";
 import OwnerEquipment from "@/pages/owner/equipment";
+import OwnerRevenue from "@/pages/owner/revenue";
 
 // Manager Pages
 import ManagerDashboard from "@/pages/manager/dashboard";
@@ -67,6 +68,7 @@ function Router() {
       <Route path="/owner/memberships" component={OwnerMemberships} />
       <Route path="/owner/analytics" component={OwnerAnalytics} />
       <Route path="/owner/equipment" component={OwnerEquipment} />
+      <Route path="/owner/revenue" component={OwnerRevenue} />
 
       {/* Manager Routes */}
       <Route path="/manager/dashboard" component={ManagerDashboard} />

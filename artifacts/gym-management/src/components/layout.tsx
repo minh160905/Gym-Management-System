@@ -48,8 +48,8 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
       { name: "Staff", href: "/owner/staff", icon: Briefcase },
       { name: "Memberships", href: "/owner/memberships", icon: CreditCard },
       { name: "Analytics", href: "/owner/analytics", icon: BarChart3 },
+      { name: "Revenue", href: "/owner/revenue", icon: DollarSign },
       { name: "Equipment", href: "/owner/equipment", icon: Wrench },
-
     ],
     manager: [
       { name: "Dashboard", href: "/manager/dashboard", icon: LayoutDashboard },
