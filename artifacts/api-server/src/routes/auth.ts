@@ -55,7 +55,6 @@ router.post("/auth/users", async (req, res): Promise<void> => {
     .values({
       username,
       passwordHash: hashPassword(password),
-      plainPassword: password,
       fullName,
       role: finalRole,
       memberId: memberId ?? null,
@@ -89,10 +88,7 @@ router.post("/auth/reset-password", async (req, res): Promise<void> => {
   }
   await db
     .update(users)
-    .set({ 
-      passwordHash: hashPassword(newPassword),
-      plainPassword: newPassword,
-    })
+    .set({ passwordHash: hashPassword(newPassword) })
     .where(eq(users.id, user.id));
   res.json({ message: "Password updated successfully" });
 });

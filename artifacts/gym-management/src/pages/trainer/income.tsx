@@ -25,7 +25,7 @@ export default function TrainerIncomeDetails() {
     trainerId: staffId ?? undefined 
   });
   const { data: trainerInfo } = useGetStaff(staffId ?? 0, { 
-    query: { enabled: !!staffId } 
+    query: { enabled: !!staffId } as any
   });
 
   const baseSalary = trainerInfo?.salary ? parseFloat(String(trainerInfo.salary)) : 0;

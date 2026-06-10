@@ -193,7 +193,7 @@ export default function CustomerMembership() {
                           </div>
                           <div className="flex-1 min-w-0">
                             <p className="font-medium text-sm">{trainer.firstName} {trainer.lastName}</p>
-                            <p className="text-xs text-muted-foreground truncate">{trainer.specialization || "General Fitness"}</p>
+                            <p className="text-xs text-muted-foreground truncate">{trainer.specializations || "General Fitness"}</p>
                           </div>
                           {selectedTrainer?.id === trainer.id && (
                             <CheckCircle2 className="w-4 h-4 text-primary shrink-0" />

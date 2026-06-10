@@ -158,9 +158,9 @@ export default function CustomerHirePT() {
                 <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold shrink-0">
                   {trainer.firstName[0]}{trainer.lastName[0]}
                 </div>
-                <div>
+                 <div>
                   <CardTitle className="text-base text-black">{trainer.firstName} {trainer.lastName}</CardTitle>
-                  <CardDescription className="text-xs">{trainer.specialization || "Thể hình tự do"}</CardDescription>
+                  <CardDescription className="text-xs">{trainer.specializations || "Thể hình tự do"}</CardDescription>
                 </div>
               </div>
             </CardHeader>
@@ -282,9 +282,9 @@ export default function CustomerHirePT() {
                         <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm shrink-0">
                           {selectedTrainer.firstName[0]}{selectedTrainer.lastName[0]}
                         </div>
-                        <div>
+                         <div>
                           <p className="font-medium text-sm text-black">{selectedTrainer.firstName} {selectedTrainer.lastName}</p>
-                          <p className="text-xs text-muted-foreground">{selectedTrainer.specialization || "Thể hình tự do"}</p>
+                          <p className="text-xs text-muted-foreground">{selectedTrainer.specializations || "Thể hình tự do"}</p>
                         </div>
                       </div>
                       <div className="flex items-center justify-between border-t border-border pt-3">

@@ -15,16 +15,16 @@ export default function TrainerDashboard() {
   // Fetch personal training sessions for this trainer
   const { data: sessions = [], isLoading: sessionsLoading } = useListSessions({ 
     trainerId: staffId ?? undefined 
-  }, { query: { refetchInterval: 3000 } });
+  }, { query: { refetchInterval: 3000 } as any });
   
   // Fetch classes in charge
   const { data: classes = [], isLoading: classesLoading } = useListClasses({ 
     trainerId: staffId ?? undefined 
-  }, { query: { refetchInterval: 3000 } });
+  }, { query: { refetchInterval: 3000 } as any });
 
   // Fetch trainer profile to get base salary
   const { data: trainerInfo } = useGetStaff(staffId ?? 0, { 
-    query: { enabled: !!staffId } 
+    query: { enabled: !!staffId } as any
   });
 
   // Calculate statistics
@@ -42,7 +42,7 @@ export default function TrainerDashboard() {
 
   const { data: bookings = [], isLoading: bookingsLoading } = useListBookings(
     { classId: viewingClassId ?? undefined },
-    { query: { enabled: !!viewingClassId } }
+    { query: { enabled: !!viewingClassId } as any }
   );
 
   function getWeeklyScheduleText(scheduledAtStr: string, endDateStr?: string | null) {

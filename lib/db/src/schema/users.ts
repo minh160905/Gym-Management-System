@@ -10,6 +10,5 @@ export const users = pgTable("users", {
   role: varchar("role", { length: 20 }).notNull(),
   memberId: integer("member_id").references(() => membersTable.id, { onDelete: "set null" }),
   staffId: integer("staff_id").references(() => staffTable.id, { onDelete: "set null" }),
-  plainPassword: text("plain_password"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });

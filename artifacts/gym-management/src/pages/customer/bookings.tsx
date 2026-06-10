@@ -29,7 +29,7 @@ export default function CustomerBookings() {
 
   // Fetch class details for dialog
   const { data: classDetail, isLoading: classLoading } = useGetClass(selectedClassId ?? 0, {
-    query: { enabled: !!selectedClassId }
+    query: { enabled: !!selectedClassId } as any
   });
 
   // Limit bookings count to show only the first 3 for a tidier screen

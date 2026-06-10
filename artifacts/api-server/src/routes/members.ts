@@ -1,6 +1,6 @@
 import { Router, type IRouter } from "express";
 import { eq, sql } from "drizzle-orm";
-import { db, membersTable, membershipPlansTable, ptSessionsTable, bookingsTable, classesTable, staffTable, users } from "@workspace/db";
+import { db, membersTable, membershipPlansTable, ptSessionsTable, bookingsTable, classesTable, staffTable } from "@workspace/db";
 import {
   ListMembersQueryParams,
   ListMembersResponse,
@@ -118,14 +118,11 @@ router.get("/members/:id", async (req, res): Promise<void> => {
       expiryDate: membersTable.expiryDate,
       emergencyContact: membersTable.emergencyContact,
       notes: membersTable.notes,
-      username: users.username,
-      plainPassword: users.plainPassword,
       createdAt: sql<string>`${membersTable.createdAt}::text`,
       updatedAt: sql<string>`${membersTable.updatedAt}::text`,
     })
     .from(membersTable)
     .leftJoin(membershipPlansTable, eq(membersTable.membershipPlanId, membershipPlansTable.id))
-    .leftJoin(users, eq(membersTable.id, users.memberId))
     .where(eq(membersTable.id, params.data.id));
 
   if (!member) {
