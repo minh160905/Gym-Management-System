@@ -16,12 +16,11 @@ export default function OwnerAnalytics() {
         <p className="text-muted-foreground mt-2">Chỉ số hiệu quả hoạt động kinh doanh chi tiết.</p>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {retentionLoading ? (
-          [...Array(4)].map((_, i) => <Skeleton key={i} className="h-32" />)
+          [...Array(3)].map((_, i) => <Skeleton key={i} className="h-32" />)
         ) : retention ? (
           <>
-            <MetricCard title="Tỷ lệ giữ chân" value={`${retention.retentionRate}%`} />
             <MetricCard title="Hội viên đang hoạt động" value={retention.activeCount} />
             <MetricCard title="Hủy đăng ký" value={retention.cancelledCount} />
             <MetricCard title="Gia hạn tháng này" value={retention.renewalsThisMonth} />
