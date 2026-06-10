@@ -2,6 +2,8 @@ import { useState } from "react";
 import {
   useListClasses,
   useCreateClass,
+  useUpdateClass,
+  useDeleteClass,
   useListStaff,
   getListClassesQueryKey,
   useListBookings,
@@ -45,8 +47,11 @@ export default function ManagerClasses() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const createClassMutation = useCreateClass();
+  const updateClassMutation = useUpdateClass();
+  const deleteClassMutation = useDeleteClass();
 
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [editingClassId, setEditingClassId] = useState<number | null>(null);
   const [form, setForm] = useState(EMPTY_FORM);
   const [saving, setSaving] = useState(false);
   const [viewingClassId, setViewingClassId] = useState<number | null>(null);
@@ -54,7 +59,7 @@ export default function ManagerClasses() {
 
   const { data: bookings = [], isLoading: bookingsLoading } = useListBookings(
     { classId: viewingClassId ?? undefined },
-    { query: { enabled: !!viewingClassId } }
+    { query: { enabled: !!viewingClassId } as any }
   );
 
   function getWeeklyScheduleText(scheduledAtStr: string, endDateStr?: string | null) {
@@ -76,8 +81,45 @@ export default function ManagerClasses() {
   }
 
   function openAdd() {
+    setEditingClassId(null);
     setForm(EMPTY_FORM);
     setDialogOpen(true);
+  }
+
+  function openEdit(cls: any) {
+    setEditingClassId(cls.id);
+    setForm({
+      name: cls.name,
+      description: cls.description || "",
+      trainerId: cls.trainerId ? cls.trainerId.toString() : "none",
+      capacity: cls.capacity.toString(),
+      scheduledAt: cls.scheduledAt ? cls.scheduledAt.substring(0, 16) : "",
+      endDate: cls.endDate ? cls.endDate.substring(0, 10) : "",
+      durationMinutes: cls.durationMinutes.toString(),
+      location: cls.location || "",
+      category: cls.category,
+      status: cls.status,
+    });
+    setDialogOpen(true);
+  }
+
+  async function handleDelete(id: number, name: string) {
+    if (window.confirm(`Bạn có chắc chắn muốn xóa lớp học "${name}" không?`)) {
+      try {
+        await deleteClassMutation.mutateAsync({ id });
+        toast({
+          title: "Đã xóa lớp học",
+          description: `Lớp học "${name}" đã được xóa thành công.`,
+        });
+        queryClient.invalidateQueries({ queryKey: getListClassesQueryKey() });
+      } catch (error) {
+        toast({
+          title: "Lỗi",
+          description: "Không thể xóa lớp học này.",
+          variant: "destructive",
+        });
+      }
+    }
   }
 
   async function handleSave() {
@@ -117,17 +159,25 @@ export default function ManagerClasses() {
     };
 
     try {
-      await createClassMutation.mutateAsync({ data: payload });
-      toast({
-        title: "Đã thêm lớp học",
-        description: `Lớp học "${payload.name}" đã được tạo thành công.`,
-      });
+      if (editingClassId) {
+        await updateClassMutation.mutateAsync({ id: editingClassId, data: payload });
+        toast({
+          title: "Đã cập nhật lớp học",
+          description: `Lớp học "${payload.name}" đã được cập nhật thành công.`,
+        });
+      } else {
+        await createClassMutation.mutateAsync({ data: payload });
+        toast({
+          title: "Đã thêm lớp học",
+          description: `Lớp học "${payload.name}" đã được tạo thành công.`,
+        });
+      }
       queryClient.invalidateQueries({ queryKey: getListClassesQueryKey() });
       setDialogOpen(false);
     } catch (error) {
       toast({
         title: "Lỗi",
-        description: "Không thể tạo lớp học mới.",
+        description: editingClassId ? "Không thể cập nhật thông tin lớp học." : "Không thể tạo lớp học mới.",
         variant: "destructive",
       });
     } finally {
@@ -158,7 +208,7 @@ export default function ManagerClasses() {
                 <TableHead>Lịch học</TableHead>
                 <TableHead>Sức chứa</TableHead>
                 <TableHead>Trạng thái</TableHead>
-                <TableHead className="text-right">Học viên</TableHead>
+                <TableHead className="text-right">Thao tác</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -197,16 +247,32 @@ export default function ManagerClasses() {
                         <Badge variant="outline">{cls.status}</Badge>
                       </TableCell>
                       <TableCell className="text-right">
-                        <Button 
-                          variant="outline" 
-                          size="sm" 
-                          onClick={() => {
-                            setViewingClassId(cls.id);
-                            setViewingClassName(cls.name);
-                          }}
-                        >
-                          Xem danh sách
-                        </Button>
+                        <div className="flex items-center justify-end gap-2">
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            onClick={() => {
+                              setViewingClassId(cls.id);
+                              setViewingClassName(cls.name);
+                            }}
+                          >
+                            Học viên
+                          </Button>
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            onClick={() => openEdit(cls)}
+                          >
+                            Sửa
+                          </Button>
+                          <Button 
+                            variant="destructive" 
+                            size="sm" 
+                            onClick={() => handleDelete(cls.id, cls.name)}
+                          >
+                            Xóa
+                          </Button>
+                        </div>
                       </TableCell>
                     </TableRow>
                   );
@@ -221,7 +287,7 @@ export default function ManagerClasses() {
       <Dialog open={dialogOpen} onOpenChange={(open) => !saving && setDialogOpen(open)}>
         <DialogContent className="max-w-xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Thêm lớp học mới</DialogTitle>
+            <DialogTitle>{editingClassId ? "Chỉnh sửa lớp học" : "Thêm lớp học mới"}</DialogTitle>
           </DialogHeader>
 
           <div className="grid gap-4 py-2">
@@ -367,7 +433,7 @@ export default function ManagerClasses() {
               Hủy
             </Button>
             <Button onClick={handleSave} disabled={saving}>
-              {saving ? "Đang tạo..." : "Tạo lớp học"}
+              {saving ? "Đang lưu..." : (editingClassId ? "Lưu thay đổi" : "Tạo lớp học")}
             </Button>
           </DialogFooter>
         </DialogContent>
