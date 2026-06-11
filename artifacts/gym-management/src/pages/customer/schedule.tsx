@@ -18,10 +18,12 @@ interface ScheduleEvent {
   trainerName: string | null;
   location: string | null;
   status: string;
+  recurrenceText?: string;
 }
 
 export default function CustomerSchedule() {
   const { memberId } = useAuth();
+  const now = new Date();
   
   // Fetch class bookings
   const { data: bookings = [], isLoading: bookingsLoading } = useListBookings({ 
@@ -46,16 +48,39 @@ export default function CustomerSchedule() {
   bookings.forEach(booking => {
     const cls = classes.find(c => c.id === booking.classId);
     if (cls) {
+      const classStart = new Date(cls.scheduledAt);
+      const classEnd = cls.endDate ? new Date(cls.endDate) : new Date(classStart.getTime() + 12 * 7 * 24 * 60 * 60 * 1000);
+      
+      let scheduledAt = classStart;
+      const daysVi = ["Chủ Nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy"];
+      const dayName = daysVi[classStart.getDay()];
+      const timeStr = format(classStart, "HH:mm");
+      const recurrenceText = `${dayName} hàng tuần lúc ${timeStr} (Từ ${format(classStart, "dd/MM/yyyy")} đến ${format(classEnd, "dd/MM/yyyy")})`;
+
+      if (classEnd.getTime() > now.getTime()) {
+        // Class has not ended yet: calculate the next occurrence date
+        let occurrenceDate = new Date(classStart);
+        while (occurrenceDate.getTime() < now.getTime()) {
+          occurrenceDate.setDate(occurrenceDate.getDate() + 7);
+        }
+        if (occurrenceDate.getTime() <= classEnd.getTime()) {
+          scheduledAt = occurrenceDate;
+        } else {
+          scheduledAt = classEnd;
+        }
+      }
+
       events.push({
         id: `class-${booking.id}`,
         type: "class",
         title: cls.name,
         category: cls.category ?? "Lớp học",
-        scheduledAt: new Date(cls.scheduledAt),
+        scheduledAt,
         durationMinutes: cls.durationMinutes ?? 60,
         trainerName: cls.trainerName || "Chưa có",
         location: cls.location || "Phòng tập nhóm",
         status: booking.status,
+        recurrenceText,
       });
     }
   });
@@ -79,7 +104,6 @@ export default function CustomerSchedule() {
   // We'll sort ascending (from earliest to latest)
   events.sort((a, b) => a.scheduledAt.getTime() - b.scheduledAt.getTime());
 
-  const now = new Date();
   const upcomingEvents = events.filter(e => isAfter(e.scheduledAt, now) || e.status === "scheduled");
   const pastEvents = events.filter(e => isBefore(e.scheduledAt, now) && e.status !== "scheduled");
 
@@ -132,6 +156,11 @@ export default function CustomerSchedule() {
                       <div>
                         <div className="font-bold text-sm text-black">{event.title}</div>
                         <div className="text-xs text-muted-foreground capitalize">{event.category}</div>
+                        {event.recurrenceText && (
+                          <div className="text-xs text-zinc-500 mt-1 italic font-normal normal-case">
+                            Lịch học: {event.recurrenceText}
+                          </div>
+                        )}
                       </div>
                     </TableCell>
                     <TableCell>
