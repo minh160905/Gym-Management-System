@@ -41,7 +41,7 @@ export default function TrainerProfile() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
-  const { data: trainer, isLoading: trainerLoading } = useGetStaff(staffId ?? 0, { query: { enabled: !!staffId } });
+  const { data: trainer, isLoading: trainerLoading } = useGetStaff(staffId ?? 0, { query: { enabled: !!staffId } as any });
   const { data: sessions } = useListSessions({ trainerId: staffId ?? undefined });
   const { data: users } = useListUsers();
   const updateStaff = useUpdateStaff();
@@ -57,7 +57,7 @@ export default function TrainerProfile() {
   function openEdit() {
     setForm({
       phone: trainer?.phone ?? "",
-      specializations: trainer?.specialization ?? "",
+      specializations: trainer?.specializations ?? "",
       bio: trainer?.bio ?? "",
     });
     setEditOpen(true);
@@ -135,7 +135,7 @@ export default function TrainerProfile() {
                 <InfoRow icon={Calendar} label="Ngày nhận việc" value={trainer.hireDate ? format(new Date(trainer.hireDate), "dd/MM/yyyy") : null} />
                 <InfoRow icon={Briefcase} label="Chức vụ" value={trainer.role?.replace("_", " ")} />
                 <InfoRow icon={DollarSign} label="Lương" value={trainer.salary ? `$${Number(trainer.salary).toLocaleString()}/năm` : null} />
-                <InfoRow icon={User} label="Chuyên môn" value={trainer.specialization} />
+                <InfoRow icon={User} label="Chuyên môn" value={trainer.specializations} />
                 {trainer.bio && <InfoRow icon={Briefcase} label="Giới thiệu" value={trainer.bio} />}
               </>
             ) : (

@@ -49,7 +49,6 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
       { name: "Memberships", href: "/owner/memberships", icon: CreditCard },
       { name: "Analytics", href: "/owner/analytics", icon: BarChart3 },
       { name: "Equipment", href: "/owner/equipment", icon: Wrench },
-
     ],
     manager: [
       { name: "Dashboard", href: "/manager/dashboard", icon: LayoutDashboard },
@@ -57,7 +56,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
       { name: "Staff", href: "/manager/staff", icon: Briefcase },
       { name: "Classes", href: "/manager/classes", icon: Calendar },
       { name: "Attendance", href: "/manager/attendance", icon: ClipboardCheck },
-      { name: "Thiết bị", href: "/manager/equipment", icon: Wrench },
+      { name: "Equipment", href: "/manager/equipment", icon: Wrench },
       { name: "Feedback", href: "/manager/feedback", icon: MessageSquare },
     ],
     trainer: [
@@ -65,14 +64,14 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
       { name: "Sessions", href: "/trainer/sessions", icon: Clock },
       { name: "Workouts", href: "/trainer/workouts", icon: Dumbbell },
       { name: "Clients", href: "/trainer/clients", icon: Users },
-      { name: "Chi tiết thu nhập", href: "/trainer/income", icon: DollarSign },
+      { name: "Income", href: "/trainer/income", icon: DollarSign },
       { name: "My Profile", href: "/trainer/profile", icon: UserCircle },
     ],
     customer: [
       { name: "Dashboard", href: "/customer/dashboard", icon: LayoutDashboard },
       { name: "Classes", href: "/customer/classes", icon: Calendar },
       { name: "My Bookings", href: "/customer/bookings", icon: Clock },
-      { name: "Lịch tập luyện", href: "/customer/schedule", icon: Calendar },
+      { name: "Schedule", href: "/customer/schedule", icon: Calendar },
       { name: "Membership", href: "/customer/membership", icon: CreditCard },
       { name: "Hire PT", href: "/customer/hire-pt", icon: UserPlus },
       { name: "Payments", href: "/customer/payments", icon: DollarSign },
@@ -87,39 +86,38 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full bg-background">
-        <Sidebar className="border-r border-border bg-sidebar">
-          <SidebarHeader className="p-4 flex items-center justify-between">
+        <Sidebar className="border-r border-zinc-900 bg-black sidebar-black-bg">
+          <SidebarHeader className="p-4 flex items-center justify-between border-b border-zinc-900 bg-black">
             <div className="flex items-center gap-2 font-bold text-lg text-primary tracking-tight">
-              <Building2 className="w-6 h-6" />
-              <span>IRON & FORGE</span>
+              <Building2 className="w-6 h-6 text-emerald-500" />
+              <span className="text-zinc-100 font-extrabold tracking-widest text-[16px]">IRON & FORGE</span>
             </div>
           </SidebarHeader>
-          <SidebarContent>
-            <SidebarMenu>
+          <SidebarContent className="bg-black">
+            <SidebarMenu className="px-2 py-3">
               {items.map((item) => (
-                <SidebarMenuItem key={item.name}>
-                  <SidebarMenuButton
-                    asChild
-                    isActive={location === item.href}
-                    tooltip={item.name}
+                <SidebarMenuItem key={item.name} className="mb-2">
+                  <Link
+                    href={item.href}
+                    className={`sidebar-nav-link ${location === item.href ? 'active' : ''}`}
                   >
-                    <Link href={item.href}>
-                      <item.icon className="w-4 h-4 mr-2" />
-                      <span>{item.name}</span>
-                    </Link>
-                  </SidebarMenuButton>
+                    <span className="inner-btn">
+                      <item.icon className="w-5 h-5 mr-3 shrink-0" />
+                      <span className="truncate">{item.name}</span>
+                    </span>
+                  </Link>
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>
           </SidebarContent>
-          <SidebarFooter className="p-4 border-t border-border">
+          <SidebarFooter className="p-4 border-t border-zinc-900 bg-black">
             <div className="flex flex-col gap-2">
-              <div className="text-xs font-medium uppercase tracking-wider text-muted-foreground mb-2">
+              <div className="text-[11px] font-semibold uppercase tracking-wider text-zinc-500 mb-2 truncate">
                 {fullName ? `Logged in as ${fullName}` : `Logged in as ${role}`}
               </div>
               <Button
-                variant="outline"
-                className="w-full justify-start"
+                variant="ghost"
+                className="w-full justify-start text-zinc-400 hover:text-white hover:bg-zinc-900/50 border border-zinc-800/50 text-[14px] font-medium transition-all"
                 onClick={() => {
                   logout();
                   navigate("/");

@@ -69,7 +69,7 @@ export function TrainerDetailDialog({ staffId, onClose }: TrainerDetailDialogPro
   const upcomingSessions  = sessions?.filter((s) => s.status === "scheduled") ?? [];
 
   const form = useForm<EditForm>({
-    resolver: zodResolver(editSchema),
+    resolver: zodResolver(editSchema as any),
     values: trainer ? {
       firstName:       trainer.firstName,
       lastName:        trainer.lastName,

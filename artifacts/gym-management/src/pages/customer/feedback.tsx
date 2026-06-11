@@ -27,7 +27,7 @@ export default function CustomerFeedback() {
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof feedbackSchema>>({
-    resolver: zodResolver(feedbackSchema),
+    resolver: zodResolver(feedbackSchema as any),
     defaultValues: {
       rating: 5,
       serviceType: "general",

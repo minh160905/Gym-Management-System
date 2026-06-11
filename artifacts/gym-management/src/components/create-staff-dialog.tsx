@@ -84,7 +84,7 @@ export function CreateStaffDialog({ open, onClose }: Props) {
   const today = new Date().toISOString().split("T")[0];
 
   const form = useForm<FormValues>({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(schema as any),
     defaultValues: {
       firstName: "", lastName: "", email: "", phone: "",
       role: "", hireDate: today, status: "active",

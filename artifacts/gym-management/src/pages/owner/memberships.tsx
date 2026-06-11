@@ -47,7 +47,7 @@ function PlanDialog({
   const { toast } = useToast();
 
   const form = useForm<PlanForm>({
-    resolver: zodResolver(planSchema),
+    resolver: zodResolver(planSchema as any),
     defaultValues: {
       name: plan?.name ?? "",
       description: plan?.description ?? "",
@@ -268,41 +268,43 @@ export default function OwnerMemberships() {
 
       {/* Summary stats */}
       <div className="grid gap-4 grid-cols-1 sm:grid-cols-3">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-              <LayoutGrid className="w-4 h-4 text-primary" /> Total Plans
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-2xl font-bold">{plans?.length ?? 0}</p>
-            <p className="text-xs text-muted-foreground mt-0.5">{activePlans} active</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-              <Users className="w-4 h-4 text-primary" /> Total Subscribers
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-2xl font-bold">
+        <div className="pastel-card pastel-indigo p-5 flex flex-col justify-between h-28">
+          <div className="flex items-center justify-between pb-1">
+            <span className="text-xs font-bold uppercase tracking-wider text-black flex items-center gap-2">
+              <LayoutGrid className="w-4 h-4 text-black ignore-color" /> Total Plans
+            </span>
+          </div>
+          <div>
+            <p className="text-2xl font-black text-black">{plans?.length ?? 0}</p>
+            <p className="text-xs font-bold text-black mt-0.5">{activePlans} active</p>
+          </div>
+        </div>
+
+        <div className="pastel-card pastel-emerald p-5 flex flex-col justify-between h-28">
+          <div className="flex items-center justify-between pb-1">
+            <span className="text-xs font-bold uppercase tracking-wider text-black flex items-center gap-2">
+              <Users className="w-4 h-4 text-black ignore-color" /> Total Subscribers
+            </span>
+          </div>
+          <div>
+            <p className="text-2xl font-black text-black">
               {members?.filter((m) => m.status === "active" && m.membershipPlanId).length ?? 0}
             </p>
-            <p className="text-xs text-muted-foreground mt-0.5">active members on a plan</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-              <DollarSign className="w-4 h-4 text-primary" /> Est. Monthly Revenue
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-2xl font-bold">${totalRevenue.toFixed(2)}</p>
-            <p className="text-xs text-muted-foreground mt-0.5">from active subscribers</p>
-          </CardContent>
-        </Card>
+            <p className="text-xs font-bold text-black mt-0.5">active members on a plan</p>
+          </div>
+        </div>
+
+        <div className="pastel-card pastel-sky p-5 flex flex-col justify-between h-28">
+          <div className="flex items-center justify-between pb-1">
+            <span className="text-xs font-bold uppercase tracking-wider text-black flex items-center gap-2">
+              <DollarSign className="w-4 h-4 text-black ignore-color" /> Est. Monthly Revenue
+            </span>
+          </div>
+          <div>
+            <p className="text-2xl font-black text-black">${totalRevenue.toFixed(2)}</p>
+            <p className="text-xs font-bold text-black mt-0.5">from active subscribers</p>
+          </div>
+        </div>
       </div>
 
       <Separator />
@@ -325,69 +327,65 @@ export default function OwnerMemberships() {
           {plans?.map((plan) => {
             const subs = subscriberCount(plan.id);
             return (
-              <Card
+              <div
                 key={plan.id}
-                className={`relative flex flex-col transition-colors hover:border-primary/50 ${!plan.isActive ? "opacity-60" : ""}`}
+                className={`card-container ${!plan.isActive ? "opacity-60" : ""}`}
               >
-                {/* Status badge */}
-                <div className="absolute top-4 right-4">
-                  {plan.isActive ? (
-                    <Badge variant="outline" className="bg-primary/10 text-primary border-primary/30 text-xs">Active</Badge>
-                  ) : (
-                    <Badge variant="outline" className="bg-muted text-muted-foreground text-xs">Inactive</Badge>
-                  )}
+                <div className="title-card">
+                  <p>{plan.name}</p>
+                  <div>
+                    {plan.isActive ? (
+                      <Badge variant="outline" className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20 text-xs">Active</Badge>
+                    ) : (
+                      <Badge variant="outline" className="bg-zinc-800 text-zinc-400 border-zinc-700 text-xs">Inactive</Badge>
+                    )}
+                  </div>
                 </div>
 
-                <CardHeader className="pr-24">
-                  <CardTitle className="text-xl">{plan.name}</CardTitle>
-                  {plan.description && <CardDescription className="text-sm">{plan.description}</CardDescription>}
-                </CardHeader>
-
-                <CardContent className="flex-1 space-y-4">
-                  {/* Price */}
-                  <div>
-                    <span className="text-4xl font-bold">${plan.priceMonthly}</span>
-                    <span className="text-muted-foreground text-sm">/mo</span>
-                    <span className="text-xs text-muted-foreground ml-2">· {plan.durationMonths} month(s)</span>
+                <div className="card-content">
+                  <div className="plain">
+                    <span>${plan.priceMonthly}</span>
+                    <span className="text-sm text-zinc-500 ml-1">/mo</span>
+                    <span className="text-xs text-zinc-500 ml-2">· {plan.durationMonths} month(s)</span>
                   </div>
 
-                  {/* Features */}
+                  {plan.description && (
+                    <div className="title text-sm">{plan.description}</div>
+                  )}
+
                   {plan.features && (
-                    <ul className="space-y-1.5 text-sm text-muted-foreground">
+                    <ul className="space-y-1.5 text-sm text-zinc-400 flex-1">
                       {plan.features.split(",").map((f, i) => (
                         <li key={i} className="flex items-start gap-2">
-                          <CheckCircle2 className="w-3.5 h-3.5 text-primary shrink-0 mt-0.5" />
-                          {f.trim()}
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
+                          <span>{f.trim()}</span>
                         </li>
                       ))}
                     </ul>
                   )}
 
-                  {/* Subscriber count */}
-                  <div className="flex items-center gap-1.5 text-xs text-muted-foreground pt-1 border-t border-border">
+                  <div className="flex items-center gap-1.5 text-xs text-zinc-500 pt-1 border-t border-zinc-800">
                     <Users className="w-3.5 h-3.5" />
                     <span>{subs} active subscriber{subs !== 1 ? "s" : ""}</span>
                   </div>
-                </CardContent>
 
-                <CardFooter className="gap-2">
-                  <Button
-                    variant="outline"
-                    className="flex-1"
-                    onClick={() => setEditPlan(plan)}
-                  >
-                    <Pencil className="w-3.5 h-3.5 mr-1.5" /> Edit
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="text-destructive hover:text-destructive hover:bg-destructive/10"
-                    onClick={() => setDeletePlan(plan)}
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
-                </CardFooter>
-              </Card>
+                  <div className="flex gap-2 mt-4">
+                    <button
+                      className="card-btn flex-1"
+                      onClick={() => setEditPlan(plan)}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      className="px-3 py-2 border border-destructive/30 hover:border-destructive text-destructive hover:bg-destructive/10 rounded-md transition-colors text-xs font-semibold"
+                      onClick={() => setDeletePlan(plan)}
+                      title="Delete Plan"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              </div>
             );
           })}
         </div>

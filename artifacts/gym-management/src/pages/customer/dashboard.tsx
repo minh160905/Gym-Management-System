@@ -11,15 +11,15 @@ import { CalendarCheck2, Activity, Dumbbell } from "lucide-react";
 
 export default function CustomerDashboard() {
   const { memberId } = useAuth();
-  const { data: bookings = [], isLoading: bookingsLoading } = useListBookings({ memberId: memberId ?? undefined }, { query: { refetchInterval: 3000 } });
-  const { data: attendance = [], isLoading: attendanceLoading } = useListAttendance({ memberId: memberId ?? undefined }, { query: { refetchInterval: 3000 } });
-  const { data: sessions = [], isLoading: sessionsLoading } = useListSessions({ memberId: memberId ?? undefined }, { query: { refetchInterval: 3000 } });
+  const { data: bookings = [], isLoading: bookingsLoading } = useListBookings({ memberId: memberId ?? undefined }, { query: { refetchInterval: 3000 } as any });
+  const { data: attendance = [], isLoading: attendanceLoading } = useListAttendance({ memberId: memberId ?? undefined }, { query: { refetchInterval: 3000 } as any });
+  const { data: sessions = [], isLoading: sessionsLoading } = useListSessions({ memberId: memberId ?? undefined }, { query: { refetchInterval: 3000 } as any });
 
   const [selectedClassId, setSelectedClassId] = useState<number | null>(null);
 
   // Fetch class details for dialog
   const { data: classDetail, isLoading: classLoading } = useGetClass(selectedClassId ?? 0, {
-    query: { enabled: !!selectedClassId }
+    query: { enabled: !!selectedClassId } as any
   });
 
   // Thống kê điều chỉnh cho tài khoản demo Customer theo yêu cầu:
@@ -42,53 +42,50 @@ export default function CustomerDashboard() {
 
       {/* Stats Cards */}
       <div className="grid gap-4 md:grid-cols-3">
-        <Card className="relative overflow-hidden border border-zinc-800 bg-zinc-900/40 backdrop-blur-md transition-all hover:border-emerald-500/30 group">
-          <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent pointer-events-none" />
-          <CardHeader className="flex flex-row items-center justify-between pb-2 pt-4 px-4">
-            <CardTitle className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Tổng số ngày đã Check in</CardTitle>
-            <div className="p-2 rounded-lg bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 group-hover:scale-110 transition-transform duration-200">
-              <CalendarCheck2 className="w-5 h-5" />
+        <div className="pastel-card pastel-emerald p-5 flex flex-col justify-between h-32">
+          <div className="flex items-center justify-between relative z-10">
+            <span className="text-xs font-bold uppercase tracking-wider text-black">Tổng số ngày đã Check in</span>
+            <div className="p-2 rounded-lg border border-black/10 bg-emerald-600/20 text-black">
+              <CalendarCheck2 className="w-5 h-5 ignore-color" />
             </div>
-          </CardHeader>
-          <CardContent className="px-4 pb-4">
-            <div className="text-3xl font-extrabold text-zinc-100 tracking-tight">
+          </div>
+          <div className="relative z-10 mt-1">
+            <div className="text-3xl font-black text-black tracking-tight">
               {attendanceLoading ? "..." : checkInDaysCount}
             </div>
-            <p className="text-xs text-muted-foreground mt-1">Ngày luyện tập tại phòng gym</p>
-          </CardContent>
-        </Card>
+            <p className="text-xs font-bold text-black mt-1">Ngày luyện tập tại phòng gym</p>
+          </div>
+        </div>
 
-        <Card className="relative overflow-hidden border border-zinc-800 bg-zinc-900/40 backdrop-blur-md transition-all hover:border-sky-500/30 group">
-          <div className="absolute inset-0 bg-gradient-to-br from-sky-500/5 to-transparent pointer-events-none" />
-          <CardHeader className="flex flex-row items-center justify-between pb-2 pt-4 px-4">
-            <CardTitle className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Số lớp học đã tham gia</CardTitle>
-            <div className="p-2 rounded-lg bg-sky-500/10 text-sky-500 border border-sky-500/20 group-hover:scale-110 transition-transform duration-200">
-              <Activity className="w-5 h-5" />
+        <div className="pastel-card pastel-sky p-5 flex flex-col justify-between h-32">
+          <div className="flex items-center justify-between relative z-10">
+            <span className="text-xs font-bold uppercase tracking-wider text-black">Số lớp học đã tham gia</span>
+            <div className="p-2 rounded-lg border border-black/10 bg-sky-600/20 text-black">
+              <Activity className="w-5 h-5 ignore-color" />
             </div>
-          </CardHeader>
-          <CardContent className="px-4 pb-4">
-            <div className="text-3xl font-extrabold text-zinc-100 tracking-tight">
+          </div>
+          <div className="relative z-10 mt-1">
+            <div className="text-3xl font-black text-black tracking-tight">
               {bookingsLoading ? "..." : classesJoinedCount}
             </div>
-            <p className="text-xs text-muted-foreground mt-1">Lớp học thể dục nhóm đã xác nhận</p>
-          </CardContent>
-        </Card>
+            <p className="text-xs font-bold text-black mt-1">Lớp học thể dục nhóm đã xác nhận</p>
+          </div>
+        </div>
 
-        <Card className="relative overflow-hidden border border-zinc-800 bg-zinc-900/40 backdrop-blur-md transition-all hover:border-amber-500/30 group">
-          <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 to-transparent pointer-events-none" />
-          <CardHeader className="flex flex-row items-center justify-between pb-2 pt-4 px-4">
-            <CardTitle className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Số sessions đã hoàn thành</CardTitle>
-            <div className="p-2 rounded-lg bg-amber-500/10 text-amber-500 border border-amber-500/20 group-hover:scale-110 transition-transform duration-200">
-              <Dumbbell className="w-5 h-5" />
+        <div className="pastel-card pastel-amber p-5 flex flex-col justify-between h-32">
+          <div className="flex items-center justify-between relative z-10">
+            <span className="text-xs font-bold uppercase tracking-wider text-black">Số sessions đã hoàn thành</span>
+            <div className="p-2 rounded-lg border border-black/10 bg-amber-600/20 text-black">
+              <Dumbbell className="w-5 h-5 ignore-color" />
             </div>
-          </CardHeader>
-          <CardContent className="px-4 pb-4">
-            <div className="text-3xl font-extrabold text-zinc-100 tracking-tight">
+          </div>
+          <div className="relative z-10 mt-1">
+            <div className="text-3xl font-black text-black tracking-tight">
               {sessionsLoading ? "..." : completedSessionsCount}
             </div>
-            <p className="text-xs text-muted-foreground mt-1">Buổi tập riêng với HLV cá nhân</p>
-          </CardContent>
-        </Card>
+            <p className="text-xs font-bold text-black mt-1">Buổi tập riêng với HLV cá nhân</p>
+          </div>
+        </div>
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">

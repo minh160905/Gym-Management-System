@@ -25,7 +25,7 @@ export default function TrainerIncomeDetails() {
     trainerId: staffId ?? undefined 
   });
   const { data: trainerInfo } = useGetStaff(staffId ?? 0, { 
-    query: { enabled: !!staffId } 
+    query: { enabled: !!staffId } as any
   });
 
   const baseSalary = trainerInfo?.salary ? parseFloat(String(trainerInfo.salary)) : 0;
@@ -240,50 +240,50 @@ export default function TrainerIncomeDetails() {
 
       {/* Stats Cards */}
       <div className="grid gap-4 md:grid-cols-3">
-        <Card className="relative overflow-hidden border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 shadow-sm hover:shadow-md transition-all duration-200">
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Lương cứng cơ bản</CardTitle>
-            <div className="p-2 rounded-lg bg-sky-500/10 text-sky-500">
-              <Briefcase className="w-5 h-5" />
+        <div className="pastel-card pastel-sky p-5 flex flex-col justify-between h-36">
+          <div className="flex flex-row items-center justify-between pb-2">
+            <span className="text-xs font-bold uppercase tracking-wider text-black">Lương cứng cơ bản</span>
+            <div className="p-2 rounded-lg border border-black/10 bg-sky-600/15 text-black">
+              <Briefcase className="w-5 h-5 ignore-color" />
             </div>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-extrabold text-zinc-900 dark:text-zinc-50">
+          </div>
+          <div className="mt-1">
+            <div className="text-3xl font-black text-black">
               ${baseSalary.toLocaleString()}
             </div>
-            <p className="text-xs text-muted-foreground mt-1">Hợp đồng lao động cố định hàng tháng</p>
-          </CardContent>
-        </Card>
+            <p className="text-xs font-bold text-black mt-1">Hợp đồng lao động cố định hàng tháng</p>
+          </div>
+        </div>
 
-        <Card className="relative overflow-hidden border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 shadow-sm hover:shadow-md transition-all duration-200">
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Hoa hồng dạy PT</CardTitle>
-            <div className="p-2 rounded-lg bg-amber-500/10 text-amber-500">
-              <Award className="w-5 h-5" />
+        <div className="pastel-card pastel-amber p-5 flex flex-col justify-between h-36">
+          <div className="flex flex-row items-center justify-between pb-2">
+            <span className="text-xs font-bold uppercase tracking-wider text-black">Hoa hồng dạy PT</span>
+            <div className="p-2 rounded-lg border border-black/10 bg-amber-600/15 text-black">
+              <Award className="w-5 h-5 ignore-color" />
             </div>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-extrabold text-zinc-900 dark:text-zinc-50">
+          </div>
+          <div className="mt-1">
+            <div className="text-3xl font-black text-black">
               ${extraIncome.toLocaleString()}
             </div>
-            <p className="text-xs text-muted-foreground mt-1">Tính theo: {ptSessionCount} session hoàn thành × $25</p>
-          </CardContent>
-        </Card>
+            <p className="text-xs font-bold text-black mt-1">Tính theo: {ptSessionCount} session hoàn thành × $25</p>
+          </div>
+        </div>
 
-        <Card className="relative overflow-hidden border border-emerald-200 dark:border-emerald-950 bg-emerald-50/20 dark:bg-emerald-950/10 shadow-sm hover:shadow-md transition-all duration-200">
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-emerald-700 dark:text-emerald-400 uppercase tracking-wider">Tổng thu nhập dự tính</CardTitle>
-            <div className="p-2 rounded-lg bg-emerald-500/15 text-emerald-600 dark:text-emerald-500">
-              <DollarSign className="w-5 h-5" />
+        <div className="pastel-card pastel-emerald p-5 flex flex-col justify-between h-36">
+          <div className="flex flex-row items-center justify-between pb-2">
+            <span className="text-xs font-bold uppercase tracking-wider text-black">Tổng thu nhập dự tính</span>
+            <div className="p-2 rounded-lg border border-black/10 bg-emerald-600/15 text-black">
+              <DollarSign className="w-5 h-5 ignore-color" />
             </div>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-extrabold text-emerald-600 dark:text-emerald-400">
+          </div>
+          <div className="mt-1">
+            <div className="text-3xl font-black text-black">
               ${totalIncome.toLocaleString()}
             </div>
-            <p className="text-xs text-emerald-600/80 dark:text-emerald-500/80 mt-1">Lương cứng cơ bản + Thưởng hoàn thành</p>
-          </CardContent>
-        </Card>
+            <p className="text-xs font-bold text-black mt-1">Lương cứng cơ bản + Thưởng hoàn thành</p>
+          </div>
+        </div>
       </div>
 
       {/* Income breakdown visualization */}

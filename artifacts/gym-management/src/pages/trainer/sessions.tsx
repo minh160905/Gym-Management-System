@@ -55,14 +55,14 @@ export default function TrainerSessions() {
   const activeClients = ptRequests?.filter(r => r.status === "confirm" || r.status === "approved") || [];
 
   const form = useForm<z.infer<typeof sessionSchema>>({
-    resolver: zodResolver(sessionSchema),
+    resolver: zodResolver(sessionSchema as any),
     defaultValues: {
       notes: "",
     },
   });
 
   const addForm = useForm<AddSessionFormValues>({
-    resolver: zodResolver(addSessionSchema),
+    resolver: zodResolver(addSessionSchema as any),
     defaultValues: {
       memberId: "",
       scheduledAt: "",

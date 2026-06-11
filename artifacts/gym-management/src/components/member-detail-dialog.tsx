@@ -78,7 +78,7 @@ export function MemberDetailDialog({ memberId, onClose }: MemberDetailDialogProp
   const plan = member?.status === "expired" ? undefined : plans?.find((p) => p.id === member?.membershipPlanId);
 
   const form = useForm<EditForm>({
-    resolver: zodResolver(editSchema),
+    resolver: zodResolver(editSchema as any),
     values: member ? {
       firstName:        member.firstName,
       lastName:         member.lastName,

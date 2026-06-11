@@ -70,7 +70,7 @@ function LoginView({ onSwitch }: { onSwitch: (v: View) => void }) {
   const loginUser = useLoginUser();
 
   const form = useForm<z.infer<typeof loginSchema>>({
-    resolver: zodResolver(loginSchema),
+    resolver: zodResolver(loginSchema as any),
     defaultValues: { username: "", password: "" },
   });
 
@@ -182,7 +182,7 @@ function RegisterView({ onSwitch }: { onSwitch: (v: View) => void }) {
   const [serverError, setServerError] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof registerSchema>>({
-    resolver: zodResolver(registerSchema),
+    resolver: zodResolver(registerSchema as any),
     defaultValues: { firstName: "", lastName: "", email: "", phone: "", username: "", password: "", confirmPassword: "" },
   });
 
@@ -343,7 +343,7 @@ function ForgotView({ onSwitch }: { onSwitch: (v: View) => void }) {
   const [serverError, setServerError] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof forgotSchema>>({
-    resolver: zodResolver(forgotSchema),
+    resolver: zodResolver(forgotSchema as any),
     defaultValues: { username: "", newPassword: "", confirmPassword: "" },
   });
 

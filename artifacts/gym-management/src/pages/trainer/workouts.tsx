@@ -91,7 +91,7 @@ export default function TrainerWorkouts() {
             const remainingSessions = Math.max(0, totalSessions - completedCount);
             
             const startDate = new Date(contract.updatedAt);
-            const endDate = getEndDate(startDate, contract.desiredDuration);
+            const endDate = getEndDate(startDate, contract.desiredDuration || null);
             const percentRemaining = totalSessions > 0 ? (remainingSessions / totalSessions) * 100 : 0;
 
             return (

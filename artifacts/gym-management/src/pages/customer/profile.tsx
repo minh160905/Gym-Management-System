@@ -43,7 +43,7 @@ export default function CustomerProfile() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
-  const { data: member, isLoading: memberLoading } = useGetMember(memberId ?? 0, { query: { enabled: !!memberId } });
+  const { data: member, isLoading: memberLoading } = useGetMember(memberId ?? 0, { query: { enabled: !!memberId } as any });
   const { data: plans } = useListMemberships();
   const { data: payments } = useListPayments({ memberId: memberId ?? undefined });
   const { data: users } = useListUsers();

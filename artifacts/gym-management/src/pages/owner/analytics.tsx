@@ -21,10 +21,10 @@ export default function OwnerAnalytics() {
           [...Array(4)].map((_, i) => <Skeleton key={i} className="h-32" />)
         ) : retention ? (
           <>
-            <MetricCard title="Tỷ lệ giữ chân" value={`${retention.retentionRate}%`} />
-            <MetricCard title="Hội viên đang hoạt động" value={retention.activeCount} />
-            <MetricCard title="Hủy đăng ký" value={retention.cancelledCount} />
-            <MetricCard title="Gia hạn tháng này" value={retention.renewalsThisMonth} />
+            <MetricCard title="Tỷ lệ giữ chân" value={`${retention.retentionRate}%`} pastelClass="pastel-emerald" />
+            <MetricCard title="Hội viên đang hoạt động" value={retention.activeCount} pastelClass="pastel-sky" />
+            <MetricCard title="Hủy đăng ký" value={retention.cancelledCount} pastelClass="pastel-rose" />
+            <MetricCard title="Gia hạn tháng này" value={retention.renewalsThisMonth} pastelClass="pastel-amber" />
           </>
         ) : null}
       </div>
@@ -106,13 +106,11 @@ export default function OwnerAnalytics() {
   );
 }
 
-function MetricCard({ title, value }: { title: string, value: string | number }) {
+function MetricCard({ title, value, pastelClass = "pastel-zinc" }: { title: string, value: string | number, pastelClass?: string }) {
   return (
-    <Card>
-      <CardContent className="p-6">
-        <div className="text-sm font-medium text-muted-foreground mb-2">{title}</div>
-        <div className="text-3xl font-bold">{value}</div>
-      </CardContent>
-    </Card>
+    <div className={`pastel-card ${pastelClass} p-5 flex flex-col justify-between h-28`}>
+      <div className="text-xs font-bold uppercase tracking-wider text-black">{title}</div>
+      <div className="text-3xl font-black text-black mt-2">{value}</div>
+    </div>
   );
 }
