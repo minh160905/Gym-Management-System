@@ -78,42 +78,6 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
       { name: "Training History", href: "/customer/training-history", icon: History },
       { name: "Feedback", href: "/customer/feedback", icon: MessageSquare },
       { name: "My Profile", href: "/customer/profile", icon: UserCircle },
-      { name: "Bảng điều khiển", href: "/owner/dashboard", icon: LayoutDashboard },
-      { name: "Thành viên", href: "/owner/members", icon: Users },
-      { name: "Nhân viên", href: "/owner/staff", icon: Briefcase },
-      { name: "Gói hội viên", href: "/owner/memberships", icon: CreditCard },
-      { name: "Phân tích", href: "/owner/analytics", icon: BarChart3 },
-      { name: "Thiết bị", href: "/owner/equipment", icon: Wrench },
-
-    ],
-    manager: [
-      { name: "Bảng điều khiển", href: "/manager/dashboard", icon: LayoutDashboard },
-      { name: "Thành viên", href: "/manager/members", icon: Users },
-      { name: "Nhân viên", href: "/manager/staff", icon: Briefcase },
-      { name: "Lớp học", href: "/manager/classes", icon: Calendar },
-      { name: "Điểm danh", href: "/manager/attendance", icon: ClipboardCheck },
-      { name: "Thiết bị", href: "/manager/equipment", icon: Wrench },
-      { name: "Phản hồi", href: "/manager/feedback", icon: MessageSquare },
-    ],
-    trainer: [
-      { name: "Bảng điều khiển", href: "/trainer/dashboard", icon: LayoutDashboard },
-      { name: "Buổi dạy PT", href: "/trainer/sessions", icon: Clock },
-      { name: "Giáo án tập luyện", href: "/trainer/workouts", icon: Dumbbell },
-      { name: "Học viên", href: "/trainer/clients", icon: Users },
-      { name: "Chi tiết thu nhập", href: "/trainer/income", icon: DollarSign },
-      { name: "Hồ sơ của tôi", href: "/trainer/profile", icon: UserCircle },
-    ],
-    customer: [
-      { name: "Bảng điều khiển", href: "/customer/dashboard", icon: LayoutDashboard },
-      { name: "Đăng ký lớp học", href: "/customer/classes", icon: Calendar },
-      { name: "Lịch hẹn của tôi", href: "/customer/bookings", icon: Clock },
-      { name: "Lịch tập luyện", href: "/customer/schedule", icon: Calendar },
-      { name: "Đăng ký gói tập", href: "/customer/membership", icon: CreditCard },
-      { name: "Thuê PT", href: "/customer/hire-pt", icon: UserPlus },
-      { name: "Lịch sử thanh toán", href: "/customer/payments", icon: DollarSign },
-      { name: "Lịch sử tập luyện", href: "/customer/training-history", icon: History },
-      { name: "Gửi phản hồi", href: "/customer/feedback", icon: MessageSquare },
-      { name: "Hồ sơ của tôi", href: "/customer/profile", icon: UserCircle },
     ],
   };
 
@@ -150,8 +114,6 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
             <div className="flex flex-col gap-2">
               <div className="text-[11px] font-semibold uppercase tracking-wider text-zinc-500 mb-2 truncate">
                 {fullName ? `Logged in as ${fullName}` : `Logged in as ${role}`}
-              <div className="text-xs font-medium uppercase tracking-wider text-muted-foreground mb-2">
-                {fullName ? `Đăng nhập: ${fullName}` : `Đăng nhập: ${role}`}
               </div>
               <Button
                 variant="ghost"
@@ -162,7 +124,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                 }}
               >
                 <LogOut className="w-4 h-4 mr-2" />
-                Đăng xuất
+                Sign Out
               </Button>
             </div>
           </SidebarFooter>

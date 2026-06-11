@@ -115,41 +115,27 @@ export default function CustomerMembership() {
                 <div className="title-card">
                   <p>{plan.name}</p>
                   {ptIncluded && (
-                    <Badge variant="default" className="text-[10px] bg-white/20 hover:bg-white/30 text-white border-none py-0.5 px-2">
-                      PT Included
+                    <Badge variant="outline" className="bg-white/20 hover:bg-white/30 text-white border-none py-0.5 px-2 text-[10px]">
+                      Bao gồm PT
                     </Badge>
                   )}
                 </div>
                 <div className="card-content">
                   <div className="plain">
                     <span>${plan.priceMonthly}</span>
-                    <span className="text-[11px] text-zinc-500 ml-1">/mo</span>
-              <Card
-                key={plan.id}
-                className={`flex flex-col transition-colors ${ptIncluded ? "border-primary/40 hover:border-primary/70" : "border-primary/20 hover:border-primary/50"}`}
-              >
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="text-2xl">{plan.name}</CardTitle>
-                    {ptIncluded && <Badge variant="default" className="text-xs">Bao gồm PT</Badge>}
+                    <span className="text-[11px] text-zinc-500 ml-1">/tháng</span>
+                    <span className="text-xs text-zinc-500 ml-2">· {plan.durationMonths} tháng</span>
                   </div>
-                  {plan.description && <CardDescription>{plan.description}</CardDescription>}
-                </CardHeader>
-                <CardContent className="flex-1">
-                  <div className="mb-4">
-                    <span className="text-4xl font-bold">${plan.priceMonthly}</span>
-                    <span className="text-muted-foreground">/tháng</span>
-                  </div>
-                  
+
                   {plan.description && (
-                    <div className="title text-[12px] italic">{plan.description}</div>
+                    <div className="title text-sm">{plan.description}</div>
                   )}
 
                   {plan.features && (
-                    <ul className="space-y-2 text-zinc-400 text-[12px] flex-1">
+                    <ul className="space-y-1.5 text-sm text-zinc-400 flex-1">
                       {plan.features.split(",").map((f, i) => (
                         <li key={i} className="flex items-start gap-2">
-                          <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
                           <span>{f.trim()}</span>
                         </li>
                       ))}
@@ -157,29 +143,17 @@ export default function CustomerMembership() {
                   )}
 
                   {ptIncluded && (
-                    <div className="flex items-center gap-2 text-[12px] text-emerald-400 font-medium">
-                      <Dumbbell className="w-4 h-4 shrink-0" />
-                      <span>Choose your personal trainer</span>
-                    </div>
-                  )}
-
-                  <button className="card-btn mt-4" onClick={() => openPlan(plan)}>
-                    Subscribe
-                  </button>
-                </div>
-              </div>
                     <div className="mt-4 flex items-center gap-2 text-sm text-primary font-medium">
                       <Dumbbell className="w-4 h-4" />
                       Lựa chọn huấn luyện viên cá nhân
                     </div>
                   )}
-                </CardContent>
-                <CardFooter>
-                  <Button className="w-full" onClick={() => openPlan(plan)}>
+
+                  <button className="card-btn mt-4 font-semibold" onClick={() => openPlan(plan)}>
                     Đăng ký gói tập
-                  </Button>
-                </CardFooter>
-              </Card>
+                  </button>
+                </div>
+              </div>
             );
           })}
         </div>
@@ -223,11 +197,7 @@ export default function CustomerMembership() {
                           </div>
                           <div className="flex-1 min-w-0">
                             <p className="font-medium text-sm">{trainer.firstName} {trainer.lastName}</p>
-<<<<<<< HEAD
-                            <p className="text-xs text-muted-foreground truncate">{trainer.specializations || "General Fitness"}</p>
-=======
                             <p className="text-xs text-muted-foreground truncate">{trainer.specializations || "Thể hình tự do"}</p>
->>>>>>> 37f15a96b7aa1ed80cc64b2405bb566dc5365e90
                           </div>
                           {selectedTrainer?.id === trainer.id && (
                             <CheckCircle2 className="w-4 h-4 text-primary shrink-0" />

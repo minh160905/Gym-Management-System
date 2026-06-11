@@ -304,41 +304,7 @@ export default function OwnerMemberships() {
             <p className="text-xs font-bold text-black mt-0.5">from active subscribers</p>
           </div>
         </div>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-              <LayoutGrid className="w-4 h-4 text-primary" /> Tổng số gói
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-2xl font-bold">{plans?.length ?? 0}</p>
-            <p className="text-xs text-muted-foreground mt-0.5">{activePlans} hoạt động</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-              <Users className="w-4 h-4 text-primary" /> Tổng số người đăng ký
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-2xl font-bold">
-              {members?.filter((m) => m.status === "active" && m.membershipPlanId).length ?? 0}
-            </p>
-            <p className="text-xs text-muted-foreground mt-0.5">hội viên đang sử dụng gói</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-              <DollarSign className="w-4 h-4 text-primary" /> Doanh thu tháng dự tính
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-2xl font-bold">${totalRevenue.toFixed(2)}</p>
-            <p className="text-xs text-muted-foreground mt-0.5">từ hội viên đang hoạt động</p>
-          </CardContent>
-        </Card>
+
       </div>
 
       <Separator />
@@ -381,26 +347,6 @@ export default function OwnerMemberships() {
                     <span>${plan.priceMonthly}</span>
                     <span className="text-sm text-zinc-500 ml-1">/mo</span>
                     <span className="text-xs text-zinc-500 ml-2">· {plan.durationMonths} month(s)</span>
-                {/* Status badge */}
-                <div className="absolute top-4 right-4">
-                  {plan.isActive ? (
-                    <Badge variant="outline" className="bg-primary/10 text-primary border-primary/30 text-xs">Hoạt động</Badge>
-                  ) : (
-                    <Badge variant="outline" className="bg-muted text-muted-foreground text-xs">Ngừng hoạt động</Badge>
-                  )}
-                </div>
-
-                <CardHeader className="pr-24">
-                  <CardTitle className="text-xl">{plan.name}</CardTitle>
-                  {plan.description && <CardDescription className="text-sm">{plan.description}</CardDescription>}
-                </CardHeader>
-
-                <CardContent className="flex-1 space-y-4">
-                  {/* Price */}
-                  <div>
-                    <span className="text-4xl font-bold">${plan.priceMonthly}</span>
-                    <span className="text-muted-foreground text-sm">/tháng</span>
-                    <span className="text-xs text-muted-foreground ml-2">· {plan.durationMonths} tháng</span>
                   </div>
 
                   {plan.description && (
@@ -420,7 +366,7 @@ export default function OwnerMemberships() {
 
                   <div className="flex items-center gap-1.5 text-xs text-zinc-500 pt-1 border-t border-zinc-800">
                     <Users className="w-3.5 h-3.5" />
-                    <span>{subs} hội viên đang hoạt động</span>
+                    <span>{subs} active subscriber{subs !== 1 ? "s" : ""}</span>
                   </div>
 
                   <div className="flex gap-2 mt-4">
@@ -440,24 +386,6 @@ export default function OwnerMemberships() {
                   </div>
                 </div>
               </div>
-                <CardFooter className="gap-2">
-                  <Button
-                    variant="outline"
-                    className="flex-1"
-                    onClick={() => setEditPlan(plan)}
-                  >
-                    <Pencil className="w-3.5 h-3.5 mr-1.5" /> Chỉnh sửa
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="text-destructive hover:text-destructive hover:bg-destructive/10"
-                    onClick={() => setDeletePlan(plan)}
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
-                </CardFooter>
-              </Card>
             );
           })}
         </div>
