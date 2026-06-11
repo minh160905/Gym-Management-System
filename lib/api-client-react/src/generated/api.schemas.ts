@@ -30,10 +30,6 @@ export interface Member {
   emergencyContact?: string | null;
   /** @nullable */
   notes?: string | null;
-  /** @nullable */
-  username?: string | null;
-  /** @nullable */
-  plainPassword?: string | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -261,6 +257,8 @@ export interface PTSession {
   notes?: string | null;
   /** @nullable */
   location?: string | null;
+  /** @nullable */
+  ptRequestId?: number | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -275,6 +273,8 @@ export interface CreateSessionBody {
   notes?: string | null;
   /** @nullable */
   location?: string | null;
+  /** @nullable */
+  ptRequestId?: number | null;
 }
 
 export interface UpdateSessionBody {
@@ -285,6 +285,8 @@ export interface UpdateSessionBody {
   notes?: string | null;
   /** @nullable */
   location?: string | null;
+  /** @nullable */
+  ptRequestId?: number | null;
 }
 
 export interface WorkoutPlan {
@@ -594,6 +596,7 @@ export interface PTRequest {
   sessionsCount?: number | null;
   /** @nullable */
   desiredDuration?: string | null;
+  sessionsFund?: number;
   createdAt: string;
   updatedAt: string;
 }

@@ -1,6 +1,6 @@
 import { Router, type IRouter } from "express";
 import { eq } from "drizzle-orm";
-import { db, membersTable, staffTable, ptRequests } from "@workspace/db";
+import { db, membersTable, staffTable, ptRequests, payments } from "@workspace/db";
 import { z } from "zod";
 
 const router: IRouter = Router();
@@ -23,6 +23,7 @@ async function formatPTRequest(p: typeof ptRequests.$inferSelect) {
     status: p.status,
     sessionsCount: p.sessionsCount,
     desiredDuration: p.desiredDuration,
+    sessionsFund: parseFloat(p.sessionsFund as unknown as string),
     createdAt: p.createdAt?.toISOString() ?? new Date().toISOString(),
     updatedAt: p.updatedAt?.toISOString() ?? new Date().toISOString(),
   };
@@ -55,7 +56,12 @@ router.post("/pt-requests", async (req, res): Promise<void> => {
     return;
   }
   try {
-    const [row] = await db.insert(ptRequests).values({ ...body.data, status: "pending" } as any).returning();
+    const initialFund = (body.data.sessionsCount || 0) * 50;
+    const [row] = await db.insert(ptRequests).values({ 
+      ...body.data, 
+      status: "pending",
+      sessionsFund: initialFund.toFixed(2)
+    } as any).returning();
     res.status(201).json(await formatPTRequest(row));
   } catch (dbErr: any) {
     console.error("Database insert error:", dbErr);
@@ -75,9 +81,39 @@ router.patch("/pt-requests/:id", async (req, res): Promise<void> => {
   const id = parseInt(req.params.id);
   const body = UpdatePTRequestBody.safeParse(req.body);
   if (!body.success) { res.status(400).json({ error: body.error.message }); return; }
+  // Check if we are rejecting
+  const isRejecting = body.data.status === "Reject" || body.data.status === "rejected";
+  let updateData: any = { ...body.data };
+
+  if (isRejecting) {
+    const [currReq] = await db.select().from(ptRequests).where(eq(ptRequests.id, id));
+    if (!currReq) { res.status(404).json({ error: "Not found" }); return; }
+    
+    if (currReq.status !== "Reject" && currReq.status !== "rejected") {
+      const refundAmount = parseFloat(currReq.sessionsFund);
+      if (refundAmount > 0) {
+        try {
+          await db.insert(payments).values({
+            memberId: currReq.memberId,
+            amount: (-refundAmount).toString(),
+            description: `Hoàn tiền thuê HLV - Yêu cầu từ chối (Mã số: #${currReq.id})`,
+            status: "paid",
+            paymentDate: new Date().toISOString().split("T")[0],
+            paymentMethod: "Refund",
+          } as any);
+          console.log(`Refunded $${refundAmount} for ptRequest ID ${id}`);
+        } catch (payErr) {
+          console.error("Failed to create refund payment record:", payErr);
+        }
+      }
+      updateData.status = "Reject";
+      updateData.sessionsFund = "0.00";
+    }
+  }
+
   const [row] = await db
     .update(ptRequests)
-    .set({ ...body.data, updatedAt: new Date() } as any)
+    .set({ ...updateData, updatedAt: new Date() } as any)
     .where(eq(ptRequests.id, id))
     .returning();
   if (!row) { res.status(404).json({ error: "Not found" }); return; }

@@ -1651,6 +1651,8 @@ components:
           type: ["string", "null"]
         location:
           type: ["string", "null"]
+        ptRequestId:
+          type: ["integer", "null"]
         createdAt:
           type: string
         updatedAt:
@@ -1682,6 +1684,8 @@ components:
           type: ["string", "null"]
         location:
           type: ["string", "null"]
+        ptRequestId:
+          type: ["integer", "null"]
       required:
         - trainerId
         - memberId
@@ -1702,6 +1706,8 @@ components:
           type: ["string", "null"]
         location:
           type: ["string", "null"]
+        ptRequestId:
+          type: ["integer", "null"]
 
     # ─── WORKOUT PLAN ───────────────────────────────────────────────────────
     WorkoutPlan:
@@ -2292,6 +2298,8 @@ components:
           type: ["integer", "null"]
         desiredDuration:
           type: ["string", "null"]
+        sessionsFund:
+          type: number
         createdAt:
           type: string
         updatedAt:

@@ -132,6 +132,13 @@ export default function TrainerWorkouts() {
                     </div>
                     <span className="text-xs text-muted-foreground mt-0.5 block">Thời gian mong muốn: {contract.desiredDuration || 'Chưa thiết lập'}</span>
                   </div>
+
+                  <div className="space-y-1 border-t border-zinc-100 pt-3">
+                    <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider block">Sessions Fund</span>
+                    <div className="text-base font-bold text-emerald-600 dark:text-emerald-400 mt-0.5">
+                      {contract.sessionsFund !== undefined ? `$${Number(contract.sessionsFund).toLocaleString(undefined, { minimumFractionDigits: 2 })}` : "—"}
+                    </div>
+                  </div>
                 </CardContent>
                 <div className="p-6 pt-0 border-t border-zinc-100 mt-4">
                   <Button variant="outline" className="w-full mt-4" onClick={() => handleOpenDetail(contract)}>Xem chi tiết</Button>

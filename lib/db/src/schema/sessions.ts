@@ -3,6 +3,7 @@ import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod/v4";
 import { staffTable } from "./staff";
 import { membersTable } from "./members";
+import { ptRequests } from "./pt_requests";
 
 export const ptSessionsTable = pgTable("pt_sessions", {
   id: serial("id").primaryKey(),
@@ -13,6 +14,7 @@ export const ptSessionsTable = pgTable("pt_sessions", {
   status: text("status").notNull().default("scheduled"),
   notes: text("notes"),
   location: text("location"),
+  ptRequestId: integer("pt_request_id").references(() => ptRequests.id, { onDelete: "cascade" }),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow().$onUpdate(() => new Date()),
 });

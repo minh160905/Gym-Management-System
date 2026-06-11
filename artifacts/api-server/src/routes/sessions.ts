@@ -1,6 +1,6 @@
 import { Router, type IRouter } from "express";
-import { eq, and } from "drizzle-orm";
-import { db, ptSessionsTable, staffTable, membersTable, bookingsTable, classesTable } from "@workspace/db";
+import { eq, and, or, desc } from "drizzle-orm";
+import { db, ptSessionsTable, staffTable, membersTable, bookingsTable, classesTable, ptRequests } from "@workspace/db";
 import {
   ListSessionsQueryParams,
   ListSessionsResponse,
@@ -25,6 +25,19 @@ async function sessionWithNames(session: typeof ptSessionsTable.$inferSelect) {
     createdAt: session.createdAt.toISOString(),
     updatedAt: session.updatedAt.toISOString(),
   };
+}
+
+async function deductSessionsFund(ptRequestId: number) {
+  const [ptReq] = await db.select().from(ptRequests).where(eq(ptRequests.id, ptRequestId));
+  if (ptReq) {
+    const currentFund = parseFloat(ptReq.sessionsFund);
+    const newFund = Math.max(0, currentFund - 50.00);
+    await db.update(ptRequests).set({
+      sessionsFund: newFund.toFixed(2),
+      updatedAt: new Date()
+    } as any).where(eq(ptRequests.id, ptRequestId));
+    console.log(`Deducted $50.00 from sessionsFund of ptRequest ID ${ptRequestId}. Old: $${currentFund}, New: $${newFund}`);
+  }
 }
 
 router.get("/sessions", async (req, res): Promise<void> => {
@@ -81,7 +94,29 @@ router.post("/sessions", async (req, res): Promise<void> => {
     }
   }
 
-  const [session] = await db.insert(ptSessionsTable).values(parsed.data).returning();
+  let ptRequestIdVal = (parsed.data as any).ptRequestId;
+  if (!ptRequestIdVal) {
+    const activeReqs = await db.select().from(ptRequests).where(
+      and(
+        eq(ptRequests.memberId, parsed.data.memberId),
+        eq(ptRequests.trainerId, parsed.data.trainerId),
+        or(eq(ptRequests.status, "confirm"), eq(ptRequests.status, "approved"))
+      )
+    ).orderBy(desc(ptRequests.createdAt));
+    if (activeReqs.length > 0) {
+      ptRequestIdVal = activeReqs[0].id;
+    }
+  }
+
+  const [session] = await db.insert(ptSessionsTable).values({
+    ...parsed.data,
+    ptRequestId: ptRequestIdVal
+  } as any).returning();
+
+  if (parsed.data.status === "completed" && ptRequestIdVal) {
+    await deductSessionsFund(ptRequestIdVal);
+  }
+
   res.status(201).json(GetSessionResponse.parse(await sessionWithNames(session)));
 });
 
@@ -115,16 +150,43 @@ router.patch("/sessions/:id", async (req, res): Promise<void> => {
     return;
   }
 
-  const [session] = await db
-    .update(ptSessionsTable)
-    .set(parsed.data)
-    .where(eq(ptSessionsTable.id, params.data.id))
-    .returning();
-
-  if (!session) {
+  const [currSession] = await db.select().from(ptSessionsTable).where(eq(ptSessionsTable.id, params.data.id));
+  if (!currSession) {
     res.status(404).json({ error: "Session not found" });
     return;
   }
+
+  let updateData: any = { ...parsed.data };
+
+  // If status is updated to completed, deduct $50.00 from ptRequest sessionsFund
+  if (parsed.data.status === "completed" && currSession.status !== "completed") {
+    let ptRequestIdVal = currSession.ptRequestId;
+    if (!ptRequestIdVal) {
+      const activeReqs = await db.select().from(ptRequests).where(
+        and(
+          eq(ptRequests.memberId, currSession.memberId),
+          eq(ptRequests.trainerId, currSession.trainerId),
+          or(eq(ptRequests.status, "confirm"), eq(ptRequests.status, "approved"))
+        )
+      ).orderBy(desc(ptRequests.createdAt));
+      if (activeReqs.length > 0) {
+        ptRequestIdVal = activeReqs[0].id;
+      }
+    }
+
+    if (ptRequestIdVal) {
+      await deductSessionsFund(ptRequestIdVal);
+      if (!currSession.ptRequestId) {
+        updateData.ptRequestId = ptRequestIdVal;
+      }
+    }
+  }
+
+  const [session] = await db
+    .update(ptSessionsTable)
+    .set(updateData as any)
+    .where(eq(ptSessionsTable.id, params.data.id))
+    .returning();
 
   res.json(UpdateSessionResponse.parse(await sessionWithNames(session)));
 });

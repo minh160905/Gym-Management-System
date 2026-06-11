@@ -14,4 +14,6 @@ export interface UpdateSessionBody {
   notes?: string | null;
   /** @nullable */
   location?: string | null;
+  /** @nullable */
+  ptRequestId?: number | null;
 }

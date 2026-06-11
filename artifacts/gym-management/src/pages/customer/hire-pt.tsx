@@ -361,6 +361,7 @@ export default function CustomerHirePT() {
                   <TableHead className="text-black font-semibold">Lịch tập dự kiến</TableHead>
                   <TableHead className="text-black font-semibold">Số buổi</TableHead>
                   <TableHead className="text-black font-semibold">Thời gian mong muốn</TableHead>
+                  <TableHead className="text-black font-semibold">Sessions Fund</TableHead>
                   <TableHead className="text-black font-semibold">Trạng thái</TableHead>
                 </TableRow>
               </TableHeader>
@@ -372,6 +373,9 @@ export default function CustomerHirePT() {
                     <TableCell className="text-sm text-muted-foreground">{req.preferredSchedule || "—"}</TableCell>
                     <TableCell className="text-sm text-black font-medium">{req.sessionsCount || "—"} buổi</TableCell>
                     <TableCell className="text-sm text-muted-foreground">{req.desiredDuration || "—"}</TableCell>
+                    <TableCell className="text-sm font-semibold text-emerald-600 dark:text-emerald-400">
+                      {req.sessionsFund !== undefined ? `$${Number(req.sessionsFund).toLocaleString(undefined, { minimumFractionDigits: 2 })}` : "—"}
+                    </TableCell>
                     <TableCell>{getStatusBadge(req.status)}</TableCell>
                   </TableRow>
                 ))}

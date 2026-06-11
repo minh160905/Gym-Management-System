@@ -36,8 +36,6 @@ export const ListMembersResponseItem = zod.object({
   expiryDate: zod.string().nullish(),
   emergencyContact: zod.string().nullish(),
   notes: zod.string().nullish(),
-  username: zod.string().nullish(),
-  plainPassword: zod.string().nullish(),
   createdAt: zod.string(),
   updatedAt: zod.string(),
 });
@@ -81,8 +79,6 @@ export const GetMemberResponse = zod.object({
   expiryDate: zod.string().nullish(),
   emergencyContact: zod.string().nullish(),
   notes: zod.string().nullish(),
-  username: zod.string().nullish(),
-  plainPassword: zod.string().nullish(),
   createdAt: zod.string(),
   updatedAt: zod.string(),
 });
@@ -121,8 +117,6 @@ export const UpdateMemberResponse = zod.object({
   expiryDate: zod.string().nullish(),
   emergencyContact: zod.string().nullish(),
   notes: zod.string().nullish(),
-  username: zod.string().nullish(),
-  plainPassword: zod.string().nullish(),
   createdAt: zod.string(),
   updatedAt: zod.string(),
 });
@@ -495,6 +489,7 @@ export const ListSessionsResponseItem = zod.object({
   status: zod.string(),
   notes: zod.string().nullish(),
   location: zod.string().nullish(),
+  ptRequestId: zod.number().nullish(),
   createdAt: zod.string(),
   updatedAt: zod.string(),
 });
@@ -511,6 +506,7 @@ export const CreateSessionBody = zod.object({
   status: zod.string(),
   notes: zod.string().nullish(),
   location: zod.string().nullish(),
+  ptRequestId: zod.number().nullish(),
 });
 
 /**
@@ -531,6 +527,7 @@ export const GetSessionResponse = zod.object({
   status: zod.string(),
   notes: zod.string().nullish(),
   location: zod.string().nullish(),
+  ptRequestId: zod.number().nullish(),
   createdAt: zod.string(),
   updatedAt: zod.string(),
 });
@@ -548,6 +545,7 @@ export const UpdateSessionBody = zod.object({
   status: zod.string().optional(),
   notes: zod.string().nullish(),
   location: zod.string().nullish(),
+  ptRequestId: zod.number().nullish(),
 });
 
 export const UpdateSessionResponse = zod.object({
@@ -561,6 +559,7 @@ export const UpdateSessionResponse = zod.object({
   status: zod.string(),
   notes: zod.string().nullish(),
   location: zod.string().nullish(),
+  ptRequestId: zod.number().nullish(),
   createdAt: zod.string(),
   updatedAt: zod.string(),
 });
@@ -1079,6 +1078,7 @@ export const ListPTRequestsResponseItem = zod.object({
   status: zod.string(),
   sessionsCount: zod.number().nullish(),
   desiredDuration: zod.string().nullish(),
+  sessionsFund: zod.number().optional(),
   createdAt: zod.string(),
   updatedAt: zod.string(),
 });
@@ -1122,6 +1122,7 @@ export const UpdatePTRequestResponse = zod.object({
   status: zod.string(),
   sessionsCount: zod.number().nullish(),
   desiredDuration: zod.string().nullish(),
+  sessionsFund: zod.number().optional(),
   createdAt: zod.string(),
   updatedAt: zod.string(),
 });

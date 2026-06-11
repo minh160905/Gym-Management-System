@@ -21,6 +21,8 @@ export interface PTSession {
   notes?: string | null;
   /** @nullable */
   location?: string | null;
+  /** @nullable */
+  ptRequestId?: number | null;
   createdAt: string;
   updatedAt: string;
 }

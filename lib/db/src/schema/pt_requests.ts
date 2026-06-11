@@ -1,4 +1,4 @@
-import { pgTable, serial, integer, text, varchar, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, serial, integer, numeric, text, varchar, timestamp } from "drizzle-orm/pg-core";
 import { membersTable } from "./members";
 import { staffTable } from "./staff";
 
@@ -11,6 +11,7 @@ export const ptRequests = pgTable("pt_requests", {
   status: varchar("status", { length: 20 }).notNull().default("pending"),
   sessionsCount: integer("sessions_count"),
   desiredDuration: text("desired_duration"),
+  sessionsFund: numeric("sessions_fund", { precision: 10, scale: 2 }).notNull().default("0.00"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });

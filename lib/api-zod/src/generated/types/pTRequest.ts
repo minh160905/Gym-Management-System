@@ -24,6 +24,7 @@ export interface PTRequest {
   sessionsCount?: number | null;
   /** @nullable */
   desiredDuration?: string | null;
+  sessionsFund?: number;
   createdAt: string;
   updatedAt: string;
 }
