@@ -70,9 +70,9 @@ export default function TrainerProfile() {
       await updateStaff.mutateAsync({ id: staffId, data: form });
       await queryClient.invalidateQueries({ queryKey: getGetStaffQueryKey(staffId) });
       setEditOpen(false);
-      toast({ title: "Profile updated", description: "Your information has been saved." });
+      toast({ title: "Đã cập nhật hồ sơ", description: "Thông tin của bạn đã được lưu." });
     } catch {
-      toast({ title: "Update failed", description: "Could not save your changes.", variant: "destructive" });
+      toast({ title: "Cập nhật thất bại", description: "Không thể lưu các thay đổi của bạn.", variant: "destructive" });
     } finally {
       setSaving(false);
     }
@@ -108,9 +108,11 @@ export default function TrainerProfile() {
                 <h2 className="text-2xl font-bold">{trainer.firstName} {trainer.lastName}</h2>
                 <div className="flex items-center gap-2 mt-1">
                   <Badge variant={trainer.status === "active" ? "default" : "secondary"}>
-                    {trainer.status}
+                    {trainer.status === "active" ? "Đang hoạt động" : trainer.status}
                   </Badge>
-                  <span className="text-muted-foreground text-sm capitalize">{trainer.role?.replace("_", " ")}</span>
+                  <span className="text-muted-foreground text-sm capitalize">
+                    {trainer.role === "trainer" ? "Huấn luyện viên" : (trainer.role === "manager" ? "Quản lý" : (trainer.role === "owner" ? "Chủ sở hữu" : trainer.role))}
+                  </span>
                 </div>
               </div>
             </div>
@@ -131,9 +133,9 @@ export default function TrainerProfile() {
             {trainer ? (
               <>
                 <InfoRow icon={Mail} label="Email" value={trainer.email} />
-                <InfoRow icon={Phone} label="Phone" value={trainer.phone} />
+                <InfoRow icon={Phone} label="Số điện thoại" value={trainer.phone} />
                 <InfoRow icon={Calendar} label="Ngày nhận việc" value={trainer.hireDate ? format(new Date(trainer.hireDate), "dd/MM/yyyy") : null} />
-                <InfoRow icon={Briefcase} label="Chức vụ" value={trainer.role?.replace("_", " ")} />
+                <InfoRow icon={Briefcase} label="Chức vụ" value={trainer.role === "trainer" ? "Huấn luyện viên" : (trainer.role === "manager" ? "Quản lý" : (trainer.role === "owner" ? "Chủ sở hữu" : trainer.role))} />
                 <InfoRow icon={DollarSign} label="Lương" value={trainer.salary ? `$${Number(trainer.salary).toLocaleString()}/năm` : null} />
                 <InfoRow icon={User} label="Chuyên môn" value={trainer.specializations} />
                 {trainer.bio && <InfoRow icon={Briefcase} label="Giới thiệu" value={trainer.bio} />}
@@ -155,8 +157,8 @@ export default function TrainerProfile() {
           <CardContent className="space-y-1">
             {account ? (
               <>
-                <InfoRow icon={AtSign} label="Username" value={account.username} />
-                <InfoRow icon={User} label="Full Name" value={account.fullName} />
+                <InfoRow icon={AtSign} label="Tên đăng nhập" value={account.username} />
+                <InfoRow icon={User} label="Họ và tên" value={account.fullName} />
                 <InfoRow icon={Shield} label="Vai trò" value="HLV Cá nhân" />
                 <InfoRow icon={Lock} label="Mật khẩu" value="••••••••" />
                 <InfoRow icon={Calendar} label="Ngày tạo tài khoản" value={format(new Date(account.createdAt), "dd/MM/yyyy")} />
@@ -240,7 +242,7 @@ export default function TrainerProfile() {
             <div className="space-y-2">
               <Label>Số điện thoại</Label>
               <Input
-                placeholder="+1 (555) 000-0000"
+                placeholder="+84 (555) 000-000"
                 value={form.phone}
                 onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
               />

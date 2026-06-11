@@ -42,10 +42,10 @@ export default function ManagerMembers() {
                   <TableCell>{member.status === 'expired' ? '—' : (member.membershipPlanName || 'Chưa có gói')}</TableCell>
                   <TableCell>
                     <Badge variant={member.status === 'active' ? 'default' : 'secondary'}>
-                      {member.status}
+                      {member.status === 'active' ? 'Đang hoạt động' : (member.status === 'expired' ? 'Đã hết hạn' : member.status)}
                     </Badge>
                   </TableCell>
-                  <TableCell>{format(new Date(member.joinDate), 'MMM d, yyyy')}</TableCell>
+                  <TableCell>{format(new Date(member.joinDate), 'dd/MM/yyyy')}</TableCell>
                   <TableCell className="text-right">
                     <Button variant="outline" size="sm" onClick={() => setSelectedMemberId(member.id)}>
                       <Eye className="w-4 h-4 mr-1" /> Xem chi tiết

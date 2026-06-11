@@ -16,29 +16,29 @@ type View = "login" | "register" | "forgot";
 // ── Schemas ───────────────────────────────────────────────────────────────────
 
 const loginSchema = z.object({
-  username: z.string().min(1, "Username is required"),
-  password: z.string().min(1, "Password is required"),
+  username: z.string().min(1, "Vui lòng nhập tên đăng nhập"),
+  password: z.string().min(1, "Vui lòng nhập mật khẩu"),
 });
 
 const registerSchema = z.object({
-  firstName: z.string().min(1, "First name is required"),
-  lastName: z.string().min(1, "Last name is required"),
-  email: z.string().email("Invalid email address"),
+  firstName: z.string().min(1, "Vui lòng nhập tên"),
+  lastName: z.string().min(1, "Vui lòng nhập họ"),
+  email: z.string().email("Địa chỉ email không hợp lệ"),
   phone: z.string().optional(),
-  username: z.string().min(3, "Username must be at least 3 characters"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
-  confirmPassword: z.string().min(1, "Please confirm your password"),
+  username: z.string().min(3, "Tên đăng nhập phải có ít nhất 3 ký tự"),
+  password: z.string().min(6, "Mật khẩu phải có ít nhất 6 ký tự"),
+  confirmPassword: z.string().min(1, "Vui lòng xác nhận mật khẩu"),
 }).refine((d) => d.password === d.confirmPassword, {
-  message: "Passwords do not match",
+  message: "Mật khẩu xác nhận không khớp",
   path: ["confirmPassword"],
 });
 
 const forgotSchema = z.object({
-  username: z.string().min(1, "Username is required"),
-  newPassword: z.string().min(6, "Password must be at least 6 characters"),
-  confirmPassword: z.string().min(1, "Please confirm your password"),
+  username: z.string().min(1, "Vui lòng nhập tên đăng nhập"),
+  newPassword: z.string().min(6, "Mật khẩu mới phải có ít nhất 6 ký tự"),
+  confirmPassword: z.string().min(1, "Vui lòng xác nhận mật khẩu"),
 }).refine((d) => d.newPassword === d.confirmPassword, {
-  message: "Passwords do not match",
+  message: "Mật khẩu xác nhận không khớp",
   path: ["confirmPassword"],
 });
 
@@ -70,7 +70,7 @@ function LoginView({ onSwitch }: { onSwitch: (v: View) => void }) {
   const loginUser = useLoginUser();
 
   const form = useForm<z.infer<typeof loginSchema>>({
-    resolver: zodResolver(loginSchema),
+    resolver: zodResolver(loginSchema as any),
     defaultValues: { username: "", password: "" },
   });
 
@@ -95,8 +95,8 @@ function LoginView({ onSwitch }: { onSwitch: (v: View) => void }) {
     <>
       <Card className="bg-zinc-900/50 border-zinc-800 backdrop-blur-xl mb-4">
         <CardHeader>
-          <CardTitle className="text-zinc-100">Sign In</CardTitle>
-          <CardDescription className="text-zinc-400">Enter your credentials to continue.</CardDescription>
+          <CardTitle className="text-zinc-100">Đăng Nhập</CardTitle>
+          <CardDescription className="text-zinc-400">Nhập thông tin đăng nhập để tiếp tục.</CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -106,9 +106,9 @@ function LoginView({ onSwitch }: { onSwitch: (v: View) => void }) {
                 name="username"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-zinc-300">Username</FormLabel>
+                    <FormLabel className="text-zinc-300">Tên đăng nhập</FormLabel>
                     <FormControl>
-                      <Input className="bg-zinc-800/50 border-zinc-700 text-zinc-100" placeholder="your_username" {...field} />
+                      <Input className="bg-zinc-800/50 border-zinc-700 text-zinc-100" placeholder="ten_dang_nhap" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -119,7 +119,7 @@ function LoginView({ onSwitch }: { onSwitch: (v: View) => void }) {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-zinc-300">Password</FormLabel>
+                    <FormLabel className="text-zinc-300">Mật khẩu</FormLabel>
                     <FormControl>
                       <Input type="password" className="bg-zinc-800/50 border-zinc-700 text-zinc-100" placeholder="••••••••" {...field} />
                     </FormControl>
@@ -128,10 +128,10 @@ function LoginView({ onSwitch }: { onSwitch: (v: View) => void }) {
                 )}
               />
               {loginUser.isError && (
-                <p className="text-sm text-destructive text-center">Invalid username or password.</p>
+                <p className="text-sm text-destructive text-center">Tên đăng nhập hoặc mật khẩu không đúng.</p>
               )}
               <Button type="submit" className="w-full" disabled={loginUser.isPending}>
-                {loginUser.isPending ? "Signing in..." : "Sign In"}
+                {loginUser.isPending ? "Đang đăng nhập..." : "Đăng Nhập"}
               </Button>
             </form>
           </Form>
@@ -142,16 +142,16 @@ function LoginView({ onSwitch }: { onSwitch: (v: View) => void }) {
               onClick={() => onSwitch("forgot")}
               className="text-sm text-zinc-400 hover:text-primary transition-colors"
             >
-              Forgot your password?
+              Quên mật khẩu?
             </button>
             <p className="text-sm text-zinc-500">
-              New to Iron & Forge?{" "}
+              Bạn mới biết đến Iron & Forge?{" "}
               <button
                 type="button"
                 onClick={() => onSwitch("register")}
                 className="text-primary hover:underline font-medium"
               >
-                Create an account
+                Tạo tài khoản
               </button>
             </p>
           </div>
@@ -159,11 +159,11 @@ function LoginView({ onSwitch }: { onSwitch: (v: View) => void }) {
       </Card>
 
       <div className="bg-zinc-900/30 rounded-xl p-4 border border-zinc-800 text-center">
-        <p className="text-zinc-400 text-sm mb-3">Demo Accounts</p>
+        <p className="text-zinc-400 text-sm mb-3">Tài khoản Demo</p>
         <div className="flex flex-wrap justify-center gap-2">
           {(["owner", "manager", "trainer", "customer"] as const).map((role) => (
             <Button key={role} variant="outline" size="sm" onClick={() => setDemo(role)} className="bg-transparent border-zinc-700 text-zinc-300 hover:text-white capitalize">
-              {role}
+              {role === "owner" ? "chủ phòng" : role === "manager" ? "quản lý" : role === "trainer" ? "HLV (PT)" : "hội viên"}
             </Button>
           ))}
         </div>
@@ -182,7 +182,7 @@ function RegisterView({ onSwitch }: { onSwitch: (v: View) => void }) {
   const [serverError, setServerError] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof registerSchema>>({
-    resolver: zodResolver(registerSchema),
+    resolver: zodResolver(registerSchema as any),
     defaultValues: { firstName: "", lastName: "", email: "", phone: "", username: "", password: "", confirmPassword: "" },
   });
 
@@ -211,7 +211,7 @@ function RegisterView({ onSwitch }: { onSwitch: (v: View) => void }) {
       setAuth({ ...user, memberId: member.id });
       setLocation("/customer/dashboard");
     } catch (err: any) {
-      setServerError(err?.message ?? "Registration failed. The username may already be taken.");
+      setServerError(err?.message ?? "Đăng ký thất bại. Tên đăng nhập này có thể đã được sử dụng.");
     }
   };
 
@@ -221,10 +221,10 @@ function RegisterView({ onSwitch }: { onSwitch: (v: View) => void }) {
     <Card className="bg-zinc-900/50 border-zinc-800 backdrop-blur-xl">
       <CardHeader>
         <button type="button" onClick={() => onSwitch("login")} className="flex items-center gap-1 text-zinc-400 hover:text-white text-sm mb-1 transition-colors w-fit">
-          <ArrowLeft className="w-3 h-3" /> Back to Sign In
+          <ArrowLeft className="w-3 h-3" /> Quay lại Đăng nhập
         </button>
-        <CardTitle className="text-zinc-100">Create Account</CardTitle>
-        <CardDescription className="text-zinc-400">Register as a new member at Iron & Forge.</CardDescription>
+        <CardTitle className="text-zinc-100">Đăng Ký Tài Khoản</CardTitle>
+        <CardDescription className="text-zinc-400">Đăng ký thành viên mới tại Iron & Forge.</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -235,9 +235,9 @@ function RegisterView({ onSwitch }: { onSwitch: (v: View) => void }) {
                 name="firstName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-zinc-300">First Name</FormLabel>
+                    <FormLabel className="text-zinc-300">Tên</FormLabel>
                     <FormControl>
-                      <Input className="bg-zinc-800/50 border-zinc-700 text-zinc-100" placeholder="John" {...field} />
+                      <Input className="bg-zinc-800/50 border-zinc-700 text-zinc-100" placeholder="Tên" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -248,9 +248,9 @@ function RegisterView({ onSwitch }: { onSwitch: (v: View) => void }) {
                 name="lastName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-zinc-300">Last Name</FormLabel>
+                    <FormLabel className="text-zinc-300">Họ</FormLabel>
                     <FormControl>
-                      <Input className="bg-zinc-800/50 border-zinc-700 text-zinc-100" placeholder="Doe" {...field} />
+                      <Input className="bg-zinc-800/50 border-zinc-700 text-zinc-100" placeholder="Họ và tên đệm" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -264,7 +264,7 @@ function RegisterView({ onSwitch }: { onSwitch: (v: View) => void }) {
                 <FormItem>
                   <FormLabel className="text-zinc-300">Email</FormLabel>
                   <FormControl>
-                    <Input type="email" className="bg-zinc-800/50 border-zinc-700 text-zinc-100" placeholder="john@example.com" {...field} />
+                    <Input type="email" className="bg-zinc-800/50 border-zinc-700 text-zinc-100" placeholder="example@email.com" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -275,9 +275,9 @@ function RegisterView({ onSwitch }: { onSwitch: (v: View) => void }) {
               name="phone"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-zinc-300">Phone <span className="text-zinc-500">(optional)</span></FormLabel>
+                  <FormLabel className="text-zinc-300">Số điện thoại <span className="text-zinc-500">(tùy chọn)</span></FormLabel>
                   <FormControl>
-                    <Input className="bg-zinc-800/50 border-zinc-700 text-zinc-100" placeholder="+1 (555) 000-0000" {...field} />
+                    <Input className="bg-zinc-800/50 border-zinc-700 text-zinc-100" placeholder="0901234567" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -288,9 +288,9 @@ function RegisterView({ onSwitch }: { onSwitch: (v: View) => void }) {
               name="username"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-zinc-300">Username</FormLabel>
+                  <FormLabel className="text-zinc-300">Tên đăng nhập</FormLabel>
                   <FormControl>
-                    <Input className="bg-zinc-800/50 border-zinc-700 text-zinc-100" placeholder="john_doe" {...field} />
+                    <Input className="bg-zinc-800/50 border-zinc-700 text-zinc-100" placeholder="username" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -301,9 +301,9 @@ function RegisterView({ onSwitch }: { onSwitch: (v: View) => void }) {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-zinc-300">Password</FormLabel>
+                  <FormLabel className="text-zinc-300">Mật khẩu</FormLabel>
                   <FormControl>
-                    <Input type="password" className="bg-zinc-800/50 border-zinc-700 text-zinc-100" placeholder="Min. 6 characters" {...field} />
+                    <Input type="password" className="bg-zinc-800/50 border-zinc-700 text-zinc-100" placeholder="Tối thiểu 6 ký tự" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -314,9 +314,9 @@ function RegisterView({ onSwitch }: { onSwitch: (v: View) => void }) {
               name="confirmPassword"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-zinc-300">Confirm Password</FormLabel>
+                  <FormLabel className="text-zinc-300">Xác nhận mật khẩu</FormLabel>
                   <FormControl>
-                    <Input type="password" className="bg-zinc-800/50 border-zinc-700 text-zinc-100" placeholder="Re-enter password" {...field} />
+                    <Input type="password" className="bg-zinc-800/50 border-zinc-700 text-zinc-100" placeholder="Nhập lại mật khẩu" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -326,7 +326,7 @@ function RegisterView({ onSwitch }: { onSwitch: (v: View) => void }) {
               <p className="text-sm text-destructive text-center">{serverError}</p>
             )}
             <Button type="submit" className="w-full mt-2" disabled={isPending}>
-              {isPending ? "Creating account..." : "Create Account"}
+              {isPending ? "Đang tạo tài khoản..." : "Đăng Ký"}
             </Button>
           </form>
         </Form>
@@ -335,7 +335,7 @@ function RegisterView({ onSwitch }: { onSwitch: (v: View) => void }) {
   );
 }
 
-// ── Forgot Password ───────────────────────────────────────────────────────────
+// ── Forgot Password ───────────────────────────────────────────
 
 function ForgotView({ onSwitch }: { onSwitch: (v: View) => void }) {
   const resetPassword = useResetPassword();
@@ -343,7 +343,7 @@ function ForgotView({ onSwitch }: { onSwitch: (v: View) => void }) {
   const [serverError, setServerError] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof forgotSchema>>({
-    resolver: zodResolver(forgotSchema),
+    resolver: zodResolver(forgotSchema as any),
     defaultValues: { username: "", newPassword: "", confirmPassword: "" },
   });
 
@@ -355,7 +355,7 @@ function ForgotView({ onSwitch }: { onSwitch: (v: View) => void }) {
       });
       setDone(true);
     } catch (err: any) {
-      setServerError(err?.message ?? "No account found with that username.");
+      setServerError(err?.message ?? "Không tìm thấy tài khoản với tên đăng nhập này.");
     }
   };
 
@@ -363,10 +363,10 @@ function ForgotView({ onSwitch }: { onSwitch: (v: View) => void }) {
     <Card className="bg-zinc-900/50 border-zinc-800 backdrop-blur-xl">
       <CardHeader>
         <button type="button" onClick={() => onSwitch("login")} className="flex items-center gap-1 text-zinc-400 hover:text-white text-sm mb-1 transition-colors w-fit">
-          <ArrowLeft className="w-3 h-3" /> Back to Sign In
+          <ArrowLeft className="w-3 h-3" /> Quay lại Đăng nhập
         </button>
-        <CardTitle className="text-zinc-100">Reset Password</CardTitle>
-        <CardDescription className="text-zinc-400">Enter your username and choose a new password.</CardDescription>
+        <CardTitle className="text-zinc-100">Đặt Lại Mật Khẩu</CardTitle>
+        <CardDescription className="text-zinc-400">Nhập tên đăng nhập của bạn và chọn mật khẩu mới.</CardDescription>
       </CardHeader>
       <CardContent>
         {done ? (
@@ -375,10 +375,10 @@ function ForgotView({ onSwitch }: { onSwitch: (v: View) => void }) {
               <CheckCircle2 className="w-8 h-8 text-primary" />
             </div>
             <div>
-              <p className="text-zinc-100 font-semibold text-lg">Password updated</p>
-              <p className="text-zinc-400 text-sm mt-1">You can now sign in with your new password.</p>
+              <p className="text-zinc-100 font-semibold text-lg">Mật khẩu đã được cập nhật</p>
+              <p className="text-zinc-400 text-sm mt-1">Bây giờ bạn có thể đăng nhập bằng mật khẩu mới của mình.</p>
             </div>
-            <Button className="w-full" onClick={() => onSwitch("login")}>Back to Sign In</Button>
+            <Button className="w-full" onClick={() => onSwitch("login")}>Quay lại Đăng nhập</Button>
           </div>
         ) : (
           <Form {...form}>
@@ -388,9 +388,9 @@ function ForgotView({ onSwitch }: { onSwitch: (v: View) => void }) {
                 name="username"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-zinc-300">Username</FormLabel>
+                    <FormLabel className="text-zinc-300">Tên đăng nhập</FormLabel>
                     <FormControl>
-                      <Input className="bg-zinc-800/50 border-zinc-700 text-zinc-100" placeholder="your_username" {...field} />
+                      <Input className="bg-zinc-800/50 border-zinc-700 text-zinc-100" placeholder="ten_dang_nhap" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -401,9 +401,9 @@ function ForgotView({ onSwitch }: { onSwitch: (v: View) => void }) {
                 name="newPassword"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-zinc-300">New Password</FormLabel>
+                    <FormLabel className="text-zinc-300">Mật khẩu mới</FormLabel>
                     <FormControl>
-                      <Input type="password" className="bg-zinc-800/50 border-zinc-700 text-zinc-100" placeholder="Min. 6 characters" {...field} />
+                      <Input type="password" className="bg-zinc-800/50 border-zinc-700 text-zinc-100" placeholder="Tối thiểu 6 ký tự" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -414,9 +414,9 @@ function ForgotView({ onSwitch }: { onSwitch: (v: View) => void }) {
                 name="confirmPassword"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-zinc-300">Confirm New Password</FormLabel>
+                    <FormLabel className="text-zinc-300">Xác nhận mật khẩu mới</FormLabel>
                     <FormControl>
-                      <Input type="password" className="bg-zinc-800/50 border-zinc-700 text-zinc-100" placeholder="Re-enter new password" {...field} />
+                      <Input type="password" className="bg-zinc-800/50 border-zinc-700 text-zinc-100" placeholder="Nhập lại mật khẩu mới" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -426,7 +426,7 @@ function ForgotView({ onSwitch }: { onSwitch: (v: View) => void }) {
                 <p className="text-sm text-destructive text-center">{serverError}</p>
               )}
               <Button type="submit" className="w-full" disabled={resetPassword.isPending}>
-                {resetPassword.isPending ? "Updating..." : "Reset Password"}
+                {resetPassword.isPending ? "Đang cập nhật..." : "Đặt lại mật khẩu"}
               </Button>
             </form>
           </Form>

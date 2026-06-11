@@ -19,10 +19,10 @@ export default function ManagerDashboard() {
         </div>
       ) : stats ? (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          <StatCard title="Lớp học hôm nay" value={stats.classesToday} icon={Calendar} />
-          <StatCard title="Đặt chỗ chờ" value={stats.pendingBookings} icon={Clock} />
-          <StatCard title="Hội viên đang hoạt động" value={stats.activeMembers} icon={Users} />
-          <StatCard title="Buổi tập hôm nay" value={stats.sessionsToday} icon={ClipboardCheck} />
+          <StatCard title="Lớp học hôm nay" value={stats.classesToday} icon={Calendar} pastelClass="pastel-emerald" borderHex="#059669" />
+          <StatCard title="Đặt chỗ chờ" value={stats.pendingBookings} icon={Clock} pastelClass="pastel-amber" borderHex="#d97706" />
+          <StatCard title="Hội viên đang hoạt động" value={stats.activeMembers} icon={Users} pastelClass="pastel-sky" borderHex="#0284c7" />
+          <StatCard title="Buổi tập hôm nay" value={stats.sessionsToday} icon={ClipboardCheck} pastelClass="pastel-purple" borderHex="#7c3aed" />
         </div>
       ) : null}
 
@@ -49,16 +49,26 @@ export default function ManagerDashboard() {
   );
 }
 
-function StatCard({ title, value, icon: Icon }: any) {
+function StatCard({ title, value, icon: Icon, pastelClass = "pastel-purple", borderHex = "#7c3aed" }: any) {
   return (
-    <Card>
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium text-muted-foreground">{title}</CardTitle>
-        <Icon className="h-4 w-4 text-muted-foreground" />
-      </CardHeader>
-      <CardContent>
-        <div className="text-2xl font-bold">{value}</div>
-      </CardContent>
-    </Card>
+    <div 
+      className={`pastel-card ${pastelClass} p-5 flex flex-col justify-between h-32`}
+    >
+      <div className="flex items-center justify-between relative z-10">
+        <span className="text-xs font-bold uppercase tracking-wider text-black">{title}</span>
+        <div 
+          className="p-2 rounded-lg border border-black/10"
+          style={{ 
+            backgroundColor: `${borderHex}20`, 
+            color: '#000000' 
+          }}
+        >
+          <Icon className="h-5 w-5 ignore-color" />
+        </div>
+      </div>
+      <div className="relative z-10 mt-1">
+        <div className="text-3xl font-black text-black tracking-tight">{value}</div>
+      </div>
+    </div>
   );
 }

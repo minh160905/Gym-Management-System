@@ -28,33 +28,33 @@ export default function OwnerMembers() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Members</h1>
-          <p className="text-muted-foreground mt-2">Manage all gym members across all plans.</p>
+          <h1 className="text-3xl font-bold tracking-tight">Hội viên</h1>
+          <p className="text-muted-foreground mt-2">Quản lý toàn bộ hội viên phòng tập.</p>
         </div>
         <Dialog>
           <DialogTrigger asChild>
-            <Button><Plus className="w-4 h-4 mr-2" /> Add Member</Button>
+            <Button><Plus className="w-4 h-4 mr-2" /> Thêm hội viên</Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Add New Member</DialogTitle>
+              <DialogTitle>Thêm hội viên mới</DialogTitle>
             </DialogHeader>
             <div className="grid gap-4 py-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label>First Name</Label>
-                  <Input placeholder="John" />
+                  <Label>Tên</Label>
+                  <Input placeholder="Ví dụ: Hải" />
                 </div>
                 <div className="space-y-2">
-                  <Label>Last Name</Label>
-                  <Input placeholder="Doe" />
+                  <Label>Họ</Label>
+                  <Input placeholder="Ví dụ: Nguyễn" />
                 </div>
               </div>
               <div className="space-y-2">
                 <Label>Email</Label>
-                <Input type="email" placeholder="john@example.com" />
+                <Input type="email" placeholder="hai.nguyen@example.com" />
               </div>
-              <Button>Save Member</Button>
+              <Button>Lưu thông tin</Button>
             </div>
           </DialogContent>
         </Dialog>
@@ -66,7 +66,7 @@ export default function OwnerMembers() {
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
               type="search"
-              placeholder="Search members..."
+              placeholder="Tìm kiếm hội viên..."
               className="pl-8"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -77,43 +77,43 @@ export default function OwnerMembers() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Plan</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Joined</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+                <TableHead>Họ và tên</TableHead>
+                <TableHead>Gói hội viên</TableHead>
+                <TableHead>Trạng thái</TableHead>
+                <TableHead>Ngày tham gia</TableHead>
+                <TableHead className="text-right">Thao tác</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {isLoading ? (
-                <TableRow><TableCell colSpan={5} className="text-center">Loading...</TableCell></TableRow>
+                <TableRow><TableCell colSpan={5} className="text-center">Đang tải...</TableCell></TableRow>
               ) : filteredMembers?.length === 0 ? (
-                <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground py-8">No members found.</TableCell></TableRow>
+                <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground py-8">Không tìm thấy hội viên nào.</TableCell></TableRow>
               ) : filteredMembers?.map((member) => (
                 <TableRow key={member.id}>
                   <TableCell>
                     <div className="font-medium">{member.firstName} {member.lastName}</div>
                     <div className="text-sm text-muted-foreground">{member.email}</div>
                   </TableCell>
-                  <TableCell>{member.status === 'expired' ? '—' : (member.membershipPlanName || 'No Plan')}</TableCell>
+                  <TableCell>{member.status === 'expired' ? '—' : (member.membershipPlanName || 'Chưa đăng ký gói')}</TableCell>
                   <TableCell>
                     <Badge variant={member.status === 'active' ? 'default' : 'secondary'}>
-                      {member.status}
+                      {member.status === 'active' ? 'Đang hoạt động' : (member.status === 'expired' ? 'Đã hết hạn' : member.status)}
                     </Badge>
                   </TableCell>
-                  <TableCell>{format(new Date(member.joinDate), 'MMM d, yyyy')}</TableCell>
+                  <TableCell>{format(new Date(member.joinDate), 'dd/MM/yyyy')}</TableCell>
                   <TableCell className="text-right">
                     <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
+                       <DropdownMenuTrigger asChild>
                         <Button variant="ghost" className="h-8 w-8 p-0">
                           <MoreHorizontal className="h-4 w-4" />
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuItem onClick={() => setSelectedMemberId(member.id)}>
-                          <Eye className="w-4 h-4 mr-2" /> View Details
+                          <Eye className="w-4 h-4 mr-2" /> Xem chi tiết
                         </DropdownMenuItem>
-                        <DropdownMenuItem className="text-destructive"><Trash2 className="w-4 h-4 mr-2" /> Delete</DropdownMenuItem>
+                        <DropdownMenuItem className="text-destructive"><Trash2 className="w-4 h-4 mr-2" /> Xóa</DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>

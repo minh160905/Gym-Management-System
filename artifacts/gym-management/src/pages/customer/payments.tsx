@@ -17,14 +17,16 @@ import type { Payment } from "@workspace/api-client-react";
 type FilterStatus = "all" | "paid" | "pending" | "failed";
 
 const FILTERS: { id: FilterStatus; label: string }[] = [
-  { id: "all",     label: "All" },
-  { id: "paid",    label: "Paid" },
-  { id: "pending", label: "Pending" },
-  { id: "failed",  label: "Failed" },
+  { id: "all",     label: "Tất cả" },
+  { id: "paid",    label: "Đã thanh toán" },
+  { id: "pending", label: "Chờ xử lý" },
+  { id: "failed",  label: "Thất bại" },
 ];
 
 function formatMethod(method: string | null | undefined) {
   if (!method) return "—";
+  if (method === "bank_transfer") return "Chuyển khoản";
+  if (method === "credit_card") return "Thẻ tín dụng";
   return method.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
@@ -36,9 +38,9 @@ function MethodIcon({ method }: { method: string | null | undefined }) {
 
 function StatusBadge({ status }: { status: string }) {
   switch (status) {
-    case "paid":    return <Badge variant="outline" className="bg-primary/10 text-primary border-primary/30">Paid</Badge>;
-    case "pending": return <Badge variant="outline" className="bg-yellow-500/10 text-yellow-600 border-yellow-400/30">Pending</Badge>;
-    case "failed":  return <Badge variant="outline" className="bg-destructive/10 text-destructive border-destructive/30">Failed</Badge>;
+    case "paid":    return <Badge variant="outline" className="bg-primary/10 text-primary border-primary/30">Thành công</Badge>;
+    case "pending": return <Badge variant="outline" className="bg-yellow-500/10 text-yellow-600 border-yellow-400/30">Chờ xử lý</Badge>;
+    case "failed":  return <Badge variant="outline" className="bg-destructive/10 text-destructive border-destructive/30">Thất bại</Badge>;
     default:        return <Badge variant="outline">{status}</Badge>;
   }
 }
@@ -52,7 +54,7 @@ function ReceiptDialog({ payment, onClose }: { payment: Payment; onClose: () => 
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Receipt className="w-4 h-4 text-primary" />
-            Receipt
+            Hóa đơn thanh toán
           </DialogTitle>
         </DialogHeader>
 
@@ -61,7 +63,7 @@ function ReceiptDialog({ payment, onClose }: { payment: Payment; onClose: () => 
           {/* Header */}
           <div className="text-center space-y-0.5 pb-2">
             <p className="font-black text-lg tracking-tight">IRON <span className="text-primary">&amp;</span> FORGE</p>
-            <p className="text-xs text-muted-foreground">Official Payment Receipt</p>
+            <p className="text-xs text-muted-foreground">Biên lai thanh toán chính thức</p>
           </div>
 
           <Separator />
@@ -69,15 +71,15 @@ function ReceiptDialog({ payment, onClose }: { payment: Payment; onClose: () => 
           {/* Ref + date */}
           <div className="space-y-2 text-sm">
             <div className="flex justify-between">
-              <span className="text-muted-foreground">Receipt No.</span>
+              <span className="text-muted-foreground">Mã hóa đơn.</span>
               <span className="font-mono font-semibold">{refNumber}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-muted-foreground">Date</span>
-              <span>{format(new Date(payment.paymentDate), "MMM d, yyyy")}</span>
+              <span className="text-muted-foreground">Ngày thanh toán</span>
+              <span>{format(new Date(payment.paymentDate), "dd/MM/yyyy")}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-muted-foreground">Payment Method</span>
+              <span className="text-muted-foreground">Phương thức</span>
               <span className="flex items-center gap-1">
                 <MethodIcon method={payment.paymentMethod} />
                 {formatMethod(payment.paymentMethod)}
@@ -85,7 +87,7 @@ function ReceiptDialog({ payment, onClose }: { payment: Payment; onClose: () => 
             </div>
             {payment.membershipPlanName && (
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Plan</span>
+                <span className="text-muted-foreground">Gói tập</span>
                 <span>{payment.membershipPlanName}</span>
               </div>
             )}
@@ -95,7 +97,7 @@ function ReceiptDialog({ payment, onClose }: { payment: Payment; onClose: () => 
 
           {/* Description */}
           <div className="text-sm">
-            <p className="text-muted-foreground text-xs mb-1 uppercase tracking-wide">Description</p>
+            <p className="text-muted-foreground text-xs mb-1 uppercase tracking-wide">Mô tả</p>
             <p className="font-medium">{payment.description}</p>
           </div>
 
@@ -104,25 +106,25 @@ function ReceiptDialog({ payment, onClose }: { payment: Payment; onClose: () => 
           {/* Amount + status */}
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Status</p>
+              <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Trạng thái</p>
               <StatusBadge status={payment.status} />
             </div>
             <div className="text-right">
-              <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Amount</p>
+              <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Số tiền</p>
               <p className="text-2xl font-bold text-primary">${payment.amount.toFixed(2)}</p>
             </div>
           </div>
 
           <div className="text-center text-xs text-muted-foreground pt-1 border-t border-dashed border-border">
-            Thank you for your payment.
+            Cảm ơn quý khách đã thanh toán.
           </div>
         </div>
 
         <DialogFooter className="gap-2">
           <Button variant="outline" size="sm" onClick={() => window.print()}>
-            <Printer className="w-3.5 h-3.5 mr-1.5" /> Print
+            <Printer className="w-3.5 h-3.5 mr-1.5" /> In hóa đơn
           </Button>
-          <Button onClick={onClose}>Close</Button>
+          <Button onClick={onClose}>Đóng</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
@@ -146,8 +148,8 @@ export default function CustomerPayments() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Payment History</h1>
-        <p className="text-muted-foreground mt-2">View and manage all your billing transactions.</p>
+        <h1 className="text-3xl font-bold tracking-tight">Lịch sử thanh toán</h1>
+        <p className="text-muted-foreground mt-2">Xem và quản lý tất cả các giao dịch thanh toán của bạn.</p>
       </div>
 
       {/* Summary cards */}
@@ -155,13 +157,13 @@ export default function CustomerPayments() {
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 text-primary" /> Total Paid
+              <CheckCircle2 className="w-4 h-4 text-primary" /> Tổng số đã thanh toán
             </CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-2xl font-bold">${totalPaid.toFixed(2)}</p>
             <p className="text-xs text-muted-foreground mt-0.5">
-              {payments?.filter((p) => p.status === "paid").length ?? 0} transaction(s)
+              {payments?.filter((p) => p.status === "paid").length ?? 0} giao dịch
             </p>
           </CardContent>
         </Card>
@@ -169,13 +171,13 @@ export default function CustomerPayments() {
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-              <Clock className="w-4 h-4 text-yellow-500" /> Pending Balance
+              <Clock className="w-4 h-4 text-yellow-500" /> Số dư chờ xử lý
             </CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-2xl font-bold">${totalPending.toFixed(2)}</p>
             <p className="text-xs text-muted-foreground mt-0.5">
-              {payments?.filter((p) => p.status === "pending").length ?? 0} outstanding
+              {payments?.filter((p) => p.status === "pending").length ?? 0} giao dịch chưa hoàn thành
             </p>
           </CardContent>
         </Card>
@@ -183,7 +185,7 @@ export default function CustomerPayments() {
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-              <DollarSign className="w-4 h-4 text-primary" /> Last Payment
+              <DollarSign className="w-4 h-4 text-primary" /> Thanh toán gần nhất
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -191,7 +193,7 @@ export default function CustomerPayments() {
               <>
                 <p className="text-2xl font-bold">${lastPayment.amount.toFixed(2)}</p>
                 <p className="text-xs text-muted-foreground mt-0.5">
-                  {format(new Date(lastPayment.paymentDate), "MMM d, yyyy")}
+                  {format(new Date(lastPayment.paymentDate), "dd/MM/yyyy")}
                 </p>
               </>
             ) : (
@@ -205,7 +207,7 @@ export default function CustomerPayments() {
       <Card>
         <CardHeader className="pb-3">
           <div className="flex items-center justify-between flex-wrap gap-3">
-            <CardTitle>Transactions</CardTitle>
+            <CardTitle>Danh sách giao dịch</CardTitle>
             {/* Status filter */}
             <div className="flex items-center gap-1 rounded-lg border border-border p-1">
               {FILTERS.map(({ id, label }) => (
@@ -228,34 +230,34 @@ export default function CustomerPayments() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Date</TableHead>
-                <TableHead>Description</TableHead>
-                <TableHead>Method</TableHead>
-                <TableHead>Amount</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className="text-right">Receipt</TableHead>
+                <TableHead>Ngày giao dịch</TableHead>
+                <TableHead>Mô tả</TableHead>
+                <TableHead>Phương thức</TableHead>
+                <TableHead>Số tiền</TableHead>
+                <TableHead>Trạng thái</TableHead>
+                <TableHead className="text-right">Biên lai</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {isLoading ? (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center py-10 text-muted-foreground">Loading...</TableCell>
+                  <TableCell colSpan={6} className="text-center py-10 text-muted-foreground">Đang tải...</TableCell>
                 </TableRow>
               ) : filtered.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={6} className="text-center py-10 text-muted-foreground">
-                    No {filter !== "all" ? filter : ""} transactions found.
+                    Không tìm thấy giao dịch nào.
                   </TableCell>
                 </TableRow>
               ) : filtered.map((payment) => (
                 <TableRow key={payment.id}>
                   <TableCell className="whitespace-nowrap text-sm">
-                    {format(new Date(payment.paymentDate), "MMM d, yyyy")}
+                    {format(new Date(payment.paymentDate), "dd/MM/yyyy")}
                   </TableCell>
                   <TableCell>
                     <p className="font-medium text-sm">{payment.description}</p>
                     {payment.membershipPlanName && (
-                      <p className="text-xs text-muted-foreground">{payment.membershipPlanName} Plan</p>
+                      <p className="text-xs text-muted-foreground">Gói {payment.membershipPlanName}</p>
                     )}
                   </TableCell>
                   <TableCell className="text-sm">
@@ -273,7 +275,7 @@ export default function CustomerPayments() {
                       className="text-primary hover:text-primary"
                       onClick={() => setReceiptPayment(payment)}
                     >
-                      <Receipt className="w-3.5 h-3.5 mr-1.5" /> View
+                      <Receipt className="w-3.5 h-3.5 mr-1.5" /> Xem biên lai
                     </Button>
                   </TableCell>
                 </TableRow>

@@ -51,7 +51,7 @@ export default function CustomerHirePT() {
   const [saving, setSaving] = useState(false);
 
   const form = useForm<z.infer<typeof detailsSchema>>({
-    resolver: zodResolver(detailsSchema),
+    resolver: zodResolver(detailsSchema as any),
     defaultValues: {
       preferredSchedule: "",
       message: "",

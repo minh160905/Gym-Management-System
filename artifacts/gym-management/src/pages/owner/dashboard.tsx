@@ -39,84 +39,103 @@ export default function OwnerDashboard() {
             value={`$${stats.monthlyRevenue.toLocaleString()}`}
             icon={CreditCard}
             trend="+12% so với tháng trước"
+            pastelClass="pastel-emerald"
+            borderHex="#059669"
           />
           <StatCard
             title="Hội viên đang hoạt động"
             value={stats.activeMembers}
             icon={Users}
             trend={`${stats.memberGrowthPercent}% tăng trưởng`}
+            pastelClass="pastel-sky"
+            borderHex="#0284c7"
           />
           <StatCard
             title="Lớp học hôm nay"
             value={stats.classesToday}
             icon={Calendar}
+            pastelClass="pastel-purple"
+            borderHex="#7c3aed"
+          />
+          <StatCard
+            title="Gói sắp hết hạn"
+            value={stats.expiringSoonCount}
+            icon={AlertTriangle}
+            alert
+            pastelClass="pastel-rose"
+            borderHex="#e11d48"
           />
         </div>
       ) : null}
 
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-6 md:grid-cols-2">
         <Card className="col-span-1">
-          <CardHeader>
-            <CardTitle>Tình trạng thiết bị</CardTitle>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-xl font-bold text-zinc-900 dark:text-white border-b border-zinc-200 dark:border-zinc-800 pb-2 flex items-center justify-between">
+              <span>Tình trạng thiết bị</span>
+            </CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-medium flex items-center gap-2">
-                   <Badge variant="outline" className="bg-primary/20 text-primary border-primary/30">Hoạt động</Badge>
-                </span>
-                <span className="font-bold">{eqOperational}</span>
+          <CardContent className="pt-2">
+            <div className="space-y-3">
+              <div className="pastel-card pastel-emerald p-4 flex items-center justify-between shadow-sm">
+                <div className="flex items-center gap-3">
+                  <div className="w-2.5 h-2.5 rounded-full bg-emerald-600" />
+                  <span className="text-base font-bold text-black">Hoạt động (Operational)</span>
+                </div>
+                <span className="font-extrabold text-white bg-emerald-600 px-3.5 py-1 rounded-lg text-sm shadow-sm">{eqOperational}</span>
               </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-medium flex items-center gap-2">
-                   <Badge variant="outline" className="bg-yellow-500/20 text-yellow-600 border-yellow-500/30">Bảo trì</Badge>
-                </span>
-                <span className="font-bold">{eqMaintenance}</span>
+              <div className="pastel-card pastel-amber p-4 flex items-center justify-between shadow-sm">
+                <div className="flex items-center gap-3">
+                  <div className="w-2.5 h-2.5 rounded-full bg-amber-600" />
+                  <span className="text-base font-bold text-black">Bảo trì (Maintenance)</span>
+                </div>
+                <span className="font-extrabold text-white bg-amber-600 px-3.5 py-1 rounded-lg text-sm shadow-sm">{eqMaintenance}</span>
               </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-medium flex items-center gap-2">
-                   <Badge variant="outline" className="bg-destructive/20 text-destructive border-destructive/30">Hết dùng</Badge>
-                </span>
-                <span className="font-bold">{eqRetired}</span>
+              <div className="pastel-card pastel-rose p-4 flex items-center justify-between shadow-sm">
+                <div className="flex items-center gap-3">
+                  <div className="w-2.5 h-2.5 rounded-full bg-rose-600" />
+                  <span className="text-base font-bold text-black">Hết dùng (Retired)</span>
+                </div>
+                <span className="font-extrabold text-white bg-rose-600 px-3.5 py-1 rounded-lg text-sm shadow-sm">{eqRetired}</span>
               </div>
             </div>
           </CardContent>
         </Card>
 
         <Card className="col-span-1">
-          <CardHeader>
-            <CardTitle className="flex justify-between items-center">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-xl font-bold text-zinc-900 dark:text-white border-b border-zinc-200 dark:border-zinc-800 pb-2 flex items-center justify-between">
               <span>Phản hồi hội viên</span>
-              <Badge variant="secondary" className="text-lg px-3 py-1">
-                {avgRating} / 5.0
-              </Badge>
+              <span className="text-sm font-extrabold text-indigo-750 dark:text-white bg-indigo-500/10 dark:bg-indigo-500/20 border border-indigo-200 dark:border-indigo-500/30 px-3 py-1 rounded-full">
+                {avgRating} / 5.0 ★
+              </span>
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="space-y-4 max-h-[160px] overflow-y-auto pr-2">
+          <CardContent className="pt-2">
+            <div className="space-y-3 max-h-[280px] overflow-y-auto pr-2">
               {feedback?.slice(0, 5).map((f) => (
-                <div key={f.id} className="border-b border-border pb-3 last:border-0 last:pb-0">
-                  <div className="flex justify-between items-center mb-1">
-                    <span className="font-medium text-sm">{f.memberName || 'Ẩn danh'}</span>
-                    <span className="text-yellow-500 text-xs">{"★".repeat(f.rating)}{"☆".repeat(5 - f.rating)}</span>
+                <div key={f.id} className="pastel-card pastel-indigo p-4 flex flex-col gap-2 shadow-sm">
+                  <div className="flex justify-between items-center w-full">
+                    <span className="font-bold text-[15px] text-black">{f.memberName || 'Ẩn danh'}</span>
+                    <span className="text-amber-600 text-sm tracking-wider font-bold">{"★".repeat(f.rating)}{"☆".repeat(5 - f.rating)}</span>
                   </div>
-                  <p className="text-sm text-muted-foreground line-clamp-2">{f.comment}</p>
+                  <p className="text-sm font-semibold text-black leading-relaxed">{f.comment}</p>
                 </div>
               ))}
               {(!feedback || feedback.length === 0) && (
-                <p className="text-sm text-muted-foreground">Chưa có phản hồi nào.</p>
+                <p className="text-sm font-semibold text-zinc-650 dark:text-white text-center py-4">Chưa có phản hồi nào.</p>
               )}
             </div>
           </CardContent>
         </Card>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-6 md:grid-cols-2">
         <Card className="col-span-1">
-          <CardHeader>
-            <CardTitle>Doanh thu</CardTitle>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-xl font-bold text-zinc-900 dark:text-white border-b border-zinc-200 dark:border-zinc-800 pb-2">Doanh thu</CardTitle>
           </CardHeader>
-          <CardContent className="h-[300px]">
+          <CardContent className="h-[300px] pt-4">
             {revenueLoading ? (
               <Skeleton className="w-full h-full" />
             ) : revenue ? (
@@ -137,10 +156,10 @@ export default function OwnerDashboard() {
         </Card>
 
         <Card className="col-span-1">
-          <CardHeader>
-            <CardTitle>Tăng trưởng hội viên</CardTitle>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-xl font-bold text-zinc-900 dark:text-white border-b border-zinc-200 dark:border-zinc-800 pb-2">Tăng trưởng hội viên</CardTitle>
           </CardHeader>
-          <CardContent className="h-[300px]">
+          <CardContent className="h-[300px] pt-4">
             {revenueLoading ? (
               <Skeleton className="w-full h-full" />
             ) : revenue ? (
@@ -164,19 +183,31 @@ export default function OwnerDashboard() {
   );
 }
 
-function StatCard({ title, value, icon: Icon, trend, alert }: any) {
+function StatCard({ title, value, icon: Icon, trend, alert, pastelClass = "pastel-purple", borderHex = "#7c3aed" }: any) {
   return (
-    <Card>
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium text-muted-foreground">{title}</CardTitle>
-        <Icon className={`h-4 w-4 ${alert ? 'text-destructive' : 'text-muted-foreground'}`} />
-      </CardHeader>
-      <CardContent>
-        <div className="text-2xl font-bold">{value}</div>
+    <div 
+      className={`pastel-card ${pastelClass} p-5 flex flex-col justify-between h-32`}
+    >
+      <div className="flex items-center justify-between relative z-10">
+        <span className="text-xs font-bold uppercase tracking-wider text-black">{title}</span>
+        <div 
+          className="p-2 rounded-lg border border-black/10"
+          style={{ 
+            backgroundColor: `${borderHex}20`, 
+            color: '#000000' 
+          }}
+        >
+          <Icon className="h-5 w-5 ignore-color" />
+        </div>
+      </div>
+      <div className="relative z-10 mt-1">
+        <div className="text-3xl font-black text-black tracking-tight">{value}</div>
         {trend && (
-          <p className="text-xs text-muted-foreground mt-1">{trend}</p>
+          <p className="text-xs mt-1 flex items-center gap-1">
+            <span className="font-bold text-black">{trend}</span>
+          </p>
         )}
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }

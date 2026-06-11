@@ -53,17 +53,17 @@ export default function OwnerStaff() {
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {[
-          { label: "Tổng nhân viên",       value: staff?.length ?? 0 },
-          { label: "Đang làm việc",           value: activeCount },
-          { label: "HLV cá nhân",             value: trainerCount },
-          { label: "Lương năm (dự kiến)",    value: totalSalary ? `$${totalSalary.toLocaleString()}` : "—" },
+          { label: "Tổng nhân viên",       value: staff?.length ?? 0, pastelClass: "pastel-indigo" },
+          { label: "Đang làm việc",           value: activeCount, pastelClass: "pastel-emerald" },
+          { label: "HLV cá nhân",             value: trainerCount, pastelClass: "pastel-purple" },
+          { label: "Lương năm (dự kiến)",    value: totalSalary ? `$${totalSalary.toLocaleString()}` : "—", pastelClass: "pastel-sky" },
         ].map((s) => (
-          <Card key={s.label}>
-            <CardContent className="pt-5 pb-4">
-              <p className="text-2xl font-bold text-primary">{s.value}</p>
-              <p className="text-sm text-muted-foreground mt-1">{s.label}</p>
-            </CardContent>
-          </Card>
+          <div key={s.label} className={`pastel-card ${s.pastelClass} p-5 flex flex-col justify-between h-28`}>
+            <div>
+              <p className="text-2xl font-black text-black">{s.value}</p>
+              <p className="text-xs font-bold text-black mt-2 uppercase tracking-wide">{s.label}</p>
+            </div>
+          </div>
         ))}
       </div>
 
@@ -93,10 +93,10 @@ export default function OwnerStaff() {
                   <TableCell>{roleBadge(member.role)}</TableCell>
                   <TableCell className="text-sm text-muted-foreground">{member.email}</TableCell>
                   <TableCell className="text-sm text-muted-foreground">{member.phone ?? "—"}</TableCell>
-                  <TableCell className="text-sm">{format(new Date(member.hireDate), "MMM d, yyyy")}</TableCell>
+                  <TableCell className="text-sm">{format(new Date(member.hireDate), "dd/MM/yyyy")}</TableCell>
                   <TableCell>{statusBadge(member.status)}</TableCell>
                   <TableCell className="text-sm">
-                    {member.salary ? `$${Number(member.salary).toLocaleString()}/yr` : "—"}
+                    {member.salary ? `$${Number(member.salary).toLocaleString()}/năm` : "—"}
                   </TableCell>
                   <TableCell className="text-right">
                     <Button variant="outline" size="sm" onClick={() => setSelectedStaffId(member.id)}>

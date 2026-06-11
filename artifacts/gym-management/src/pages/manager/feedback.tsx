@@ -31,9 +31,17 @@ export default function ManagerFeedback() {
                 <TableRow><TableCell colSpan={5} className="text-center py-8">Đang tải...</TableCell></TableRow>
               ) : feedback?.map((item) => (
                 <TableRow key={item.id}>
-                  <TableCell className="whitespace-nowrap">{format(new Date(item.createdAt), "MMM d, yyyy")}</TableCell>
+                  <TableCell className="whitespace-nowrap">{format(new Date(item.createdAt), "dd/MM/yyyy")}</TableCell>
                   <TableCell className="font-medium">{item.memberName || "Ẩn danh"}</TableCell>
-                  <TableCell><Badge variant="secondary">{item.serviceType}</Badge></TableCell>
+                  <TableCell>
+                    <Badge variant="secondary">
+                      {item.serviceType === "general" ? "Chung" :
+                       item.serviceType === "classes" ? "Lớp học" :
+                       item.serviceType === "personal-training" ? "PT Cá nhân" :
+                       item.serviceType === "facilities" ? "Cơ sở vật chất" :
+                       item.serviceType === "staff" ? "Nhân viên" : item.serviceType}
+                    </Badge>
+                  </TableCell>
                   <TableCell>
                     <div className="flex text-yellow-500">
                       {"★".repeat(item.rating)}{"☆".repeat(5 - item.rating)}

@@ -231,44 +231,47 @@ export default function ManagerEquipment() {
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <Card>
-          <CardHeader className="pb-2 pt-4 px-4">
-            <CardTitle className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Tổng thiết bị</CardTitle>
-          </CardHeader>
-          <CardContent className="px-4 pb-4">
-            <p className="text-2xl font-bold">{total}</p>
-          </CardContent>
-        </Card>
-        <Card className="border-emerald-500/20">
-          <CardHeader className="pb-2 pt-4 px-4">
-            <CardTitle className="text-xs font-medium text-emerald-600 uppercase tracking-wide flex items-center gap-1">
-              <CheckCircle2 className="w-3.5 h-3.5" /> Hoạt động
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="px-4 pb-4">
-            <p className="text-2xl font-bold text-emerald-600">{operational}</p>
-          </CardContent>
-        </Card>
-        <Card className="border-amber-500/20">
-          <CardHeader className="pb-2 pt-4 px-4">
-            <CardTitle className="text-xs font-medium text-amber-600 uppercase tracking-wide flex items-center gap-1">
-              <Wrench className="w-3.5 h-3.5" /> Bảo trì
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="px-4 pb-4">
-            <p className="text-2xl font-bold text-amber-600">{maintenance}</p>
-          </CardContent>
-        </Card>
-        <Card className="border-red-500/20">
-          <CardHeader className="pb-2 pt-4 px-4">
-            <CardTitle className="text-xs font-medium text-red-500 uppercase tracking-wide flex items-center gap-1">
-              <XCircle className="w-3.5 h-3.5" /> Hết dùng
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="px-4 pb-4">
-            <p className="text-2xl font-bold text-red-500">{retired}</p>
-          </CardContent>
-        </Card>
+        <div className="pastel-card pastel-zinc p-5 flex flex-col justify-between h-28">
+          <div className="flex items-center justify-between pb-1">
+            <span className="text-xs font-bold uppercase tracking-wider text-black">Tổng thiết bị</span>
+          </div>
+          <div>
+            <p className="text-2xl font-black text-black">{total}</p>
+          </div>
+        </div>
+
+        <div className="pastel-card pastel-emerald p-5 flex flex-col justify-between h-28">
+          <div className="flex items-center justify-between pb-1">
+            <span className="text-xs font-bold uppercase tracking-wider text-black flex items-center gap-1">
+              <CheckCircle2 className="w-3.5 h-3.5 text-black ignore-color" /> Hoạt động
+            </span>
+          </div>
+          <div>
+            <p className="text-2xl font-black text-black">{operational}</p>
+          </div>
+        </div>
+
+        <div className="pastel-card pastel-amber p-5 flex flex-col justify-between h-28">
+          <div className="flex items-center justify-between pb-1">
+            <span className="text-xs font-bold uppercase tracking-wider text-black flex items-center gap-1">
+              <Wrench className="w-3.5 h-3.5 text-black ignore-color" /> Bảo trì
+            </span>
+          </div>
+          <div>
+            <p className="text-2xl font-black text-black">{maintenance}</p>
+          </div>
+        </div>
+
+        <div className="pastel-card pastel-rose p-5 flex flex-col justify-between h-28">
+          <div className="flex items-center justify-between pb-1">
+            <span className="text-xs font-bold uppercase tracking-wider text-black flex items-center gap-1">
+              <XCircle className="w-3.5 h-3.5 text-black ignore-color" /> Hết dùng
+            </span>
+          </div>
+          <div>
+            <p className="text-2xl font-black text-black">{retired}</p>
+          </div>
+        </div>
       </div>
 
       {/* Maintenance alert */}

@@ -89,7 +89,6 @@ export default function TrainerWorkouts() {
             const completedCount = clientSessions.filter(s => s.status === "completed").length;
             const totalSessions = contract.sessionsCount ?? 0;
             const remainingSessions = Math.max(0, totalSessions - completedCount);
-            
             const startDate = new Date(contract.updatedAt);
             const endDate = getEndDate(startDate, contract.desiredDuration ?? null);
             const percentRemaining = totalSessions > 0 ? (remainingSessions / totalSessions) * 100 : 0;
@@ -99,7 +98,7 @@ export default function TrainerWorkouts() {
                 <CardHeader className="pb-3">
                   <div className="flex justify-between items-start">
                     <CardTitle className="text-lg font-bold text-black">{contract.memberName}</CardTitle>
-                    <Badge variant="outline" className="bg-emerald-500/10 text-emerald-600 border-emerald-500/20">Active</Badge>
+                    <Badge variant="outline" className="bg-emerald-500/10 text-emerald-600 border-emerald-500/20">Đang hoạt động</Badge>
                   </div>
                   <CardDescription>Hợp đồng PT cá nhân</CardDescription>
                 </CardHeader>

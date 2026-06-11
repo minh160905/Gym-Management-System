@@ -72,55 +72,52 @@ export default function TrainerDashboard() {
 
       {/* Stats Cards */}
       <div className="grid gap-4 md:grid-cols-3">
-        <Card className="relative overflow-hidden border border-zinc-800 bg-zinc-900/40 backdrop-blur-md transition-all hover:border-emerald-500/30 group">
-          <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent pointer-events-none" />
-          <CardHeader className="flex flex-row items-center justify-between pb-2 pt-4 px-4">
-            <CardTitle className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Số session đã dạy</CardTitle>
-            <div className="p-2 rounded-lg bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 group-hover:scale-110 transition-transform duration-200">
-              <CheckCircle2 className="w-5 h-5" />
+        <div className="pastel-card pastel-emerald p-5 flex flex-col justify-between h-32">
+          <div className="flex items-center justify-between relative z-10">
+            <span className="text-xs font-bold uppercase tracking-wider text-black">Số session đã dạy</span>
+            <div className="p-2 rounded-lg border border-black/10 bg-emerald-650/20 text-black">
+              <CheckCircle2 className="w-5 h-5 ignore-color" />
             </div>
-          </CardHeader>
-          <CardContent className="px-4 pb-4">
-            <div className="text-3xl font-extrabold text-zinc-100 tracking-tight">
+          </div>
+          <div className="relative z-10 mt-1">
+            <div className="text-3xl font-black text-black tracking-tight">
               {sessionsLoading ? "..." : completedSessionsCount}
             </div>
-            <p className="text-xs text-muted-foreground mt-1">Buổi tập cá nhân (PT) đã hoàn thành</p>
-          </CardContent>
-        </Card>
+            <p className="text-xs font-bold text-black mt-1">Buổi tập cá nhân (PT) đã hoàn thành</p>
+          </div>
+        </div>
 
-        <Card className="relative overflow-hidden border border-zinc-800 bg-zinc-900/40 backdrop-blur-md transition-all hover:border-sky-500/30 group">
-          <div className="absolute inset-0 bg-gradient-to-br from-sky-500/5 to-transparent pointer-events-none" />
-          <CardHeader className="flex flex-row items-center justify-between pb-2 pt-4 px-4">
-            <CardTitle className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Số lớp học phụ trách</CardTitle>
-            <div className="p-2 rounded-lg bg-sky-500/10 text-sky-500 border border-sky-500/20 group-hover:scale-110 transition-transform duration-200">
-              <Activity className="w-5 h-5" />
+        <div className="pastel-card pastel-sky p-5 flex flex-col justify-between h-32">
+          <div className="flex items-center justify-between relative z-10">
+            <span className="text-xs font-bold uppercase tracking-wider text-black">Số lớp học phụ trách</span>
+            <div className="p-2 rounded-lg border border-black/10 bg-sky-650/20 text-black">
+              <Activity className="w-5 h-5 ignore-color" />
             </div>
-          </CardHeader>
-          <CardContent className="px-4 pb-4">
-            <div className="text-3xl font-extrabold text-zinc-100 tracking-tight">
+          </div>
+          <div className="relative z-10 mt-1">
+            <div className="text-3xl font-black text-black tracking-tight">
               {classesLoading ? "..." : classesCount}
             </div>
-            <p className="text-xs text-muted-foreground mt-1">Lớp học thể dục nhóm được giao</p>
-          </CardContent>
-        </Card>
+            <p className="text-xs font-bold text-black mt-1">Lớp học thể dục nhóm được giao</p>
+          </div>
+        </div>
 
-        <Card className="relative overflow-hidden border border-zinc-800 bg-zinc-900/40 backdrop-blur-md transition-all hover:border-amber-500/30 group">
-          <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 to-transparent pointer-events-none" />
-          <CardHeader className="flex flex-row items-center justify-between pb-2 pt-4 px-4">
-            <CardTitle className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Tổng thu nhập trong tháng</CardTitle>
-            <div className="p-2 rounded-lg bg-amber-500/10 text-amber-500 border border-amber-500/20 group-hover:scale-110 transition-transform duration-200">
-              <DollarSign className="w-5 h-5" />
+        <div className="pastel-card pastel-amber p-5 flex flex-col justify-between h-32">
+          <div className="flex items-center justify-between relative z-10">
+            <span className="text-xs font-bold uppercase tracking-wider text-black">Tổng thu nhập trong tháng</span>
+            <div className="p-2 rounded-lg border border-black/10 bg-amber-650/20 text-black">
+              <DollarSign className="w-5 h-5 ignore-color" />
             </div>
-          </CardHeader>
-          <CardContent className="px-4 pb-4">
-            <div className="text-3xl font-extrabold text-zinc-100 tracking-tight">
+          </div>
+          <div className="relative z-10 mt-1">
+            <div className="text-3xl font-black text-black tracking-tight">
               ${totalIncome.toLocaleString()}
             </div>
-            <p className="text-xs text-muted-foreground mt-1">
+            <p className="text-xs font-bold text-black mt-1">
               Lương cứng: ${baseSalary.toLocaleString()} + PT: ${extraIncome.toLocaleString()} ($25/buổi)
             </p>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
