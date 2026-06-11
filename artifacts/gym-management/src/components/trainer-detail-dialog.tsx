@@ -23,14 +23,14 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 
 const editSchema = z.object({
-  firstName:       z.string().min(1, "Required"),
-  lastName:        z.string().min(1, "Required"),
-  email:           z.string().email("Invalid email"),
+  firstName:       z.string().min(1, "Vui lòng nhập tên"),
+  lastName:        z.string().min(1, "Vui lòng nhập họ"),
+  email:           z.string().email("Email không hợp lệ"),
   phone:           z.string().optional(),
-  role:            z.string().min(1, "Required"),
+  role:            z.string().min(1, "Vui lòng chọn vai trò"),
   specializations: z.string().optional(),
   salary:          z.coerce.number().optional(),
-  status:          z.string().min(1, "Required"),
+  status:          z.string().min(1, "Vui lòng chọn trạng thái"),
   bio:             z.string().optional(),
 });
 type EditForm = z.infer<typeof editSchema>;
@@ -102,10 +102,10 @@ export function TrainerDetailDialog({ staffId, onClose }: TrainerDetailDialogPro
       });
       await queryClient.invalidateQueries({ queryKey: getGetStaffQueryKey(staffId) });
       await queryClient.invalidateQueries({ queryKey: getListStaffQueryKey() });
-      toast({ title: "Staff member updated successfully" });
+      toast({ title: "Đã cập nhật thông tin nhân sự thành công" });
       setMode("view");
     } catch {
-      toast({ title: "Failed to update staff member", variant: "destructive" });
+      toast({ title: "Cập nhật nhân sự thất bại", variant: "destructive" });
     }
   }
 
@@ -121,7 +121,7 @@ export function TrainerDetailDialog({ staffId, onClose }: TrainerDetailDialogPro
           <div className="flex items-center justify-between">
             <DialogTitle className="flex items-center gap-2">
               <User className="w-5 h-5 text-primary" />
-              {mode === "edit" ? "Edit Staff Member" : "Staff Profile"}
+              {mode === "edit" ? "Chỉnh sửa nhân sự" : "Hồ sơ nhân sự"}
             </DialogTitle>
             {!isLoading && trainer && (
               <Button
@@ -131,8 +131,8 @@ export function TrainerDetailDialog({ staffId, onClose }: TrainerDetailDialogPro
                 className={mode === "edit" ? "text-muted-foreground" : "text-primary"}
               >
                 {mode === "edit"
-                  ? <><X className="w-3.5 h-3.5 mr-1.5" />Cancel</>
-                  : <><Pencil className="w-3.5 h-3.5 mr-1.5" />Edit</>
+                  ? <><X className="w-3.5 h-3.5 mr-1.5" />Hủy</>
+                  : <><Pencil className="w-3.5 h-3.5 mr-1.5" />Chỉnh sửa</>
                 }
               </Button>
             )}
@@ -140,7 +140,7 @@ export function TrainerDetailDialog({ staffId, onClose }: TrainerDetailDialogPro
         </DialogHeader>
 
         {isLoading || !trainer ? (
-          <div className="py-12 text-center text-muted-foreground">Loading...</div>
+          <div className="py-12 text-center text-muted-foreground">Đang tải...</div>
         ) : mode === "edit" ? (
           /* ── Edit Form ──────────────────────────────────────── */
           <div className="flex-1 overflow-y-auto">
@@ -149,14 +149,14 @@ export function TrainerDetailDialog({ staffId, onClose }: TrainerDetailDialogPro
                 <div className="grid grid-cols-2 gap-4">
                   <FormField control={form.control} name="firstName" render={({ field }) => (
                     <FormItem>
-                      <FormLabel>First Name</FormLabel>
+                      <FormLabel>Tên</FormLabel>
                       <FormControl><Input {...field} /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )} />
                   <FormField control={form.control} name="lastName" render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Last Name</FormLabel>
+                      <FormLabel>Họ</FormLabel>
                       <FormControl><Input {...field} /></FormControl>
                       <FormMessage />
                     </FormItem>
@@ -173,8 +173,8 @@ export function TrainerDetailDialog({ staffId, onClose }: TrainerDetailDialogPro
                   )} />
                   <FormField control={form.control} name="phone" render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Phone</FormLabel>
-                      <FormControl><Input placeholder="555-0000" {...field} /></FormControl>
+                      <FormLabel>Số điện thoại</FormLabel>
+                      <FormControl><Input placeholder="0901234567" {...field} /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )} />
@@ -183,15 +183,15 @@ export function TrainerDetailDialog({ staffId, onClose }: TrainerDetailDialogPro
                 <div className="grid grid-cols-2 gap-4">
                   <FormField control={form.control} name="role" render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Role</FormLabel>
+                      <FormLabel>Vai trò</FormLabel>
                       <Select value={field.value} onValueChange={field.onChange}>
                         <FormControl>
                           <SelectTrigger><SelectValue /></SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="manager">Manager</SelectItem>
-                          <SelectItem value="trainer">Personal Trainer</SelectItem>
-                          <SelectItem value="receptionist">Receptionist</SelectItem>
+                          <SelectItem value="manager">Quản lý (Manager)</SelectItem>
+                          <SelectItem value="trainer">Huấn luyện viên cá nhân (PT)</SelectItem>
+                          <SelectItem value="receptionist">Nhân viên tiếp tân</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -199,15 +199,15 @@ export function TrainerDetailDialog({ staffId, onClose }: TrainerDetailDialogPro
                   )} />
                   <FormField control={form.control} name="status" render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Status</FormLabel>
+                      <FormLabel>Trạng thái</FormLabel>
                       <Select value={field.value} onValueChange={field.onChange}>
                         <FormControl>
                           <SelectTrigger><SelectValue /></SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="active">Active</SelectItem>
-                          <SelectItem value="inactive">Inactive</SelectItem>
-                          <SelectItem value="on_leave">On Leave</SelectItem>
+                          <SelectItem value="active">Đang hoạt động</SelectItem>
+                          <SelectItem value="inactive">Ngưng hoạt động</SelectItem>
+                          <SelectItem value="on_leave">Nghỉ phép</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -218,14 +218,14 @@ export function TrainerDetailDialog({ staffId, onClose }: TrainerDetailDialogPro
                 <div className="grid grid-cols-2 gap-4">
                   <FormField control={form.control} name="specializations" render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Specializations</FormLabel>
-                      <FormControl><Input placeholder="e.g. Strength & Conditioning" {...field} /></FormControl>
+                      <FormLabel>Chuyên môn</FormLabel>
+                      <FormControl><Input placeholder="Ví dụ: Tăng cơ giảm mỡ, HIIT..." {...field} /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )} />
                   <FormField control={form.control} name="salary" render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Salary (annual)</FormLabel>
+                      <FormLabel>Lương (hàng năm)</FormLabel>
                       <FormControl>
                         <Input type="number" min={0} step={100} placeholder="50000" {...field} value={field.value ?? ""} />
                       </FormControl>
@@ -236,9 +236,9 @@ export function TrainerDetailDialog({ staffId, onClose }: TrainerDetailDialogPro
 
                 <FormField control={form.control} name="bio" render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Bio</FormLabel>
+                    <FormLabel>Tiểu sử</FormLabel>
                     <FormControl>
-                      <Textarea rows={3} placeholder="Brief professional bio..." {...field} />
+                      <Textarea rows={3} placeholder="Kinh nghiệm nghề nghiệp ngắn gọn..." {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -247,9 +247,9 @@ export function TrainerDetailDialog({ staffId, onClose }: TrainerDetailDialogPro
             </Form>
 
             <div className="flex justify-end gap-2 pt-4 pb-1 border-t border-border mt-4">
-              <Button variant="outline" onClick={() => setMode("view")}>Cancel</Button>
+              <Button variant="outline" onClick={() => setMode("view")}>Hủy</Button>
               <Button type="submit" form="staff-edit-form" disabled={updateStaff.isPending}>
-                {updateStaff.isPending ? "Saving..." : "Save Changes"}
+                {updateStaff.isPending ? "Đang lưu..." : "Lưu thay đổi"}
               </Button>
             </div>
           </div>
@@ -257,9 +257,9 @@ export function TrainerDetailDialog({ staffId, onClose }: TrainerDetailDialogPro
           /* ── View Mode ──────────────────────────────────────── */
           <Tabs defaultValue="personal" className="flex-1 overflow-hidden flex flex-col">
             <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="personal">Personal Info</TabsTrigger>
-              <TabsTrigger value="sessions">Sessions</TabsTrigger>
-              <TabsTrigger value="requests">PT Requests</TabsTrigger>
+              <TabsTrigger value="personal">Thông tin cá nhân</TabsTrigger>
+              <TabsTrigger value="sessions">Buổi dạy</TabsTrigger>
+              <TabsTrigger value="requests">Yêu cầu PT</TabsTrigger>
             </TabsList>
             <div className="flex-1 overflow-y-auto mt-4">
               <TabsContent value="personal" className="space-y-4 mt-0">
@@ -269,37 +269,41 @@ export function TrainerDetailDialog({ staffId, onClose }: TrainerDetailDialogPro
                   </div>
                   <div>
                     <h2 className="text-xl font-bold">{trainer.firstName} {trainer.lastName}</h2>
-                    <p className="text-sm text-muted-foreground capitalize">{trainer.role}</p>
-                    <Badge variant={trainer.status === "active" ? "default" : "secondary"} className="mt-1">{trainer.status}</Badge>
+                    <p className="text-sm text-muted-foreground capitalize">
+                      {trainer.role === "trainer" ? "Huấn luyện viên cá nhân" : trainer.role === "manager" ? "Quản lý" : trainer.role}
+                    </p>
+                    <Badge variant={trainer.status === "active" ? "default" : "secondary"} className="mt-1">
+                      {trainer.status === "active" ? "Đang hoạt động" : trainer.status === "inactive" ? "Ngưng hoạt động" : "Nghỉ phép"}
+                    </Badge>
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <InfoRow icon={Mail} label="Email" value={trainer.email} />
-                  <InfoRow icon={Phone} label="Phone" value={trainer.phone} />
-                  <InfoRow icon={Calendar} label="Hire Date" value={trainer.hireDate ? format(new Date(trainer.hireDate), "MMM d, yyyy") : null} />
-                  <InfoRow icon={Star} label="Specializations" value={trainer.specializations} />
-                  <InfoRow icon={FileText} label="Salary" value={trainer.salary ? `$${Number(trainer.salary).toLocaleString()}/yr` : null} />
+                  <InfoRow icon={Phone} label="Số điện thoại" value={trainer.phone} />
+                  <InfoRow icon={Calendar} label="Ngày thuê" value={trainer.hireDate ? format(new Date(trainer.hireDate), "dd/MM/yyyy") : null} />
+                  <InfoRow icon={Star} label="Chuyên môn" value={trainer.specializations} />
+                  <InfoRow icon={FileText} label="Lương" value={trainer.salary ? `$${Number(trainer.salary).toLocaleString()}/năm` : null} />
                 </div>
                 {trainer.bio && (
                   <div className="pt-2 space-y-1">
-                    <p className="text-xs text-muted-foreground uppercase tracking-wide">Bio</p>
+                    <p className="text-xs text-muted-foreground uppercase tracking-wide">Tiểu sử</p>
                     <p className="text-sm leading-relaxed">{trainer.bio}</p>
                   </div>
                 )}
                 <div className="grid grid-cols-3 gap-3 pt-2">
                   <div className="bg-muted/30 rounded-lg p-3 text-center">
                     <p className="text-2xl font-bold text-primary">{completedSessions.length}</p>
-                    <p className="text-xs text-muted-foreground">Sessions Done</p>
+                    <p className="text-xs text-muted-foreground">Đã dạy hoàn thành</p>
                   </div>
                   <div className="bg-muted/30 rounded-lg p-3 text-center">
                     <p className="text-2xl font-bold text-primary">{upcomingSessions.length}</p>
-                    <p className="text-xs text-muted-foreground">Upcoming</p>
+                    <p className="text-xs text-muted-foreground">Lịch dạy sắp tới</p>
                   </div>
                   <div className="bg-muted/30 rounded-lg p-3 text-center">
                     <p className="text-2xl font-bold text-primary">
                       {ptRequests?.filter((r) => r.status === "approved" || r.status === "confirm").length ?? 0}
                     </p>
-                    <p className="text-xs text-muted-foreground">Active Clients</p>
+                    <p className="text-xs text-muted-foreground">Học viên hoạt động</p>
                   </div>
                 </div>
               </TabsContent>
@@ -313,21 +317,21 @@ export function TrainerDetailDialog({ staffId, onClose }: TrainerDetailDialogPro
                           <Clock className="w-3.5 h-3.5" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium">PT Session</p>
+                          <p className="text-sm font-medium">Buổi dạy PT</p>
                           <p className="text-xs text-muted-foreground">
-                            {s.scheduledAt ? format(new Date(s.scheduledAt), "MMM d, yyyy · h:mm a") : "N/A"}
-                            {s.durationMinutes ? ` · ${s.durationMinutes} min` : ""}
+                            {s.scheduledAt ? format(new Date(s.scheduledAt), "dd/MM/yyyy · HH:mm") : "N/A"}
+                            {s.durationMinutes ? ` · ${s.durationMinutes} phút` : ""}
                           </p>
                           {s.notes && <p className="text-xs text-muted-foreground mt-1 italic">{s.notes}</p>}
                         </div>
                         <Badge variant={s.status === "completed" ? "default" : "secondary"} className="text-xs shrink-0">
-                          {s.status}
+                          {s.status === "completed" ? "Đã hoàn thành" : s.status === "scheduled" ? "Đã đặt lịch" : s.status}
                         </Badge>
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <div className="text-center py-8 text-muted-foreground">No sessions on record.</div>
+                  <div className="text-center py-8 text-muted-foreground">Chưa có lịch sử buổi dạy nào.</div>
                 )}
               </TabsContent>
 
@@ -349,18 +353,18 @@ export function TrainerDetailDialog({ staffId, onClose }: TrainerDetailDialogPro
                               }
                               className="text-xs"
                             >
-                              {r.status === "confirm" ? "Confirm" : r.status === "Reject" ? "Reject" : r.status}
+                              {r.status === "confirm" || r.status === "approved" ? "Đã duyệt" : r.status === "Reject" || r.status === "rejected" ? "Từ chối" : r.status === "pending" ? "Chờ duyệt" : r.status}
                             </Badge>
                           </div>
-                          {r.preferredSchedule && <p className="text-xs text-muted-foreground">Schedule: {r.preferredSchedule}</p>}
+                          {r.preferredSchedule && <p className="text-xs text-muted-foreground">Lịch tập dự kiến: {r.preferredSchedule}</p>}
                           {r.message && <p className="text-sm mt-1 text-muted-foreground italic">{r.message}</p>}
-                          <p className="text-xs text-muted-foreground mt-2">{format(new Date(r.createdAt), "MMM d, yyyy")}</p>
+                          <p className="text-xs text-muted-foreground mt-2">{format(new Date(r.createdAt), "dd/MM/yyyy")}</p>
                         </CardContent>
                       </Card>
                     ))}
                   </div>
                 ) : (
-                  <div className="text-center py-8 text-muted-foreground">No PT requests.</div>
+                  <div className="text-center py-8 text-muted-foreground">Không có yêu cầu PT nào.</div>
                 )}
               </TabsContent>
             </div>

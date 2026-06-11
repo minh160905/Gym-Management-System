@@ -110,7 +110,7 @@ export default function TrainerClients() {
                   <TableCell className="font-medium">{client.firstName} {client.lastName}</TableCell>
                   <TableCell>{client.email}</TableCell>
                   <TableCell className="text-muted-foreground">Chưa thiết lập</TableCell>
-                  <TableCell>{format(new Date(client.joinDate), 'MMM d, yyyy')}</TableCell>
+                  <TableCell>{format(new Date(client.joinDate), 'dd/MM/yyyy')}</TableCell>
                   <TableCell className="text-right">
                     <Button variant="outline" size="sm" onClick={() => setSelectedMemberId(client.id)}>
                       <Eye className="w-4 h-4 mr-1" /> Xem

@@ -24,10 +24,10 @@ import {
 import type { MembershipPlan } from "@workspace/api-client-react";
 
 const planSchema = z.object({
-  name: z.string().min(1, "Name is required"),
+  name: z.string().min(1, "Tên gói tập là bắt buộc"),
   description: z.string().optional(),
-  priceMonthly: z.coerce.number().min(0, "Price must be 0 or more"),
-  durationMonths: z.coerce.number().int().min(1, "Duration must be at least 1 month"),
+  priceMonthly: z.coerce.number().min(0, "Giá tiền phải từ 0 trở lên"),
+  durationMonths: z.coerce.number().int().min(1, "Thời hạn phải từ 1 tháng trở lên"),
   features: z.string().optional(),
   isActive: z.boolean(),
 });
@@ -62,15 +62,15 @@ function PlanDialog({
     try {
       if (isEdit && plan) {
         await updateMembership.mutateAsync({ id: plan.id, data: values });
-        toast({ title: "Plan updated successfully" });
+        toast({ title: "Cập nhật gói tập thành công" });
       } else {
         await createMembership.mutateAsync({ data: { ...values, durationMonths: values.durationMonths } });
-        toast({ title: "Plan created successfully" });
+        toast({ title: "Tạo gói tập thành công" });
       }
       await queryClient.invalidateQueries({ queryKey: getListMembershipsQueryKey() });
       onClose();
     } catch {
-      toast({ title: isEdit ? "Failed to update plan" : "Failed to create plan", variant: "destructive" });
+      toast({ title: isEdit ? "Cập nhật gói tập thất bại" : "Tạo gói tập thất bại", variant: "destructive" });
     }
   }
 
@@ -80,9 +80,9 @@ function PlanDialog({
     <Dialog open onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="max-w-lg">
         <DialogHeader>
-          <DialogTitle>{isEdit ? "Edit Plan" : "New Membership Plan"}</DialogTitle>
+          <DialogTitle>{isEdit ? "Chỉnh sửa gói tập" : "Gói hội viên mới"}</DialogTitle>
           <p className="text-sm text-muted-foreground pt-1">
-            {isEdit ? "Update the details of this membership tier." : "Create a new subscription tier for your members."}
+            {isEdit ? "Cập nhật thông tin chi tiết của gói tập này." : "Tạo gói hội viên mới cho hội viên đăng ký."}
           </p>
         </DialogHeader>
 
@@ -91,9 +91,9 @@ function PlanDialog({
             {/* Name */}
             <FormField control={form.control} name="name" render={({ field }) => (
               <FormItem>
-                <FormLabel>Plan Name</FormLabel>
+                <FormLabel>Tên gói tập</FormLabel>
                 <FormControl>
-                  <Input placeholder="e.g. Premium" {...field} />
+                  <Input placeholder="Ví dụ: Gói Premium" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -102,9 +102,9 @@ function PlanDialog({
             {/* Description */}
             <FormField control={form.control} name="description" render={({ field }) => (
               <FormItem>
-                <FormLabel>Description <span className="text-muted-foreground text-xs">(optional)</span></FormLabel>
+                <FormLabel>Mô tả <span className="text-muted-foreground text-xs">(không bắt buộc)</span></FormLabel>
                 <FormControl>
-                  <Input placeholder="Brief description of this plan" {...field} />
+                  <Input placeholder="Mô tả ngắn gọn về gói tập này" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -114,7 +114,7 @@ function PlanDialog({
             <div className="grid grid-cols-2 gap-4">
               <FormField control={form.control} name="priceMonthly" render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Monthly Price ($)</FormLabel>
+                  <FormLabel>Giá mỗi tháng ($)</FormLabel>
                   <FormControl>
                     <Input type="number" min={0} step={0.01} placeholder="29.99" {...field} />
                   </FormControl>
@@ -124,7 +124,7 @@ function PlanDialog({
 
               <FormField control={form.control} name="durationMonths" render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Duration (months)</FormLabel>
+                  <FormLabel>Thời hạn (tháng)</FormLabel>
                   <FormControl>
                     <Input type="number" min={1} step={1} placeholder="12" {...field} />
                   </FormControl>
@@ -136,15 +136,15 @@ function PlanDialog({
             {/* Features */}
             <FormField control={form.control} name="features" render={({ field }) => (
               <FormItem>
-                <FormLabel>Features <span className="text-muted-foreground text-xs">(comma-separated)</span></FormLabel>
+                <FormLabel>Đặc quyền <span className="text-muted-foreground text-xs">(ngăn cách bằng dấu phẩy)</span></FormLabel>
                 <FormControl>
                   <Textarea
-                    placeholder="Gym floor access, Locker room, Free weights"
+                    placeholder="Tập luyện tự do, Phòng tắm & Tủ khóa, Khu tạ tự do"
                     rows={3}
                     {...field}
                   />
                 </FormControl>
-                <p className="text-xs text-muted-foreground">Each comma-separated item appears as a bullet point.</p>
+                <p className="text-xs text-muted-foreground">Mỗi đặc quyền ngăn cách bằng dấu phẩy sẽ hiển thị dưới dạng danh sách.</p>
                 <FormMessage />
               </FormItem>
             )} />
@@ -154,8 +154,8 @@ function PlanDialog({
               <FormItem>
                 <div className="flex items-center justify-between rounded-lg border border-border p-3">
                   <div>
-                    <FormLabel className="text-sm font-medium">Active</FormLabel>
-                    <p className="text-xs text-muted-foreground mt-0.5">Inactive plans are hidden from customers.</p>
+                    <FormLabel className="text-sm font-medium">Kích hoạt</FormLabel>
+                    <p className="text-xs text-muted-foreground mt-0.5">Các gói không kích hoạt sẽ bị ẩn khỏi hội viên.</p>
                   </div>
                   <FormControl>
                     <Switch checked={field.value} onCheckedChange={field.onChange} />
@@ -167,9 +167,9 @@ function PlanDialog({
         </Form>
 
         <DialogFooter className="gap-2">
-          <Button variant="outline" onClick={onClose} disabled={saving}>Cancel</Button>
+          <Button variant="outline" onClick={onClose} disabled={saving}>Hủy</Button>
           <Button type="submit" form="plan-form" disabled={saving}>
-            {saving ? "Saving..." : isEdit ? "Save Changes" : "Create Plan"}
+            {saving ? "Đang lưu..." : isEdit ? "Lưu thay đổi" : "Tạo gói tập"}
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -194,10 +194,10 @@ function DeleteDialog({
     try {
       await deleteMembership.mutateAsync({ id: plan.id });
       await queryClient.invalidateQueries({ queryKey: getListMembershipsQueryKey() });
-      toast({ title: `"${plan.name}" plan deleted` });
+      toast({ title: `Đã xóa gói tập "${plan.name}"` });
       onClose();
     } catch {
-      toast({ title: "Failed to delete plan", variant: "destructive" });
+      toast({ title: "Xóa gói tập thất bại", variant: "destructive" });
     }
   }
 
@@ -207,26 +207,25 @@ function DeleteDialog({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <AlertTriangle className="w-5 h-5 text-destructive" />
-            Delete Plan
+            Xóa gói tập
           </DialogTitle>
         </DialogHeader>
         <div className="py-2 space-y-3">
           <p className="text-sm text-muted-foreground">
-            Are you sure you want to delete the{" "}
-            <span className="font-semibold text-foreground">"{plan.name}"</span> plan?
-            This action cannot be undone.
+            Bạn có chắc chắn muốn xóa gói tập{" "}
+            <span className="font-semibold text-foreground">"{plan.name}"</span> không?
+            Hành động này không thể hoàn tác.
           </p>
           {subscriberCount > 0 && (
             <div className="rounded-lg bg-destructive/10 border border-destructive/20 p-3 text-sm text-destructive">
-              <span className="font-semibold">{subscriberCount} member{subscriberCount !== 1 ? "s" : ""}</span> are currently
-              on this plan. Their plan assignment will be removed.
+              Hiện có <span className="font-semibold">{subscriberCount} hội viên</span> đang sử dụng gói này. Gói tập của họ sẽ bị gỡ bỏ.
             </div>
           )}
         </div>
         <DialogFooter className="gap-2">
-          <Button variant="outline" onClick={onClose} disabled={deleteMembership.isPending}>Cancel</Button>
+          <Button variant="outline" onClick={onClose} disabled={deleteMembership.isPending}>Hủy</Button>
           <Button variant="destructive" onClick={handleDelete} disabled={deleteMembership.isPending}>
-            {deleteMembership.isPending ? "Deleting..." : "Delete Plan"}
+            {deleteMembership.isPending ? "Đang xóa..." : "Xóa gói tập"}
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -258,11 +257,11 @@ export default function OwnerMemberships() {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Membership Plans</h1>
-          <p className="text-muted-foreground mt-2">Manage subscription tiers and pricing.</p>
+          <h1 className="text-3xl font-bold tracking-tight">Gói hội viên</h1>
+          <p className="text-muted-foreground mt-2">Quản lý các gói dịch vụ và giá cả.</p>
         </div>
         <Button onClick={() => setCreating(true)}>
-          <Plus className="w-4 h-4 mr-2" /> New Plan
+          <Plus className="w-4 h-4 mr-2" /> Gói tập mới
         </Button>
       </div>
 
@@ -305,6 +304,41 @@ export default function OwnerMemberships() {
             <p className="text-xs font-bold text-black mt-0.5">from active subscribers</p>
           </div>
         </div>
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+              <LayoutGrid className="w-4 h-4 text-primary" /> Tổng số gói
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-2xl font-bold">{plans?.length ?? 0}</p>
+            <p className="text-xs text-muted-foreground mt-0.5">{activePlans} hoạt động</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+              <Users className="w-4 h-4 text-primary" /> Tổng số người đăng ký
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-2xl font-bold">
+              {members?.filter((m) => m.status === "active" && m.membershipPlanId).length ?? 0}
+            </p>
+            <p className="text-xs text-muted-foreground mt-0.5">hội viên đang sử dụng gói</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+              <DollarSign className="w-4 h-4 text-primary" /> Doanh thu tháng dự tính
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-2xl font-bold">${totalRevenue.toFixed(2)}</p>
+            <p className="text-xs text-muted-foreground mt-0.5">từ hội viên đang hoạt động</p>
+          </CardContent>
+        </Card>
       </div>
 
       <Separator />
@@ -319,8 +353,8 @@ export default function OwnerMemberships() {
       ) : plans?.length === 0 ? (
         <div className="text-center py-16 text-muted-foreground">
           <LayoutGrid className="w-10 h-10 mx-auto mb-3 opacity-30" />
-          <p className="font-medium">No membership plans yet</p>
-          <p className="text-sm mt-1">Click "New Plan" to create your first one.</p>
+          <p className="font-medium">Chưa có gói hội viên nào</p>
+          <p className="text-sm mt-1">Nhấn "Gói tập mới" để tạo gói đầu tiên.</p>
         </div>
       ) : (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -347,6 +381,26 @@ export default function OwnerMemberships() {
                     <span>${plan.priceMonthly}</span>
                     <span className="text-sm text-zinc-500 ml-1">/mo</span>
                     <span className="text-xs text-zinc-500 ml-2">· {plan.durationMonths} month(s)</span>
+                {/* Status badge */}
+                <div className="absolute top-4 right-4">
+                  {plan.isActive ? (
+                    <Badge variant="outline" className="bg-primary/10 text-primary border-primary/30 text-xs">Hoạt động</Badge>
+                  ) : (
+                    <Badge variant="outline" className="bg-muted text-muted-foreground text-xs">Ngừng hoạt động</Badge>
+                  )}
+                </div>
+
+                <CardHeader className="pr-24">
+                  <CardTitle className="text-xl">{plan.name}</CardTitle>
+                  {plan.description && <CardDescription className="text-sm">{plan.description}</CardDescription>}
+                </CardHeader>
+
+                <CardContent className="flex-1 space-y-4">
+                  {/* Price */}
+                  <div>
+                    <span className="text-4xl font-bold">${plan.priceMonthly}</span>
+                    <span className="text-muted-foreground text-sm">/tháng</span>
+                    <span className="text-xs text-muted-foreground ml-2">· {plan.durationMonths} tháng</span>
                   </div>
 
                   {plan.description && (
@@ -366,7 +420,7 @@ export default function OwnerMemberships() {
 
                   <div className="flex items-center gap-1.5 text-xs text-zinc-500 pt-1 border-t border-zinc-800">
                     <Users className="w-3.5 h-3.5" />
-                    <span>{subs} active subscriber{subs !== 1 ? "s" : ""}</span>
+                    <span>{subs} hội viên đang hoạt động</span>
                   </div>
 
                   <div className="flex gap-2 mt-4">
@@ -386,6 +440,24 @@ export default function OwnerMemberships() {
                   </div>
                 </div>
               </div>
+                <CardFooter className="gap-2">
+                  <Button
+                    variant="outline"
+                    className="flex-1"
+                    onClick={() => setEditPlan(plan)}
+                  >
+                    <Pencil className="w-3.5 h-3.5 mr-1.5" /> Chỉnh sửa
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                    onClick={() => setDeletePlan(plan)}
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </Button>
+                </CardFooter>
+              </Card>
             );
           })}
         </div>

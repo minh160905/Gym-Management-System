@@ -27,13 +27,13 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/lib/auth";
 
 const editSchema = z.object({
-  firstName:        z.string().min(1, "Required"),
-  lastName:         z.string().min(1, "Required"),
-  email:            z.string().email("Invalid email"),
+  firstName:        z.string().min(1, "Vui lòng nhập tên"),
+  lastName:         z.string().min(1, "Vui lòng nhập họ"),
+  email:            z.string().email("Email không hợp lệ"),
   phone:            z.string().optional(),
   dateOfBirth:      z.string().optional(),
   membershipPlanId: z.string().optional(),
-  status:           z.string().min(1, "Required"),
+  status:           z.string().min(1, "Vui lòng chọn trạng thái"),
   expiryDate:       z.string().optional(),
   emergencyContact: z.string().optional(),
   notes:            z.string().optional(),
@@ -114,10 +114,10 @@ export function MemberDetailDialog({ memberId, onClose }: MemberDetailDialogProp
       });
       await queryClient.invalidateQueries({ queryKey: getGetMemberQueryKey(memberId) });
       await queryClient.invalidateQueries({ queryKey: getListMembersQueryKey() });
-      toast({ title: "Member updated successfully" });
+      toast({ title: "Đã cập nhật thông tin hội viên thành công" });
       setMode("view");
     } catch {
-      toast({ title: "Failed to update member", variant: "destructive" });
+      toast({ title: "Cập nhật hội viên thất bại", variant: "destructive" });
     }
   }
 
@@ -133,7 +133,7 @@ export function MemberDetailDialog({ memberId, onClose }: MemberDetailDialogProp
           <div className="flex items-center justify-between">
             <DialogTitle className="flex items-center gap-2">
               <User className="w-5 h-5 text-primary" />
-              {mode === "edit" ? "Edit Member" : "Member Profile"}
+              {mode === "edit" ? "Chỉnh sửa hội viên" : "Hồ sơ hội viên"}
             </DialogTitle>
             {!isLoading && member && role !== "trainer" && (
               <Button
@@ -143,8 +143,8 @@ export function MemberDetailDialog({ memberId, onClose }: MemberDetailDialogProp
                 className={mode === "edit" ? "text-muted-foreground" : "text-primary"}
               >
                 {mode === "edit"
-                  ? <><X className="w-3.5 h-3.5 mr-1.5" />Cancel</>
-                  : <><Pencil className="w-3.5 h-3.5 mr-1.5" />Edit</>
+                  ? <><X className="w-3.5 h-3.5 mr-1.5" />Hủy</>
+                  : <><Pencil className="w-3.5 h-3.5 mr-1.5" />Chỉnh sửa</>
                 }
               </Button>
             )}
@@ -152,7 +152,7 @@ export function MemberDetailDialog({ memberId, onClose }: MemberDetailDialogProp
         </DialogHeader>
 
         {isLoading || !member ? (
-          <div className="py-12 text-center text-muted-foreground">Loading...</div>
+          <div className="py-12 text-center text-muted-foreground">Đang tải...</div>
         ) : mode === "edit" ? (
           /* ── Edit Form ─────────────────────────────────────── */
           <div className="flex-1 overflow-y-auto">
@@ -161,14 +161,14 @@ export function MemberDetailDialog({ memberId, onClose }: MemberDetailDialogProp
                 <div className="grid grid-cols-2 gap-4">
                   <FormField control={form.control} name="firstName" render={({ field }) => (
                     <FormItem>
-                      <FormLabel>First Name</FormLabel>
+                      <FormLabel>Tên</FormLabel>
                       <FormControl><Input {...field} /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )} />
                   <FormField control={form.control} name="lastName" render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Last Name</FormLabel>
+                      <FormLabel>Họ</FormLabel>
                       <FormControl><Input {...field} /></FormControl>
                       <FormMessage />
                     </FormItem>
@@ -185,8 +185,8 @@ export function MemberDetailDialog({ memberId, onClose }: MemberDetailDialogProp
                   )} />
                   <FormField control={form.control} name="phone" render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Phone</FormLabel>
-                      <FormControl><Input placeholder="555-0000" {...field} /></FormControl>
+                      <FormLabel>Số điện thoại</FormLabel>
+                      <FormControl><Input placeholder="0901234567" {...field} /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )} />
@@ -195,14 +195,14 @@ export function MemberDetailDialog({ memberId, onClose }: MemberDetailDialogProp
                 <div className="grid grid-cols-2 gap-4">
                   <FormField control={form.control} name="dateOfBirth" render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Date of Birth</FormLabel>
+                      <FormLabel>Ngày sinh</FormLabel>
                       <FormControl><Input type="date" {...field} /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )} />
                   <FormField control={form.control} name="expiryDate" render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Membership Expiry</FormLabel>
+                      <FormLabel>Ngày hết hạn gói hội viên</FormLabel>
                       <FormControl><Input type="date" {...field} /></FormControl>
                       <FormMessage />
                     </FormItem>
@@ -212,16 +212,16 @@ export function MemberDetailDialog({ memberId, onClose }: MemberDetailDialogProp
                 <div className="grid grid-cols-2 gap-4">
                   <FormField control={form.control} name="status" render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Status</FormLabel>
+                      <FormLabel>Trạng thái</FormLabel>
                       <Select value={field.value} onValueChange={field.onChange}>
                         <FormControl>
                           <SelectTrigger><SelectValue /></SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="active">Active</SelectItem>
-                          <SelectItem value="inactive">Inactive</SelectItem>
-                          <SelectItem value="expired">Expired</SelectItem>
-                          <SelectItem value="suspended">Suspended</SelectItem>
+                          <SelectItem value="active">Đang hoạt động</SelectItem>
+                          <SelectItem value="inactive">Ngưng hoạt động</SelectItem>
+                          <SelectItem value="expired">Hết hạn</SelectItem>
+                          <SelectItem value="suspended">Đình chỉ</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -229,13 +229,13 @@ export function MemberDetailDialog({ memberId, onClose }: MemberDetailDialogProp
                   )} />
                   <FormField control={form.control} name="membershipPlanId" render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Membership Plan</FormLabel>
+                      <FormLabel>Gói hội viên</FormLabel>
                       <Select value={field.value ?? "none"} onValueChange={field.onChange}>
                         <FormControl>
-                          <SelectTrigger><SelectValue placeholder="No plan" /></SelectTrigger>
+                          <SelectTrigger><SelectValue placeholder="Không đăng ký gói" /></SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="none">No plan</SelectItem>
+                          <SelectItem value="none">Không đăng ký gói</SelectItem>
                           {plans?.map((p) => (
                             <SelectItem key={p.id} value={p.id.toString()}>{p.name}</SelectItem>
                           ))}
@@ -248,16 +248,16 @@ export function MemberDetailDialog({ memberId, onClose }: MemberDetailDialogProp
 
                 <FormField control={form.control} name="emergencyContact" render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Emergency Contact</FormLabel>
-                    <FormControl><Input placeholder="Name: Phone" {...field} /></FormControl>
+                    <FormLabel>Liên hệ khẩn cấp</FormLabel>
+                    <FormControl><Input placeholder="Tên: Số điện thoại" {...field} /></FormControl>
                     <FormMessage />
                   </FormItem>
                 )} />
 
                 <FormField control={form.control} name="notes" render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Notes</FormLabel>
-                    <FormControl><Textarea rows={2} placeholder="Any notes about this member..." {...field} /></FormControl>
+                    <FormLabel>Ghi chú</FormLabel>
+                    <FormControl><Textarea rows={2} placeholder="Các ghi chú khác về hội viên này..." {...field} /></FormControl>
                     <FormMessage />
                   </FormItem>
                 )} />
@@ -265,9 +265,9 @@ export function MemberDetailDialog({ memberId, onClose }: MemberDetailDialogProp
             </Form>
 
             <div className="flex justify-end gap-2 pt-4 pb-1 border-t border-border mt-4">
-              <Button variant="outline" onClick={() => setMode("view")}>Cancel</Button>
+              <Button variant="outline" onClick={() => setMode("view")}>Hủy</Button>
               <Button type="submit" form="member-edit-form" disabled={updateMember.isPending}>
-                {updateMember.isPending ? "Saving..." : "Save Changes"}
+                {updateMember.isPending ? "Đang lưu..." : "Lưu thay đổi"}
               </Button>
             </div>
           </div>
@@ -275,10 +275,10 @@ export function MemberDetailDialog({ memberId, onClose }: MemberDetailDialogProp
           /* ── View Mode ─────────────────────────────────────── */
           <Tabs defaultValue="personal" className="flex-1 overflow-hidden flex flex-col">
             <TabsList className="grid w-full grid-cols-4">
-              <TabsTrigger value="personal">Personal</TabsTrigger>
-              <TabsTrigger value="membership">Membership</TabsTrigger>
-              <TabsTrigger value="history">Training</TabsTrigger>
-              <TabsTrigger value="feedback">Feedback</TabsTrigger>
+              <TabsTrigger value="personal">Cá nhân</TabsTrigger>
+              <TabsTrigger value="membership">Gói hội viên</TabsTrigger>
+              <TabsTrigger value="history">Lịch sử tập</TabsTrigger>
+              <TabsTrigger value="feedback">Phản hồi</TabsTrigger>
             </TabsList>
             <div className="flex-1 overflow-y-auto mt-4">
               <TabsContent value="personal" className="space-y-4 mt-0">
@@ -288,18 +288,20 @@ export function MemberDetailDialog({ memberId, onClose }: MemberDetailDialogProp
                   </div>
                   <div>
                     <h2 className="text-xl font-bold">{member.firstName} {member.lastName}</h2>
-                    <Badge variant={member.status === "active" ? "default" : "secondary"} className="mt-1">{member.status}</Badge>
+                    <Badge variant={member.status === "active" ? "default" : "secondary"} className="mt-1">
+                      {member.status === "active" ? "Đang hoạt động" : member.status === "inactive" ? "Ngưng hoạt động" : member.status === "expired" ? "Hết hạn" : "Đình chỉ"}
+                    </Badge>
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <InfoRow icon={Mail} label="Email" value={member.email} />
-                  <InfoRow icon={Phone} label="Phone" value={member.phone} />
-                  <InfoRow icon={Calendar} label="Date of Birth" value={member.dateOfBirth ? format(new Date(member.dateOfBirth), "MMM d, yyyy") : null} />
-                  <InfoRow icon={Calendar} label="Join Date" value={member.joinDate ? format(new Date(member.joinDate), "MMM d, yyyy") : null} />
-                  <InfoRow icon={Calendar} label="Expiry Date" value={member.expiryDate ? format(new Date(member.expiryDate), "MMM d, yyyy") : null} />
-                  <InfoRow icon={AlertCircle} label="Emergency Contact" value={member.emergencyContact} />
+                  <InfoRow icon={Phone} label="Số điện thoại" value={member.phone} />
+                  <InfoRow icon={Calendar} label="Ngày sinh" value={member.dateOfBirth ? format(new Date(member.dateOfBirth), "dd/MM/yyyy") : null} />
+                  <InfoRow icon={Calendar} label="Ngày tham gia" value={member.joinDate ? format(new Date(member.joinDate), "dd/MM/yyyy") : null} />
+                  <InfoRow icon={Calendar} label="Ngày hết hạn thẻ" value={member.expiryDate ? format(new Date(member.expiryDate), "dd/MM/yyyy") : null} />
+                  <InfoRow icon={AlertCircle} label="Liên hệ khẩn cấp" value={member.emergencyContact} />
                 </div>
-                {member.notes && <div className="pt-2"><InfoRow icon={FileText} label="Notes" value={member.notes} /></div>}
+                {member.notes && <div className="pt-2"><InfoRow icon={FileText} label="Ghi chú" value={member.notes} /></div>}
               </TabsContent>
 
               <TabsContent value="membership" className="space-y-4 mt-0">
@@ -308,36 +310,38 @@ export function MemberDetailDialog({ memberId, onClose }: MemberDetailDialogProp
                     <CardContent className="pt-6 space-y-3">
                       <div className="flex items-center justify-between">
                         <h3 className="font-semibold text-lg">{plan.name}</h3>
-                        <Badge variant="default">Active</Badge>
+                        <Badge variant="default">Đang hoạt động</Badge>
                       </div>
                       <p className="text-muted-foreground text-sm">{plan.description}</p>
                       <div className="flex items-center gap-2 text-primary font-bold text-xl">
-                        <CreditCard className="w-5 h-5" />${plan.priceMonthly}/mo
+                        <CreditCard className="w-5 h-5" />${plan.priceMonthly}/tháng
                       </div>
-                      <p className="text-sm text-muted-foreground">Duration: {plan.durationMonths} month(s)</p>
+                      <p className="text-sm text-muted-foreground">Thời hạn gói: {plan.durationMonths} tháng</p>
                     </CardContent>
                   </Card>
                 ) : (
-                  <div className="text-center py-8 text-muted-foreground">No active membership plan.</div>
+                  <div className="text-center py-8 text-muted-foreground">Chưa đăng ký gói tập nào.</div>
                 )}
-                <h4 className="font-medium mt-4">Payment History</h4>
+                <h4 className="font-medium mt-4">Lịch sử thanh toán</h4>
                 {payments && payments.length > 0 ? (
                   <div className="space-y-2">
                     {payments.map((p) => (
                       <div key={p.id} className="flex items-center justify-between py-2 border-b border-border last:border-0">
                         <div>
                           <p className="text-sm font-medium">{p.description}</p>
-                          <p className="text-xs text-muted-foreground">{p.paymentDate} · {p.paymentMethod ?? "N/A"}</p>
+                          <p className="text-xs text-muted-foreground">{format(new Date(p.paymentDate), "dd/MM/yyyy")} · {p.paymentMethod === "credit_card" ? "Thẻ tín dụng" : p.paymentMethod === "bank_transfer" ? "Chuyển khoản" : p.paymentMethod ?? "N/A"}</p>
                         </div>
                         <div className="text-right">
                           <p className="font-medium">${Number(p.amount).toFixed(2)}</p>
-                          <Badge variant={p.status === "paid" ? "default" : "secondary"} className="text-xs">{p.status}</Badge>
+                          <Badge variant={p.status === "paid" ? "default" : "secondary"} className="text-xs">
+                            {p.status === "paid" ? "Thành công" : p.status === "pending" ? "Chờ xử lý" : "Thất bại"}
+                          </Badge>
                         </div>
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <div className="text-center py-4 text-muted-foreground text-sm">No payment records.</div>
+                  <div className="text-center py-4 text-muted-foreground text-sm">Chưa có giao dịch thanh toán nào.</div>
                 )}
               </TabsContent>
 
@@ -352,17 +356,19 @@ export function MemberDetailDialog({ memberId, onClose }: MemberDetailDialogProp
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-medium">{item.title}</p>
                           <p className="text-xs text-muted-foreground">
-                            {item.scheduledAt ? format(new Date(item.scheduledAt), "MMM d, yyyy") : "N/A"}
-                            {item.trainerName ? ` · ${item.trainerName}` : ""}
-                            {item.durationMinutes ? ` · ${item.durationMinutes} min` : ""}
+                            {item.scheduledAt ? format(new Date(item.scheduledAt), "dd/MM/yyyy HH:mm") : "N/A"}
+                            {item.trainerName ? ` · HLV: ${item.trainerName}` : ""}
+                            {item.durationMinutes ? ` · ${item.durationMinutes} phút` : ""}
                           </p>
                         </div>
-                        <Badge variant={item.status === "completed" ? "default" : "secondary"} className="text-xs shrink-0">{item.status}</Badge>
+                        <Badge variant={item.status === "completed" ? "default" : "secondary"} className="text-xs shrink-0">
+                          {item.status === "completed" ? "Đã hoàn thành" : item.status === "confirmed" || item.status === "scheduled" ? "Đã lên lịch" : item.status}
+                        </Badge>
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <div className="text-center py-8 text-muted-foreground">No training history.</div>
+                  <div className="text-center py-8 text-muted-foreground">Không có lịch sử tập luyện.</div>
                 )}
               </TabsContent>
 
@@ -373,19 +379,21 @@ export function MemberDetailDialog({ memberId, onClose }: MemberDetailDialogProp
                       <Card key={f.id}>
                         <CardContent className="pt-4 pb-3">
                           <div className="flex items-center justify-between mb-2">
-                            <Badge variant="secondary" className="text-xs capitalize">{f.serviceType}</Badge>
+                            <Badge variant="secondary" className="text-xs capitalize">
+                              {f.serviceType === "general" ? "Chung" : f.serviceType === "classes" ? "Lớp học" : f.serviceType === "personal-training" ? "Tập PT" : f.serviceType === "facilities" ? "Cơ sở vật chất" : f.serviceType === "staff" ? "Nhân viên" : f.serviceType}
+                            </Badge>
                             <div className="flex text-yellow-500 text-sm">
                               {"★".repeat(f.rating)}<span className="text-muted-foreground">{"★".repeat(5 - f.rating)}</span>
                             </div>
                           </div>
                           <p className="text-sm">{f.comment}</p>
-                          <p className="text-xs text-muted-foreground mt-2">{format(new Date(f.createdAt), "MMM d, yyyy")}</p>
+                          <p className="text-xs text-muted-foreground mt-2">{format(new Date(f.createdAt), "dd/MM/yyyy")}</p>
                         </CardContent>
                       </Card>
                     ))}
                   </div>
                 ) : (
-                  <div className="text-center py-8 text-muted-foreground">No feedback submitted.</div>
+                  <div className="text-center py-8 text-muted-foreground">Chưa gửi phản hồi nào.</div>
                 )}
               </TabsContent>
             </div>

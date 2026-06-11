@@ -62,7 +62,7 @@ export default function ManagerStaff() {
                   <TableCell>{roleBadge(member.role)}</TableCell>
                   <TableCell className="text-sm text-muted-foreground">{member.email}</TableCell>
                   <TableCell className="text-sm text-muted-foreground">{member.phone ?? "—"}</TableCell>
-                  <TableCell className="text-sm">{format(new Date(member.hireDate), "MMM d, yyyy")}</TableCell>
+                  <TableCell className="text-sm">{format(new Date(member.hireDate), "dd/MM/yyyy")}</TableCell>
                   <TableCell>{statusBadge(member.status)}</TableCell>
                   <TableCell className="text-right">
                     <Button variant="outline" size="sm" onClick={() => setSelectedStaffId(member.id)}>

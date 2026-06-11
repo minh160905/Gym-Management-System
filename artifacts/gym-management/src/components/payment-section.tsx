@@ -23,8 +23,8 @@ interface PaymentSectionProps {
 }
 
 const PAYMENT_METHODS: { id: PaymentMethod; label: string; icon: React.ElementType }[] = [
-  { id: "credit_card", label: "Credit / Debit Card", icon: CreditCard },
-  { id: "bank_transfer", label: "Bank Transfer", icon: Landmark },
+  { id: "credit_card", label: "Thẻ Tín dụng / Ghi nợ", icon: CreditCard },
+  { id: "bank_transfer", label: "Chuyển khoản Ngân hàng", icon: Landmark },
 ];
 
 function formatCardNumber(raw: string) {
@@ -53,7 +53,7 @@ export default function PaymentSection({
 
   return (
     <div className="space-y-3">
-      <Label className="text-sm font-medium">Payment Method</Label>
+      <Label className="text-sm font-medium">Phương thức thanh toán</Label>
 
       {/* Method picker */}
       <div className="grid grid-cols-2 gap-2">
@@ -80,7 +80,7 @@ export default function PaymentSection({
         <div className="rounded-lg border border-border p-4 space-y-3 bg-muted/20">
           {/* Card type */}
           <div className="space-y-1.5">
-            <Label className="text-xs">Card Type</Label>
+            <Label className="text-xs">Loại thẻ</Label>
             <div className="flex gap-2">
               {(["visa", "mastercard"] as CardType[]).map((ct) => (
                 <button
@@ -105,7 +105,7 @@ export default function PaymentSection({
 
           {/* Card number */}
           <div className="space-y-1.5">
-            <Label className="text-xs">Card Number</Label>
+            <Label className="text-xs">Số thẻ</Label>
             <Input
               placeholder="1234 5678 9012 3456"
               value={cardData.cardNumber}
@@ -118,7 +118,7 @@ export default function PaymentSection({
           {/* Expiry + CVV */}
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
-              <Label className="text-xs">Expiry Date</Label>
+              <Label className="text-xs">Ngày hết hạn</Label>
               <Input
                 placeholder="MM/YY"
                 value={cardData.expiry}
@@ -128,7 +128,7 @@ export default function PaymentSection({
               />
             </div>
             <div className="space-y-1.5">
-              <Label className="text-xs">CVV</Label>
+              <Label className="text-xs">Mã CVV</Label>
               <Input
                 placeholder="•••"
                 value={cardData.cvv}
@@ -150,24 +150,24 @@ export default function PaymentSection({
               <QRCodeSVG value={qrValue} size={140} level="M" />
             </div>
             <p className="text-sm text-center text-muted-foreground">
-              Scan with your banking app to pay
+              Quét mã QR bằng ứng dụng ngân hàng để thanh toán
             </p>
           </div>
           <div className="border-t border-border pt-3 space-y-1 text-xs text-muted-foreground">
             <div className="flex justify-between">
-              <span>Bank</span>
+              <span>Ngân hàng</span>
               <span className="font-medium text-foreground">Iron & Forge Fitness</span>
             </div>
             <div className="flex justify-between">
-              <span>Account</span>
+              <span>Số tài khoản</span>
               <span className="font-medium text-foreground font-mono">12-3456-78901234-00</span>
             </div>
             <div className="flex justify-between">
-              <span>Reference</span>
+              <span>Nội dung CK</span>
               <span className="font-medium text-foreground font-mono">{reference}</span>
             </div>
             <div className="flex justify-between pt-1 border-t border-border mt-1">
-              <span className="font-medium text-foreground">Amount</span>
+              <span className="font-medium text-foreground">Số tiền</span>
               <span className="font-bold text-primary">${amount}.00</span>
             </div>
           </div>

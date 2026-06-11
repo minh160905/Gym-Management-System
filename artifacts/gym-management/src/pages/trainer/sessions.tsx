@@ -90,7 +90,7 @@ export default function TrainerSessions() {
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: getListSessionsQueryKey({ trainerId: staffId }) });
         setEvaluatingSession(null);
-        toast({ title: "Session marked as completed" });
+        toast({ title: "Đã đánh dấu buổi tập hoàn thành" });
       }
     });
   };
